@@ -1,0 +1,9 @@
+import React from "react";
+
+export default function Services() {
+  return (
+    <div className="text-white text-4xl font-montserrat-bold text-center mt-40">
+      OUR SERVICES
+    </div>
+  );
+}
