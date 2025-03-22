@@ -19,7 +19,7 @@ export default function Nav() {
 
 const LinksOverlay = () => {
   return (
-    <nav className="fixed bg-black right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
+    <nav className="fixed bg-[#101010] right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
       <Logo />
       <LinksContainer />
       <FooterCTAs />

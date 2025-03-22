@@ -61,7 +61,7 @@ function App() {
   return (
     <div>
       {loading ? (
-        <div className="flex justify-center w-screen items-center font-montserrat-bold bg-black text-white h-[calc(100vh-50px)]">
+        <div className="flex justify-center w-screen items-center font-montserrat-bold bg-[#101010] text-white h-[calc(100vh-30px)]">
           <Loader />
         </div>
       ) : (

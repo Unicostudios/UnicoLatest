@@ -15,8 +15,8 @@ export default function GridHoverHero() {
   }, []);
 
   const generateGridCount = () => {
-    const columns = Math.floor(document.body.clientWidth / 75);
-    const rows = Math.floor(document.body.clientHeight / 75);
+    const columns = Math.floor(window.innerWidth / 75);
+    const rows = Math.floor(window.innerHeight / 75);
 
     setSize({
       columns,
@@ -56,12 +56,12 @@ export default function GridHoverHero() {
         <h1 className="font-montserrat-bold text-center text-3xl font-black text-white sm:text-4xl md:text-5xl">
           Your Brand, Our Obsession
         </h1>
-        <p className="mb-6 mt-4 text-center sm:text-lg font-light text-white md:text-xl">
+        <p className="mb-6 mt-4 text-center text-sm xs:text-base sm:text-lg md:text-xl text-white">
           We blend strategy, design, and tech to fuel growth for brands that
           dare to lead
         </p>
         <Link to="/contact">
-          <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
+          <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
             Let’s Build Together
           </button>
         </Link>
