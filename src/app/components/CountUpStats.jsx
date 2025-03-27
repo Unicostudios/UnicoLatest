@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from "react";
 import { animate, useInView } from "framer-motion";
 
@@ -59,7 +61,9 @@ const Stat = ({ num, suffix, decimals = 0, subheading1, subheading2 }) => {
         <span ref={ref}></span>
         {suffix}
       </p>
-      <p className="max-w-80 text-center text-neutral-300 text-sm sm:text-base">{subheading1}</p>
+      <p className="max-w-80 text-center text-neutral-300 text-sm sm:text-base">
+        {subheading1}
+      </p>
       <p className="max-w-80 text-center text-neutral-300">{subheading2}</p>
     </div>
   );

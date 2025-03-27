@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link"
 import { IoMdArrowForward } from "react-icons/io";
 
 const NavBtn = () => {
@@ -11,8 +11,8 @@ const NavBtn = () => {
 
 const NeumorphismButton = () => {
   return (
-    <Link to="https://wa.me/+918105459006" target="_blank">
-      <button
+    <Link href="https://wa.me/+918105459006" target="_blank">
+      <div
         className={`
           relative z-0 flex items-center gap-2 overflow-hidden rounded-lg border-[1px] 
           border-white px-4 py-2 font-semibold
@@ -32,7 +32,7 @@ const NeumorphismButton = () => {
       >
         <span className="text-sm md:text-base">Get In Touch</span>
         <IoMdArrowForward className="text-xl md:text-2xl" />
-      </button>
+      </div>
     </Link>
   );
 };

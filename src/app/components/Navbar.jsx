@@ -1,9 +1,10 @@
+"use client";
+
 import React, { useState } from "react";
 import { IoLogoInstagram } from "react-icons/io";
 import { LiaFacebookSquare, LiaLinkedin } from "react-icons/lia";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 import { AnimatePresence, motion } from "framer-motion";
-import logo from "../assets/unicologo.svg";
 import Contact from "./ui/NavBtn";
 
 export default function Nav() {
@@ -76,7 +77,11 @@ const Logo = () => {
       href="/"
       className="grid w-35 xs:w-40 md:w-60 lg:w-70 h-22 place-content-center rounded-br-xl rounded-tl-xl transition-colors"
     >
-      <img src={logo} alt="Immersified" className="h-5 md:h-6" />
+      <img
+        src="/assets/unicologo.svg"
+        alt="Immersified"
+        className="h-5 md:h-6"
+      />
     </motion.a>
   );
 };

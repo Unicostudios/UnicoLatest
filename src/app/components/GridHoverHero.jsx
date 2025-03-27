@@ -1,6 +1,8 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useAnimate } from "framer-motion";
-import { Link } from "react-router-dom";
+import Link from "next/link"
 
 export default function GridHoverHero() {
   const [scope, animate] = useAnimate();
@@ -60,7 +62,7 @@ export default function GridHoverHero() {
           We blend strategy, design, and tech to fuel growth for brands that
           dare to lead
         </p>
-        <Link to="/contact">
+        <Link href="/contact">
           <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
             Let’s Build Together
           </button>

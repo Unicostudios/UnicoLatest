@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
 
-export default function Work() {
+export default function Error() {
   return (
     <div className="text-white text-4xl font-montserrat-bold text-center mt-40">
-      OUR WORK
+      ERROR 404!
     </div>
   );
 }
