@@ -5,7 +5,7 @@ import { animate, useInView } from "framer-motion";
 
 export default function CountUpStats() {
   return (
-    <div className="mx-auto px-4 py-10 md:py-16 font-montserrat-regular">
+    <div className="mx-auto px-4 py-16 md:py-20 font-montserrat-regular">
       <h2 className="mb-14 md:mb-8 text-center text-white text-lg md:text-xl md:mb-16">
         TRANSFORMING BRANDS,
         <br className="sm:hidden" />

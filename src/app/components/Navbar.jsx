@@ -57,7 +57,7 @@ const NavLink = ({ children, href, idx }) => {
       }}
       exit={{ opacity: 0 }}
       href={href}
-      className="flex justify-between text-3xl xxs:text-4xl xs:text-5xl font-montserrat-bold text-white duration-500 hover:text-[#5F14E0] ease-in-out md:text-6xl uppercase"
+      className="flex justify-between text-3xl xxs:text-4xl xs:text-5xl font-montserrat-bold text-white duration-500 hover:text-[#5F14E0] ease-in-out md:text-6xl uppercase transition-colors"
     >
       {children} <BsArrowUpRightCircle />
     </motion.a>
@@ -100,22 +100,24 @@ const HamburgerButton = ({ active, setActive }) => {
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive((pv) => !pv)}
-        className={`group fixed right-2 top-2 md:right-4 z-50 h-16 w-16 bg-white/0 transition-all hover:bg-white/20`}
+        className={`group fixed right-2 top-1 xs:top-2 md:right-4 z-50 h-16 w-16 transition-all hover:bg-white/10`}
       >
         <motion.span
           variants={HAMBURGER_VARIANTS.top}
-          className="absolute block h-0.5 md:h-1 w-7 md:w-10 bg-white"
+          className="absolute block h-[2px] md:h-1 w-7 md:w-10 bg-white"
           style={{ y: "-50%", left: "50%", x: "-50%" }}
         />
         <motion.span
           variants={HAMBURGER_VARIANTS.middle}
-          className="absolute block h-0.5 md:h-1 w-7 md:w-10 bg-white"
+          className="absolute block h-[2px] md:h-1 w-7 md:w-10 bg-white"
           style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           variants={HAMBURGER_VARIANTS.bottom}
-          className="absolute h-0.5 md:h-1 w-3 md:w-5 bg-white"
-          style={{ x: "-50%", y: "50%" }}
+          className={`${
+            active ? "hidden" : "block"
+          } absolute h-[2.5px] md:h-1 w-3 md:w-5 bg-white 
+             left-1/2 bottom-1/2 -translate-x-[70%] md:-translate-x-1/2 translate-y-1/2`}
         />
       </motion.button>
     </>

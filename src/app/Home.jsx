@@ -2,11 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Navbar from "@/app/components/Navbar";
-import GridHoverHero from "@/app/components/GridHoverHero";
-import CountUpStats from "@/app/components/CountUpStats";
+import Navbar from "./components/Navbar";
+import GridHoverHero from "./components/GridHoverHero";
+import CountUpStats from "./components/CountUpStats";
 import { motion } from "framer-motion";
-import Loader from "@/app/components/ui/StartAnimation";
+import Loader from "./components/ui/StartAnimation";
+import { DragCards } from "./components/DragCards";
+import { FeatureToggles } from "./components/feature-toggles/FeatureToggles";
+import { FoldingLogos } from "./components/FoldingLogos";
+import { BouncyCardsFeatures } from "./components/CardFeatures";
+import { Footer } from "./components/Footer";
 
 export default function Home() {
   const pathname = usePathname();
@@ -57,6 +62,11 @@ export default function Home() {
           </div>
           <GridHoverHero />
           <CountUpStats />
+          <DragCards />
+          <FeatureToggles />
+          <FoldingLogos />
+          <BouncyCardsFeatures />
+          <Footer />
         </div>
       )}
     </>
