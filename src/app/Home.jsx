@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <>
       {loading ? (
-        <div className="flex justify-center w-screen items-center font-montserrat-bold bg-[#101010] text-white h-[calc(100vh-30px)]">
+        <div className="flex justify-center w-screen items-center font-montserrat-bold bg-[#191919] text-white h-[calc(100vh-30px)]">
           <Loader />
         </div>
       ) : (

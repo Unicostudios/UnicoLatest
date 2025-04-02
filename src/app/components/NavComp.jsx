@@ -20,7 +20,7 @@ export default function Nav() {
 
 const LinksOverlay = () => {
   return (
-    <nav className="fixed bg-[#101010] right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
+    <nav className="fixed bg-[#191919] right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
       <Logo />
       <LinksContainer />
       <FooterCTAs />
@@ -57,9 +57,9 @@ const NavLink = ({ children, href, idx }) => {
       }}
       exit={{ opacity: 0 }}
       href={href}
-      className="flex justify-between text-3xl xxs:text-4xl xs:text-5xl font-montserrat-bold text-white duration-500 hover:text-[#5F14E0] ease-in-out md:text-6xl uppercase transition-colors"
+      className="group flex justify-between text-3xl xxs:text-4xl xs:text-5xl font-montserrat-bold text-white duration-500 hover:text-[#5F14E0] ease-in-out md:text-6xl uppercase transition-colors"
     >
-      {children} <BsArrowUpRightCircle />
+      {children} <BsArrowUpRightCircle className="group-hover:rotate-45 transition-all duration-300" />
     </motion.a>
   );
 };
