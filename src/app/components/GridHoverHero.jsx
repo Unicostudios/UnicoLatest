@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useAnimate } from "framer-motion";
-import Link from "next/link"
+import Link from "next/link";
 
-export default function GridHoverHero() {
+export default function GridHoverHero({ h1, p, btn }) {
   const [scope, animate] = useAnimate();
 
   const [size, setSize] = useState({ columns: 0, rows: 0 });
@@ -56,15 +56,14 @@ export default function GridHoverHero() {
       </div>
       <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0">
         <h1 className="font-montserrat-bold text-center text-3xl font-black text-white sm:text-4xl md:text-5xl">
-          Your Brand, Our Obsession
+          {h1}
         </h1>
         <p className="mb-6 mt-4 text-center text-sm xs:text-base sm:text-lg md:text-xl text-white">
-          We blend strategy, design, and tech to fuel growth for brands that
-          dare to lead
+          {p}
         </p>
         <Link href="/contact">
           <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
-            Let’s Build Together
+            {btn}
           </button>
         </Link>
       </div>

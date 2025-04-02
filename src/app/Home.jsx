@@ -2,16 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Navbar from "./components/Navbar";
 import GridHoverHero from "./components/GridHoverHero";
 import CountUpStats from "./components/CountUpStats";
-import { motion } from "framer-motion";
 import Loader from "./components/ui/StartAnimation";
 import { DragCards } from "./components/DragCards";
 import { FeatureToggles } from "./components/feature-toggles/FeatureToggles";
 import { FoldingLogos } from "./components/FoldingLogos";
 import { BouncyCardsFeatures } from "./components/CardFeatures";
 import { Footer } from "./components/Footer";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   const pathname = usePathname();
@@ -46,21 +45,14 @@ export default function Home() {
         </div>
       ) : (
         <div>
-          <div className="sticky top-0 z-50 bg-black/30 backdrop-blur-2xl">
-            <div className="py-7 ml-5 xs:ml-7 md:ml-10">
-              <motion.a href="/">
-                <img
-                  src="/assets/unicologo.svg"
-                  alt="Unico Studios"
-                  className="h-4 xs:h-5 md:h-6 cursor-pointer"
-                />
-              </motion.a>
-            </div>
-            <div>
-              <Navbar />
-            </div>
-          </div>
-          <GridHoverHero />
+          <Navbar />
+          <GridHoverHero
+            h1={"Your Brand, Our Obsession"}
+            p={
+              "We blend strategy, design, and tech to fuel growth for brands that dare to lead"
+            }
+            btn={"Let’s Build Together"}
+          />
           <CountUpStats />
           <DragCards />
           <FeatureToggles />
