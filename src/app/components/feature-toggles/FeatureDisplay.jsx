@@ -9,7 +9,7 @@ export const FeatureDisplay = ({
   Component,
 }) => {
   return (
-    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-xl border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
+    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-xl border-b-8 border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
       <div className="col-span-1 flex flex-col justify-between p-8 md:col-span-7 md:p-12">
         <div>
           <AnimatePresence mode="popLayout">
@@ -43,7 +43,7 @@ export const FeatureDisplay = ({
           <span className="font-montserrat-bold">Get started today!</span>
         </Button>
       </div>
-      <div className="relative col-span-1 min-h-80 border-l-0 border-t-2 border-[#9B69F1] bg-zinc-100 shadow-inner shadow-[#9B69F1] md:col-span-5 md:border-l-2 md:border-t-0">
+      <div className="relative col-span-1 min-h-80 border-l-0 border-t-2 border-[#9B69F1] bg-zinc-100 shadow-inner shadow-[#9b69f1b4] md:col-span-5 md:border-l-2 md:border-t-0">
         <AnimatePresence mode="popLayout">
           <motion.div
             initial={{

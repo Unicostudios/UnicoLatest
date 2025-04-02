@@ -4,16 +4,16 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <div className="bg-white pt-20 rounded-t-[70px] md:rounded-t-[100px]">
-      <div className="mx-auto mb-4 text-center text-3xl font-montserrat-bold md:text-5xl">
+    <div className="bg-white pt-16 sm:pt-20 rounded-t-[50px] sm:rounded-t-[70px] md:rounded-t-[100px]">
+      <div className="mx-auto mb-4 text-center text-4xl font-montserrat-bold md:text-5xl">
         Ready to go?
       </div>
-      <p className="mx-auto mb-14 text-center max-w-xs xxs2:max-w-sm xs:max-w-md sm:max-w-lg text-sm xxs2:text-base md:text-xl">
+      <p className="mx-auto mb-14 text-center max-w-xs xxs2:max-w-sm xs:max-w-md sm:max-w-lg text-sm xxs2:text-base md:text-xl px-5">
         We’re here to take your brand to the next level. Let’s talk about what’s
         possible
       </p>
       <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
-        <div className="md:px4 grid grid-cols-12 gap-x-1.5 gap-y-6 px-2">
+        <div className="md:px4 grid grid-cols-12 gap-x-1.5 gap-y-6 px-5">
           <LogoColumn />
           <GenericColumn
             title="Content"
@@ -82,8 +82,8 @@ export const Footer = () => {
 const LogoColumn = () => {
   return (
     <div className="col-span-6 md:col-span-4">
-      <img src="/assets/unicoblacklogo.svg" alt="Unico" />
-      <span className="mt-3 inline-block text-xs">
+      <img src="/assets/unicoblacklogo.svg" alt="Unico Studios" className="h-4 md:h-auto" />
+      <span className="mt-3 inline-block text-xs pr-5">
         Unico Studios - All Rights Reserved
       </span>
     </div>
@@ -98,7 +98,7 @@ const GenericColumn = ({ title, links }) => {
         <Link
           key={l.title}
           href={l.href}
-          className="flex items-center gap-1.5 transition-colors hover:text-indigo-600 hover:underline"
+          className="flex items-center break-all gap-1.5 transition-colors hover:text-indigo-600 hover:underline"
         >
           {l.Icon && <l.Icon />}
           {l.title}

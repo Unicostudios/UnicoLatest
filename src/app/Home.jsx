@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       ) : (
         <div>
-          <div className="sticky top-0 z-50 bg-black/20 backdrop-blur-xl">
+          <div className="sticky top-0 z-50 bg-black/30 backdrop-blur-2xl">
             <div className="py-7 ml-5 xs:ml-7 md:ml-10">
               <motion.a href="/">
                 <img
