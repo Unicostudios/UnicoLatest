@@ -54,11 +54,11 @@ export default function GridHoverHero({ h1, p, btn }) {
           />
         ))}
       </div>
-      <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0">
+      <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0 mt-5">
         <h1 className="font-montserrat-bold text-center text-3xl font-black text-white sm:text-4xl md:text-5xl">
           {h1}
         </h1>
-        <p className="mb-6 mt-4 text-center text-sm xs:text-base sm:text-lg md:text-xl text-white">
+        <p className="mb-6 mt-4 text-center px-5 text-sm xs:text-base max-w-4xl sm:text-lg md:text-xl text-white">
           {p}
         </p>
         <Link href="/contact">

@@ -9,7 +9,7 @@ export const FeatureDisplay = ({
   Component,
 }) => {
   return (
-    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-xl border-b-8 border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
+    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-3xl border-4 border-b-10 border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
       <div className="col-span-1 flex flex-col justify-between p-8 md:col-span-7 md:p-12">
         <div>
           <AnimatePresence mode="popLayout">
@@ -32,8 +32,8 @@ export const FeatureDisplay = ({
               }}
               key={selected}
             >
-              <h3 className="mb-4 text-3xl font-montserrat-medium">{cardTitle}</h3>
-              <p className="mb-12 max-w-lg text-base leading-relaxed md:text-xl md:leading-relaxed">
+              <h3 className="mb-4 text-xl sm:text-2xl font-montserrat-medium">{cardTitle}</h3>
+              <p className="mb-12 max-w-lg text-sm sm:text-base">
                 {cardSubtitle}
               </p>
             </motion.div>

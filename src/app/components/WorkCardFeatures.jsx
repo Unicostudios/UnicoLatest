@@ -3,29 +3,29 @@ import { motion } from "framer-motion";
 
 export const BouncyCardsFeatures = () => {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 text-black my-10">
-      <div className="mb-8">
-        <h2 className="text-white text-center text-4xl xs:text-5xl font-montserrat-bold md:text-5xl">
-          See Our Work
-        </h2>
-      </div>
+    <section className="mx-auto max-w-7xl px-4 pb-12 text-black my-10">
       <div className="mb-4 grid grid-cols-12 gap-4">
         <BounceCard className="col-span-12 md:col-span-4">
-          <CardTitle>Social Media Growth</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-gray-400 to-gray-800 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <CardTitle>Haze UAE</CardTitle>
+          <motion.a
+            href="/work/haze"
+            className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-blue-400 to-indigo-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]"
+          >
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854963/contactusbg_fuaa3u.jpg"
-              alt="Social Media Growth"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854968/heroimage_q0l4zv.jpg"
+              alt="Haze UAE"
               className="h-full w-full object-cover rounded-t-2xl"
             />
-          </div>
+          </motion.a>
         </BounceCard>
         <BounceCard className="col-span-12 md:col-span-8">
-          <CardTitle>Brand Strategy & Design</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-violet-400 to-indigo-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <CardTitle>Dupree Armon</CardTitle>
+          <div
+            className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-gray-400 to-gray-800 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]"
+          >
             <img
-              src="/assets/brandstrategy.jpg"
-              alt="Brand Strategy & Design"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1741275706/dupreepic_ghzfdz.jpg"
+              alt="Dupree Armon"
               className="h-full w-full object-cover rounded-t-2xl"
             />
           </div>
@@ -33,21 +33,21 @@ export const BouncyCardsFeatures = () => {
       </div>
       <div className="grid grid-cols-12 gap-4">
         <BounceCard className="col-span-12 md:col-span-8">
-          <CardTitle>Web Design & Development</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-green-400 to-emerald-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <CardTitle>Immersified</CardTitle>
+          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-violet-400 to-indigo-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854873/5_t5oqpr.jpg"
-              alt="Web Design & Development"
+              src="/assets/brandstrategy.jpg"
+              alt="Immersified"
               className="h-full w-full object-cover rounded-t-2xl "
             />
           </div>
         </BounceCard>
         <BounceCard className="col-span-12 md:col-span-4">
-          <CardTitle>SEO & Content Writing</CardTitle>
+          <CardTitle>Aashir Khair</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-amber-400 to-orange-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
               src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854855/image5_g1r9f1.jpg"
-              alt="SEO & Content Writing"
+              alt="Aashir Khair"
               className="h-full w-full object-cover rounded-t-2xl"
             />
           </div>

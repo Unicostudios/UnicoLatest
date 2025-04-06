@@ -59,7 +59,8 @@ const NavLink = ({ children, href, idx }) => {
       href={href}
       className="group flex justify-between text-3xl xxs:text-4xl xs:text-5xl font-montserrat-bold text-white duration-500 hover:text-[#5F14E0] ease-in-out md:text-6xl uppercase transition-colors"
     >
-      {children} <BsArrowUpRightCircle className="group-hover:rotate-45 transition-all duration-300" />
+      {children}
+      <BsArrowUpRightCircle className="group-hover:rotate-45 transition-all" />
     </motion.a>
   );
 };

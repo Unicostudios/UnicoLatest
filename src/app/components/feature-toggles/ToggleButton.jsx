@@ -9,7 +9,7 @@ export const ToggleButton = ({ children, selected, setSelected, id }) => {
     >
       <button
         onClick={() => setSelected(id)}
-        className={`w-full h-full font-montserrat-medium origin-top-left rounded-lg border px-1 py-3 text-[10px] xxs2:text-xs font-montserrat-medium transition-all md:text-base ${
+        className={`w-full h-full origin-top-left rounded-lg border px-1 py-3 text-[10px] xxs2:text-xs font-montserrat-medium transition-all md:text-base ${
           selected === id
             ? "-translate-y-1 border-[#9B69F1] bg-white text-indigo-600"
             : "border-zinc-800 bg-white text-zinc-900 hover:-rotate-2"

@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
-import NavComp from "./NavComp";
+import Nav from "./NavComp";
 
 export default function Navbar() {
   return (
@@ -15,7 +17,7 @@ export default function Navbar() {
         </motion.a>
       </div>
       <div>
-        <NavComp />
+        <Nav />
       </div>
     </div>
   );

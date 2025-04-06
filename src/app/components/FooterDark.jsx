@@ -1,26 +1,11 @@
 import React from "react";
 import { SiFacebook, SiInstagram, SiX } from "react-icons/si";
-import { BsArrowUpRightCircle } from "react-icons/bs";
 import Link from "next/link";
 
-export const Footer = ({ h, p }) => {
+export const Footer = () => {
   return (
-    <>
-      <div className="text-white flex flex-col items-center mb-30 bg-black py-30">
-        <div className="mx-auto mb-4 text-center text-4xl font-montserrat-bold md:text-5xl uppercase">
-          {h}
-        </div>
-        <p className="mx-auto text-center max-w-xs xxs2:max-w-sm xs:max-w-md sm:max-w-lg text-sm xxs2:text-base md:text-xl px-5 mb-5">
-          {p}
-        </p>
-        <a href="mailto:contact@unicostudios.in">
-          <button className="flex items-center gap-4 text-sm xxs2:text-base bg-[#5F14E0] px-3 py-1 rounded-full w-fit cursor-pointer">
-            Email
-            <BsArrowUpRightCircle className="rotate-45 text-lg xxs2:text-xl" />
-          </button>
-        </a>
-      </div>
-      <div className="bg-white pt-5 rounded-t-[50px] sm:rounded-t-[70px]">
+    <div className="bg-white">
+      <div className="bg-[#191919] text-white pt-5 rounded-t-[50px] sm:rounded-t-[70px]">
         <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
           <div className="md:px4 grid grid-cols-12 gap-x-1.5 gap-y-6 px-5">
             <LogoColumn />
@@ -85,7 +70,7 @@ export const Footer = ({ h, p }) => {
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -93,7 +78,7 @@ const LogoColumn = () => {
   return (
     <div className="col-span-6 md:col-span-4">
       <img
-        src="/assets/unicoblacklogo.svg"
+        src="/assets/unicologo.svg"
         alt="Unico Studios"
         className="h-4 md:h-auto"
       />

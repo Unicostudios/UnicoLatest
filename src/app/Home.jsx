@@ -9,16 +9,14 @@ import { DragCards } from "./components/DragCards";
 import { FeatureToggles } from "./components/feature-toggles/FeatureToggles";
 import { FoldingLogos } from "./components/FoldingLogos";
 import { BouncyCardsFeatures } from "./components/CardFeatures";
-import { Footer } from "./components/Footer";
+import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 
 export default function Home() {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
     const isFirstLoad = sessionStorage.getItem("firstLoad");
 
     if (!isFirstLoad) {
@@ -33,10 +31,16 @@ export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   if (!isClient) {
     return null;
   }
+
   return (
     <>
       {loading ? (
@@ -44,7 +48,7 @@ export default function Home() {
           <Loader />
         </div>
       ) : (
-        <div>
+        <>
           <Navbar />
           <GridHoverHero
             h1={"Your Brand, Our Obsession"}
@@ -58,8 +62,13 @@ export default function Home() {
           <FeatureToggles />
           <FoldingLogos />
           <BouncyCardsFeatures />
-          <Footer />
-        </div>
+          <Footer
+            h={"Ready to go?"}
+            p={
+              "We’re here to take your brand to the next level. Let’s talk about what’s possible"
+            }
+          />
+        </>
       )}
     </>
   );
