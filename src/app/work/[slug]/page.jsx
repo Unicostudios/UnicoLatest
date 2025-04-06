@@ -7,7 +7,7 @@ import { Footer } from "@/app/components/Footer";
 export default function page() {
   return (
     <>
-      <img src="/assets/projects/haze.jpg" alt="Haze" />
+      <img src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943094/haze_pcs8hx.jpg" alt="Haze" />
       <div className="flex flex-col gap-10 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around xl:justify-evenly py-16 md:py-32 lg:py-36">
         <div className="ml-0 xl:ml-20">
           <div className="mb-3 md:mb-5 text-white">
