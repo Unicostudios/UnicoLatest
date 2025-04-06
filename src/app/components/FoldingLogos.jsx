@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { SiAmazon, SiGithub, SiGoogle, SiMeta, SiTwitch } from "react-icons/si";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 
@@ -10,20 +9,17 @@ export const FoldingLogos = () => {
       <Copy />
       <LogoRolodex
         items={[
-          <LogoItem key={1} className="bg-orange-300 text-neutral-900">
-            <SiAmazon />
+          <LogoItem key={1} className="bg-neutral-800 p-10">
+            <img src="/assets/logos/haze.png" alt="Haze UAE" />
           </LogoItem>,
-          <LogoItem key={2} className="bg-green-300 text-neutral-900">
-            <SiGoogle />
+          <LogoItem key={2} className="bg-neutral-800 p-10">
+            <img src="/assets/logos/dupree.png" alt="Dupree Armon" />
           </LogoItem>,
-          <LogoItem key={3} className="bg-blue-300 text-neutral-900">
-            <SiMeta />
+          <LogoItem key={3} className="bg-neutral-800 p-10">
+            <img src="/assets/logos/immersified.png" alt="Immersified" />
           </LogoItem>,
-          <LogoItem key={4} className="bg-white text-black">
-            <SiGithub />
-          </LogoItem>,
-          <LogoItem key={5} className="bg-purple-300 text-neutral-900">
-            <SiTwitch />
+          <LogoItem key={4} className="bg-neutral-800 p-10">
+            <img src="/assets/logos/aashirkare.png" alt="Aashir Kare" />
           </LogoItem>,
         ]}
       />
@@ -89,7 +85,7 @@ const LogoRolodex = ({ items }) => {
         transform: "rotateY(-20deg)",
         transformStyle: "preserve-3d",
       }}
-      className="relative z-0 h-44 w-60 shrink-0 rounded-xl border border-neutral-700 bg-neutral-800"
+      className="relative z-0 h-44 w-60 shrink-0 rounded-xl border border-neutral-700 bg-[#363636]"
     >
       <AnimatePresence mode="sync">
         <motion.div

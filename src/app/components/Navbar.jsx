@@ -6,7 +6,7 @@ import Nav from "./NavComp";
 
 export default function Navbar() {
   return (
-    <div className="fixed w-full top-0 z-50 bg-black/30 backdrop-blur-2xl">
+    <div className="sticky w-full top-0 z-50 bg-black/30 backdrop-blur-2xl">
       <div className="py-7 ml-5 xs:ml-7 md:ml-10">
         <motion.a href="/">
           <img

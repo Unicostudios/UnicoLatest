@@ -6,7 +6,7 @@ export const DragCards = () => {
   return (
     <section className="relative grid min-h-screen w-full place-content-center overflow-hidden bg-black">
       <h2 className="relative font-montserrat-medium z-0 text-center text-5xl font-black text-neutral-800 md:text-7xl">
-        About Our Team<span className="text-indigo-500">.</span>
+        Meet Our Team<span className="text-indigo-500">.</span>
       </h2>
       <Cards />
     </section>
@@ -21,7 +21,7 @@ const Cards = () => {
       <Card
         containerRef={containerRef}
         src="/assets/team/utkarsh.jpg"
-        alt="Example image"
+        alt="Utkarsh"
         rotate="-16deg"
         top="30%"
         left="20%"
@@ -30,16 +30,16 @@ const Cards = () => {
       <Card
         containerRef={containerRef}
         src="/assets/team/naveen.jpg"
-        alt="Example image"
+        alt="Naveen"
         rotate="16deg"
-        top="40%"
+        top="35%"
         left="65%"
-        className="w-24 md:w-48"
+        className="w-44 md:w-64"
       />
       <Card
         containerRef={containerRef}
         src="/assets/team/sreehari.jpg"
-        alt="Saurav"
+        alt="Sreehari"
         rotate="0deg"
         top="15%"
         left="40%"
@@ -71,25 +71,27 @@ const Card = ({ containerRef, src, alt, top, left, rotate, className }) => {
   };
 
   return (
-    <motion.img
-      onMouseDown={updateZIndex}
-      style={{
-        top,
-        left,
-        rotate,
-        zIndex,
-      }}
-      className={twMerge(
-        "drag-elements absolute w-48 bg-neutral-200 p-1 pb-4",
-        className
-      )}
-      src={src}
-      alt={alt}
-      drag
-      dragConstraints={containerRef}
-      // Uncomment below and remove dragElastic to remove movement after release
-      //   dragMomentum={false}
-      dragElastic={0.65}
-    />
+    <div>
+      <motion.img
+        onMouseDown={updateZIndex}
+        style={{
+          top,
+          left,
+          rotate,
+          zIndex,
+        }}
+        className={twMerge(
+          "drag-elements rounded-lg absolute w-48 bg-neutral-200 p-1 pb-4",
+          className
+        )}
+        src={src}
+        alt={alt}
+        drag
+        dragConstraints={containerRef}
+        // Uncomment below and remove dragElastic to remove movement after release
+        //   dragMomentum={false}
+        dragElastic={0.65}
+      />
+    </div>
   );
 };

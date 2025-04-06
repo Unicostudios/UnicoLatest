@@ -9,7 +9,7 @@ export const FeatureDisplay = ({
   Component,
 }) => {
   return (
-    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-3xl border-4 border-b-10 border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
+    <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-3xl border-x-4 border-b-8 border-2 border-[#9B69F1] bg-white md:h-96 md:grid-cols-12">
       <div className="col-span-1 flex flex-col justify-between p-8 md:col-span-7 md:p-12">
         <div>
           <AnimatePresence mode="popLayout">
@@ -40,7 +40,7 @@ export const FeatureDisplay = ({
           </AnimatePresence>
         </div>
         <Button>
-          <span className="font-montserrat-bold">Get started today!</span>
+          <span className="font-montserrat-medium">Get started today!</span>
         </Button>
       </div>
       <div className="relative col-span-1 min-h-80 border-l-0 border-t-2 border-[#9B69F1] bg-zinc-100 shadow-inner shadow-[#9b69f1b4] md:col-span-5 md:border-l-2 md:border-t-0">
@@ -66,7 +66,7 @@ export const FeatureDisplay = ({
               ease: "easeInOut",
             }}
             key={selected}
-            className="pointer-events-none absolute bottom-0 left-8 right-0 top-8 overflow-hidden rounded-tl-2xl border-l-2 border-t-2 border-[#9B69F1] bg-white shadow-2xl"
+            className="pointer-events-none absolute bottom-0 left-8 right-0 top-8 overflow-hidden rounded-tl-2xl border-l border-t border-[#9B69F1] bg-white shadow-2xl"
           >
             <Component />
           </motion.div>

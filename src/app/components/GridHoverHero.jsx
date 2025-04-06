@@ -42,7 +42,7 @@ export default function GridHoverHero({ h1, p, btn }) {
     <div className="bg-neutral-950">
       <div
         ref={scope}
-        className="grid h-screen w-full grid-cols-[repeat(auto-fit,_minmax(75px,_1fr))] grid-rows-[repeat(auto-fit,_minmax(75px,_1fr))]"
+        className="grid h-[calc(100vh-75px)] w-full grid-cols-[repeat(auto-fit,_minmax(75px,_1fr))] grid-rows-[repeat(auto-fit,_minmax(75px,_1fr))]"
       >
         {[...Array(size.rows * size.columns)].map((_, i) => (
           <div
@@ -54,7 +54,7 @@ export default function GridHoverHero({ h1, p, btn }) {
           />
         ))}
       </div>
-      <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0">
+      <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0 mt-5">
         <h1 className="font-montserrat-bold text-center text-3xl font-black text-white sm:text-4xl md:text-5xl">
           {h1}
         </h1>

@@ -14,21 +14,21 @@ export default function CountUpStats() {
 
       <div className="flex text-white flex-col items-center justify-center gap-10 md:flex-row">
         <Stat
-          num={120}
+          num={15}
           suffix="+"
           subheading1="Brands Transformed"
           subheading2="From startups to global enterprises."
         />
         <div className="h-[1px] w-20 bg-neutral-600 md:h-20 md:w-[1px]" />
         <Stat
-          num={150}
+          num={23}
           suffix="+"
           subheading1="Projects Completed"
           subheading2="Websites, campaigns, and designs"
         />
         <div className="h-[1px] w-20 bg-neutral-600 md:h-20 md:w-[1px]" />
         <Stat
-          num={5}
+          num={4}
           suffix="+"
           subheading1="Countries Served"
           subheading2="Global expertise. Local impact"
