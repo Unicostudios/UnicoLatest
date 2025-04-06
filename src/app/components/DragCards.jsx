@@ -22,37 +22,28 @@ const Cards = () => {
         containerRef={containerRef}
         src="/assets/team/utkarsh.jpg"
         alt="Example image"
-        rotate="6deg"
-        top="20%"
-        left="25%"
+        rotate="-16deg"
+        top="30%"
+        left="20%"
         className="w-36 md:w-56"
       />
       <Card
         containerRef={containerRef}
         src="/assets/team/naveen.jpg"
         alt="Example image"
-        rotate="12deg"
-        top="45%"
-        left="60%"
+        rotate="16deg"
+        top="40%"
+        left="65%"
         className="w-24 md:w-48"
       />
       <Card
         containerRef={containerRef}
         src="/assets/team/sreehari.jpg"
         alt="Saurav"
-        rotate="8deg"
-        top="60%"
+        rotate="0deg"
+        top="15%"
         left="40%"
         className="w-48 md:w-72"
-      />
-      <Card
-        containerRef={containerRef}
-        src="/assets/team/sreehari.jpg"
-        alt="Utkarsh"
-        rotate="-20deg"
-        top="15%"
-        left="55%"
-        className="w-24 md:w-48"
       />
     </div>
   );

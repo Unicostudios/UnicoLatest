@@ -46,7 +46,7 @@ const Stat = ({ num, suffix, decimals = 0, subheading1, subheading2 }) => {
     if (!isInView) return;
 
     animate(0, num, {
-      duration: 2,
+      duration: 1,
       onUpdate(value) {
         if (!ref.current) return;
 

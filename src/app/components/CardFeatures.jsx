@@ -12,9 +12,9 @@ export const BouncyCardsFeatures = () => {
       <div className="mb-4 grid grid-cols-12 gap-4">
         <BounceCard className="col-span-12 md:col-span-4">
           <CardTitle>Social Media Growth</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-gray-400 to-gray-800 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854963/contactusbg_fuaa3u.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943984/Socialmediagrowth_wbaj2t.jpg"
               alt="Social Media Growth"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -22,9 +22,9 @@ export const BouncyCardsFeatures = () => {
         </BounceCard>
         <BounceCard className="col-span-12 md:col-span-8">
           <CardTitle>Brand Strategy & Design</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-violet-400 to-indigo-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="/assets/brandstrategy.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
               alt="Brand Strategy & Design"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -34,9 +34,9 @@ export const BouncyCardsFeatures = () => {
       <div className="grid grid-cols-12 gap-4">
         <BounceCard className="col-span-12 md:col-span-8">
           <CardTitle>Web Design & Development</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-green-400 to-emerald-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854873/5_t5oqpr.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/webdesign_g6fitp.jpg"
               alt="Web Design & Development"
               className="h-full w-full object-cover rounded-t-2xl "
             />
@@ -44,9 +44,9 @@ export const BouncyCardsFeatures = () => {
         </BounceCard>
         <BounceCard className="col-span-12 md:col-span-4">
           <CardTitle>SEO & Content Writing</CardTitle>
-          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-amber-400 to-orange-400 p-1 transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
+          <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1739854855/image5_g1r9f1.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
               alt="SEO & Content Writing"
               className="h-full w-full object-cover rounded-t-2xl"
             />
