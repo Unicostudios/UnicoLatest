@@ -15,22 +15,7 @@ export const DarkGridHero = ({ h, p }) => {
 const Content = ({ h, p }) => {
   return (
     <div className="relative z-20 mx-auto flex max-w-6xl flex-col items-center justify-center px-4 py-24 md:px-8 md:py-36">
-      <motion.div
-        initial={{
-          y: 25,
-          opacity: 0,
-        }}
-        animate={{
-          y: 0,
-          opacity: 1,
-        }}
-        transition={{
-          duration: 1.25,
-          ease: "easeInOut",
-        }}
-        className="relative"
-      ></motion.div>
-      <motion.h1
+      <motion.h2
         whileInView={{ opacity: 1, y: 0 }}
         initial={{ opacity: 0, y: 25 }}
         transition={{ duration: 1.25, ease: "easeInOut" }}
@@ -38,7 +23,7 @@ const Content = ({ h, p }) => {
         className="text-zinc-50 mx-auto mb-4 text-center text-4xl font-montserrat-bold md:text-5xl uppercase"
       >
         {h}
-      </motion.h1>
+      </motion.h2>
       <motion.p
         whileInView={{ opacity: 1, y: 0 }}
         initial={{ opacity: 0, y: 25 }}

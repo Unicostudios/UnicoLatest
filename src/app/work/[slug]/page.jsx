@@ -3,6 +3,7 @@
 import React from "react";
 import Btn from "@/app/components/ui/Btn";
 import { Footer } from "@/app/components/Footer";
+import { DarkGridHero } from "@/app/components/DarkGridHero";
 
 export default function Page() {
   return (
@@ -15,7 +16,7 @@ export default function Page() {
         />
       </div>
       <div className="flex flex-col gap-10 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-16 md:py-32">
-        <div className="ml-0 xl:ml-20">
+        <div>
           <div className="mb-3 md:mb-5 text-white">
             <h2 className="font-montserrat-medium lg:pr-10 pb-1 text-2xl xs:text-3xl md:text-4xl">
               Haze Productions UAE
@@ -41,12 +42,13 @@ export default function Page() {
           website; it’s a digital showcase that amplifies their impact.
         </div>
       </div>
-      <Footer
+      <DarkGridHero
         h={"BE UNIQ WITH UNICO"}
         p={
           "Unleashing Innovation to Fuel Brand Success Through Design, Technology, and Strategy"
         }
       />
+      <Footer />
     </>
   );
 }

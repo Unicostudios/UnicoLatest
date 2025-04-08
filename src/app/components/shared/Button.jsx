@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { cva } from "class-variance-authority";
 
 const button = cva(["uppercase", "transition-colors"], {
@@ -20,6 +22,19 @@ const button = cva(["uppercase", "transition-colors"], {
   },
 });
 
-export const Button = ({ className, intent, size, ...props }) => (
-  <button className={button({ intent, size, className })} {...props} />
-);
+export const Button = ({ className, intent, size, ...props }) => {
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    if (props.onClick) props.onClick(e);
+    router.push("/contact");
+  };
+
+  return (
+    <button
+      className={button({ intent, size, className })}
+      onClick={handleClick}
+      {...props}
+    />
+  );
+};

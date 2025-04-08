@@ -43,11 +43,11 @@ const BrandStrategyDesign = () => {
 export const data = [
   {
     id: 1,
-    title: "Social Media Growth",
-    Component: SocialMediaGrowth,
-    cardTitle: "Turn Followers into Engaged Communities.",
+    title: "Brand Strategy & Design",
+    Component: BrandStrategyDesign,
+    cardTitle: "Visuals That Speak Your Brand Story",
     cardSubtitle:
-      "We develop tailored strategies that increase brand awareness, boost engagement, and drive conversions across all major platforms.",
+    "From brand identity to packaging, we craft designs that resonate with your audience.",
   },
   {
     id: 2,
@@ -55,7 +55,7 @@ export const data = [
     Component: WebDesignDevelopment,
     cardTitle: "Websites That Convert, Not Just Impress",
     cardSubtitle:
-      "Our UX-driven designs ensure seamless experiences that keep visitors coming back",
+    "Our UX-driven designs ensure seamless experiences that keep visitors coming back",
   },
   {
     id: 3,
@@ -63,14 +63,14 @@ export const data = [
     Component: SEOContentWriting,
     cardTitle: "Get Found. Stay Relevant",
     cardSubtitle:
-      "We optimize your digital footprint with powerful SEO strategies and high-converting content..",
+    "We optimize your digital footprint with powerful SEO strategies and high-converting content..",
   },
   {
     id: 4,
-    title: "Brand Strategy & Design",
-    Component: BrandStrategyDesign,
-    cardTitle: "Visuals That Speak Your Brand Story",
+    title: "Social Media Growth",
+    Component: SocialMediaGrowth,
+    cardTitle: "Turn Followers into Engaged Communities.",
     cardSubtitle:
-      "From brand identity to packaging, we craft designs that resonate with your audience.",
+      "We develop tailored strategies that increase brand awareness, boost engagement, and drive conversions across all major platforms.",
   },
 ];

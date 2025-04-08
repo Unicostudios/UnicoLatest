@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAnimate } from "framer-motion";
+import { useAnimate, motion } from "framer-motion";
 import Link from "next/link";
 
 export default function GridHoverHero({ h1, p, btn }) {
@@ -54,7 +54,13 @@ export default function GridHoverHero({ h1, p, btn }) {
           />
         ))}
       </div>
-      <div className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0 mt-5">
+      <motion.div
+        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 25 }}
+        transition={{ duration: 1, ease: "easeInOut" }}
+        viewport={{ once: true, amount: 0.5 }}
+        className="font-montserrat-regular pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-8 z-0 mt-5"
+      >
         <h1 className="font-montserrat-bold text-center text-3xl font-black text-white sm:text-4xl md:text-5xl">
           {h1}
         </h1>
@@ -66,7 +72,7 @@ export default function GridHoverHero({ h1, p, btn }) {
             {btn}
           </button>
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,13 +1,10 @@
 import React from "react";
 import { SiFacebook, SiInstagram, SiX } from "react-icons/si";
-import { BsArrowUpRightCircle } from "react-icons/bs";
 import Link from "next/link";
-import { DarkGridHero } from "./shared/DarkGridHero";
 
-export const Footer = ({ h, p }) => {
+export const Footer = () => {
   return (
     <>
-      <DarkGridHero h={h} p={p} />
       <div className="bg-white pt-5 rounded-t-[50px] sm:rounded-t-[70px]">
         <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
           <div className="md:px4 grid grid-cols-12 gap-x-1.5 gap-y-6 px-5">
@@ -94,18 +91,28 @@ const LogoColumn = () => {
 
 const GenericColumn = ({ title, links }) => {
   return (
-    <div className="col-span-6 space-y-2 text-sm md:col-span-2">
+    <div className="col-span-6 space-y-2 text-sm md:col-span-2 cursor-default">
       <span className="block font-montserrat-bold uppercase">{title}</span>
-      {links.map((l) => (
-        <Link
-          key={l.title}
-          href={l.href}
-          className="flex items-center break-all gap-1.5 transition-colors hover:text-indigo-600 hover:underline"
-        >
-          {l.Icon && <l.Icon />}
-          {l.title}
-        </Link>
-      ))}
+      {links.map((l) =>
+        l.title === "Bangalore, India" ? (
+          <div
+            key={l.title}
+            className="flex items-center break-all gap-1.5 text-gray-700"
+          >
+            {l.Icon && <l.Icon />}
+            {l.title}
+          </div>
+        ) : (
+          <Link
+            key={l.title}
+            href={l.href}
+            className="flex items-center break-all gap-1.5 transition-colors hover:text-indigo-600 hover:underline"
+          >
+            {l.Icon && <l.Icon />}
+            {l.title}
+          </Link>
+        )
+      )}
     </div>
   );
 };

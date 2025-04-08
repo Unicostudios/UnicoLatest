@@ -11,6 +11,7 @@ import { FoldingLogos } from "./components/FoldingLogos";
 import { BouncyCardsFeatures } from "./components/CardFeatures";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import { DarkGridHero } from "./components/DarkGridHero";
 
 export default function Home() {
   const pathname = usePathname();
@@ -31,6 +32,7 @@ export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -62,12 +64,13 @@ export default function Home() {
           <FeatureToggles />
           <FoldingLogos />
           <BouncyCardsFeatures />
-          <Footer
+          <DarkGridHero
             h={"Ready to go?"}
             p={
               "We’re here to take your brand to the next level. Let’s talk about what’s possible"
             }
           />
+          <Footer />
         </>
       )}
     </>
