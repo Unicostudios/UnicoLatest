@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export const BouncyCardsFeatures = () => {
+export const WebDesign = () => {
   return (
     <section className="mx-auto max-w-7xl px-4 pb-12 text-black my-10">
       <div className="mb-4 grid grid-cols-12 gap-4">
@@ -15,7 +15,7 @@ export const BouncyCardsFeatures = () => {
             />
           </div>
         </BounceCard>
-        <BounceCard className="col-span-12 md:col-span-8">
+        <BounceCard href={"/work/dupree"} className="col-span-12 md:col-span-8">
           <CardTitle>Dupree Armon</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -27,7 +27,10 @@ export const BouncyCardsFeatures = () => {
         </BounceCard>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <BounceCard className="col-span-12 md:col-span-8">
+        <BounceCard
+          href={"/work/immersified"}
+          className="col-span-12 md:col-span-8"
+        >
           <CardTitle>Immersified</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -37,7 +40,7 @@ export const BouncyCardsFeatures = () => {
             />
           </div>
         </BounceCard>
-        <BounceCard className="col-span-12 md:col-span-4">
+        <BounceCard href={"/work/aashir"} className="col-span-12 md:col-span-4">
           <CardTitle>Aashir Khair</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img

@@ -9,7 +9,7 @@ const OppoScroll = () => {
 
   return (
     <>
-      <section ref={targetRef} className="flex py-20">
+      <section ref={targetRef} className="flex">
         <Content content={items} />
         <Images content={items} scrollYProgress={scrollYProgress} />
       </section>

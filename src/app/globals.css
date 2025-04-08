@@ -3,6 +3,7 @@
 html {
   background-color: #191919;
   overflow-x: hidden;
+  cursor: default;
 }
 
 @theme {

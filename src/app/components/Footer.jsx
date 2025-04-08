@@ -91,7 +91,7 @@ const LogoColumn = () => {
 
 const GenericColumn = ({ title, links }) => {
   return (
-    <div className="col-span-6 space-y-2 text-sm md:col-span-2 cursor-default">
+    <div className="col-span-6 space-y-2 text-sm md:col-span-2">
       <span className="block font-montserrat-bold uppercase">{title}</span>
       {links.map((l) =>
         l.title === "Bangalore, India" ? (

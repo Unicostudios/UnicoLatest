@@ -12,10 +12,10 @@ export default function Page() {
         <img
           src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943094/haze_pcs8hx.jpg"
           alt="Haze"
-          className="w-full h-full object-cover min-h-[400px]"
+          className="w-full h-full object-cover min-h-[200px]"
         />
       </div>
-      <div className="flex flex-col gap-10 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-16 md:py-32">
+      <div className="flex flex-col gap-10 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-10 md:py-20">
         <div>
           <div className="mb-3 md:mb-5 text-white">
             <h2 className="font-montserrat-medium lg:pr-10 pb-1 text-2xl xs:text-3xl md:text-4xl">

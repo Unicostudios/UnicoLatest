@@ -4,7 +4,6 @@ import React from "react";
 import GridHoverHero from "../components/GridHoverHero";
 import Footer from "../components/Footer";
 import HighlightTabs from "../components/HighlightTabs";
-import { BouncyCardsFeatures } from "../components/WorkCardFeatures";
 import { DarkGridHero } from "../components/DarkGridHero";
 
 export default function Work() {
@@ -18,7 +17,6 @@ export default function Work() {
         btn={"Explore Our Work"}
       />
       <HighlightTabs />
-      <BouncyCardsFeatures />
       <DarkGridHero
         h={"BE UNIQ WITH UNICO"}
         p={

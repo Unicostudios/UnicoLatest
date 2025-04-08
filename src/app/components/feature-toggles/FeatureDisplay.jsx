@@ -39,7 +39,7 @@ export const FeatureDisplay = ({
             </motion.div>
           </AnimatePresence>
         </div>
-        <Button>
+        <Button className="cursor-pointer">
           <span className="font-montserrat-medium">Get started today!</span>
         </Button>
       </div>

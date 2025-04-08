@@ -105,7 +105,7 @@ const Form = ({ selected, setSelected }) => {
           selected === "company"
             ? "bg-[#1447E6] text-white"
             : "bg-[#1447E6] text-white"
-        } transition-colors duration-[750ms] sm:text-lg text-center rounded-lg w-full py-2 sm:py-3 font-semibold cursor-default`}
+        } transition-colors duration-[750ms] sm:text-lg text-center rounded-lg w-full py-2 sm:py-3 font-semibold cursor-pointer`}
       >
         Submit
       </motion.div>

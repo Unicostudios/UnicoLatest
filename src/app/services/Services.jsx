@@ -8,6 +8,7 @@ import { FoldingLogos } from "../components/FoldingLogos";
 import OppoScroll from "../components/OppoScroll";
 import Footer from "../components/Footer";
 import { DarkGridHero } from "../components/DarkGridHero";
+import { StickyCards } from "../components/StickyCards";
 
 export default function Services() {
   return (
@@ -22,7 +23,12 @@ export default function Services() {
       <CollapseCardFeatures />
       <FeatureToggles />
       <FoldingLogos />
-      <OppoScroll />
+      <div className="hidden lg:block py-20">
+        <OppoScroll />
+      </div>
+      <div className="lg:hidden py-20">
+        <StickyCards />
+      </div>
       <DarkGridHero
         h={"Ready to go?"}
         p={

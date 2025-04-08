@@ -35,7 +35,7 @@ export default function Contact() {
       </div>
       <ContactForm />
       <div className="bg-white/50 w-[90%] md:w-[95%] lg:w-[90%] mx-auto h-[0.5px]" />
-      <div className="text-white flex flex-col gap-10 md:gap-0 md:flex-row justify-around w-[85%] mx-auto md:w-full md:items-center pt-16 pb-24 md:pt-20 md:pb-30 cursor-default">
+      <div className="text-white flex flex-col gap-10 md:gap-0 md:flex-row justify-around w-[85%] mx-auto md:w-full md:items-center pt-16 pb-24 md:pt-20 md:pb-30">
         <div>
           <p className="font-montserrat-medium text-lg">Email</p>
           <a
