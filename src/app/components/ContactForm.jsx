@@ -115,7 +115,7 @@ const Form = ({ selected, setSelected }) => {
 
 const FormSelect = ({ selected, setSelected }) => {
   return (
-    <div className="border-[0.5px] rounded-md flex border-white overflow-hidden font-medium w-fit">
+    <div className="border-[0.5px] rounded-md flex border-white overflow-hidden font-montserrat-medium w-fit">
       <div
         className={`${
           selected === "individual" ? "bg-[#1447E6]" : "bg-black"

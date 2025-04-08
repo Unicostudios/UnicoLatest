@@ -2,6 +2,12 @@
 
 import React from "react";
 import GridHoverHero from "../components/GridHoverHero";
+import CollapseCardFeatures from "../components/CollapseCards";
+import { FeatureToggles } from "../components/feature-toggles/FeatureToggles";
+import { FoldingLogos } from "../components/FoldingLogos";
+import OppoScroll from "../components/OppoScroll";
+import Footer from "../components/Footer";
+import { DarkGridHero } from "../components/DarkGridHero";
 
 export default function Services() {
   return (
@@ -13,6 +19,17 @@ export default function Services() {
         }
         btn={"Let’s Build Together"}
       />
+      <CollapseCardFeatures />
+      <FeatureToggles />
+      <FoldingLogos />
+      <OppoScroll />
+      <DarkGridHero
+        h={"Ready to go?"}
+        p={
+          "We’re here to take your brand to the next level. Let’s talk about what’s possible"
+        }
+      />
+      <Footer />
     </>
   );
 }
