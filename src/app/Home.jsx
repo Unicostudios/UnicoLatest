@@ -61,7 +61,7 @@ export default function Home() {
             href={"/contact"}
           />
           <CountUpStats />
-          <FiftyFiftyHero/>
+          <FiftyFiftyHero />
           <FeatureToggles />
           <FoldingLogos />
           <BouncyCardsFeatures />
@@ -70,6 +70,8 @@ export default function Home() {
             p={
               "We’re here to take your brand to the next level. Let’s talk about what’s possible"
             }
+            btn={"Email"}
+            href={"mailto:contact@unicostudios.in"}
           />
           <Footer />
         </>

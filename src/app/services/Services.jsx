@@ -35,6 +35,8 @@ export default function Services() {
         p={
           "We’re here to take your brand to the next level. Let’s talk about what’s possible"
         }
+        btn={"Email"}
+        href={"mailto:contact@unicostudios.in"}
       />
       <Footer />
     </>

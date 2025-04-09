@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 
-export const DarkGridHero = ({ h, p }) => {
+export const DarkGridHero = ({ h, p, btn, href, target }) => {
   return (
     <section className="relative overflow-hidden bg-zinc-950">
-      <Content h={h} p={p} />
+      <Content h={h} p={p} btn={btn} href={href} target={target} />
       <Beams />
       <GradientGrid />
     </section>
   );
 };
 
-const Content = ({ h, p }) => {
+const Content = ({ h, p, btn, href, target }) => {
   return (
     <div className="relative z-20 mx-auto flex max-w-6xl flex-col items-center justify-center px-4 py-24 md:px-8 md:py-36">
       <motion.h2
@@ -40,9 +40,9 @@ const Content = ({ h, p }) => {
         viewport={{ once: true, amount: 0.5 }}
         className="flex flex-col items-center gap-6 sm:flex-row"
       >
-        <a href="mailto:contact@unicostudios.in">
+        <a href={href} target={target}>
           <button className="flex items-center gap-4 text-sm xxs2:text-base bg-[#5F14E0] px-3 py-1 rounded-full w-fit cursor-pointer text-white">
-            Email
+            {btn}
             <BsArrowUpRightCircle className="rotate-45 text-lg xxs2:text-xl" />
           </button>
         </a>

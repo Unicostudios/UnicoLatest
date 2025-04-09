@@ -219,6 +219,8 @@ export default function Page() {
         p={
           "Unleashing Innovation to Fuel Brand Success Through Design, Technology, and Strategy"
         }
+        btn={"Email"}
+        href={"mailto:contact@unicostudios.in"}
       />
       <Footer />
     </>
