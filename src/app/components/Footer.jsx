@@ -1,13 +1,13 @@
 import React from "react";
-import { SiFacebook, SiInstagram, SiX } from "react-icons/si";
+import { SiFacebook, SiInstagram, SiLinkedin } from "react-icons/si";
 import Link from "next/link";
 
 export const Footer = () => {
   return (
     <>
-      <div className="bg-white pt-5 rounded-t-[50px] sm:rounded-t-[70px]">
+      <div className="bg-white rounded-t-[50px] md:rounded-t-[70px]">
         <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
-          <div className="md:px4 grid grid-cols-12 gap-x-1.5 gap-y-6 px-5">
+          <div className="pl-10 xxs:pl-5 grid grid-cols-1 xxs:grid-cols-12 gap-x-1.5 gap-y-6 sm:gap-0 sm:flex justify-around">
             <LogoColumn />
             <GenericColumn
               title="Content"
@@ -36,12 +36,12 @@ export const Footer = () => {
                 {
                   title: "Instagram",
                   href: "https://www.instagram.com/unico.studioss",
-                  Icon: SiX,
+                  Icon: SiInstagram,
                 },
                 {
                   title: "LinkedIn",
                   href: "https://www.linkedin.com/company/unicostudios",
-                  Icon: SiInstagram,
+                  Icon: SiLinkedin,
                 },
                 {
                   title: "Facebook",
@@ -80,10 +80,11 @@ const LogoColumn = () => {
       <img
         src="/assets/unicoblacklogo.svg"
         alt="Unico Studios"
-        className="h-4 md:h-auto"
+        className="h-3 xxs:h-3.5 sm:h-4 md:h-auto"
       />
-      <span className="mt-3 inline-block text-xs pr-5">
-        Unico Studios - All Rights Reserved
+      <span className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5">
+        Unico Studios <br className="hidden xxs:block md:hidden" />{" "}
+        <span className="xxs:hidden md:inline">-</span> All Rights Reserved
       </span>
     </div>
   );
@@ -91,7 +92,7 @@ const LogoColumn = () => {
 
 const GenericColumn = ({ title, links }) => {
   return (
-    <div className="col-span-6 space-y-2 text-sm md:col-span-2">
+    <div className="col-span-6 space-y-2 text-xs xxs2:text-sm md:col-span-2">
       <span className="block font-montserrat-bold uppercase">{title}</span>
       {links.map((l) =>
         l.title === "Bangalore, India" ? (
