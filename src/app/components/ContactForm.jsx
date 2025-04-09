@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 
 const ShiftingContactForm = () => {
   const [selected, setSelected] = useState("individual");
@@ -16,9 +17,44 @@ const ShiftingContactForm = () => {
 };
 
 const Form = ({ selected, setSelected }) => {
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbzZ75q3j_OWwSsaA9Vi-n13IuU1Pot03z6_KcIT76r3_HcaGO8E2L_CLbrEQFkFXKVw/exec";
+    const formData = new FormData();
+    formData.append("Name", name);
+    formData.append("Company", company);
+    formData.append("Message", message);
+
+    const toastId = toast.loading("Sending...");
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        // console.log("Success!", response);
+        setName("");
+        setCompany("");
+        setMessage("");
+        toast.success("Sent Successfully");
+      } else {
+        toast.error("Failed to send!");
+        throw new Error("Network response was not ok.");
+      }
+    } catch (error) {
+      console.error("Error!", error.message);
+    }
+    toast.dismiss(toastId);
+  };
   return (
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={handleSubmit}
       className={`p-6 xs:p-10 sm:p-14 w-full text-white transition-colors duration-[750ms] ${
         selected === "company" ? "bg-black" : "bg-black"
       }`}
@@ -26,7 +62,6 @@ const Form = ({ selected, setSelected }) => {
       <h3 className="text-3xl sm:text-4xl font-montserrat-bold mb-6">
         Contact Us
       </h3>
-
       {/* Name input */}
       <div className="mb-6">
         <p className="text-xl sm:text-2xl mb-2">Hello! My name is...</p>
@@ -34,18 +69,18 @@ const Form = ({ selected, setSelected }) => {
           type="text"
           required
           placeholder="Your Name..."
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className={`${
             selected === "company" ? "bg-white" : "bg-white"
           } text-sm sm:text-base transition-colors border duration-[750ms] text-black placeholder-black/50 p-2 rounded-md w-full focus:outline-0`}
         />
       </div>
-
       {/* Company/individual toggle */}
       <div className="mb-6">
         <p className="text-xl sm:text-2xl mb-2">and I represent...</p>
         <FormSelect selected={selected} setSelected={setSelected} />
       </div>
-
       {/* Company name */}
       <AnimatePresence>
         {selected === "company" && (
@@ -74,6 +109,8 @@ const Form = ({ selected, setSelected }) => {
               type="text"
               required
               placeholder="Your company name..."
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
               className={`${
                 selected === "company" ? "bg-white" : "bg-white"
               } text-sm sm:text-base transition-colors duration-[750ms] text-black placeholder-black/50 border p-2 rounded-md w-full focus:outline-0`}
@@ -81,28 +118,28 @@ const Form = ({ selected, setSelected }) => {
           </motion.div>
         )}
       </AnimatePresence>
-
       {/* Info */}
       <div className="mb-6">
         <p className="text-xl sm:text-2xl mb-2">I'd love to ask about...</p>
         <textarea
           required
           placeholder="Whatever your heart desires :)"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className={`${
             selected === "company" ? "bg-white" : "bg-white"
           } text-sm sm:text-base transition-colors border duration-[750ms] text-black min-h-[150px] resize-none placeholder-black/50 p-2 rounded-md w-full focus:outline-0`}
         />
       </div>
-
       {/* Submit */}
-      <motion.div
+      <motion.button
+        type="submit"
         whileHover={{
           scale: 1.01,
         }}
         whileTap={{
           scale: 0.99,
         }}
-        type="submit"
         className={`${
           selected === "company"
             ? "bg-[#1447E6] text-white"
@@ -110,7 +147,7 @@ const Form = ({ selected, setSelected }) => {
         } transition-colors duration-[750ms] sm:text-lg text-center rounded-lg w-full py-2 sm:py-3 font-semibold cursor-pointer`}
       >
         Submit
-      </motion.div>
+      </motion.button>
     </form>
   );
 };

@@ -9,24 +9,25 @@ const ColorChangeCards = () => {
           heading="Gohar"
           description="Timeless identity for modern jewelry storytelling"
           imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1744145307/goharbranding4_lymvne.jpg"
+          href="/work/gohar"
         />
         <Card
           heading="Immersified"
           description="Expansive identity for world-building experiences."
           imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
-          href="https://immersified.vercel.app/"
+          href="/work/immersified"
         />
         <Card
           heading="Dupree Armon"
           description="Immersive website for a visual storyteller"
           imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943032/dupree_rq5kdq.jpg"
-          href="https://dupreearmon.com/"
+          href="/work/dupree"
         />
         <Card
           heading="Haze SEO"
           description="Strategic SEO fueling conscious fashion growth"
           imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
-          href="https://hazeuae.com/"
+          href="/work/hazeuae"
         />
       </div>
     </div>
@@ -37,7 +38,6 @@ const Card = ({ heading, description, imgSrc, href }) => {
   return (
     <motion.a
       href={href}
-      target="_blank"
       transition={{
         staggerChildren: 0.035,
       }}
