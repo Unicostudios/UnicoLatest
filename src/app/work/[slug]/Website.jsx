@@ -122,9 +122,9 @@ export default function Page() {
       <div className="flex flex-col gap-10 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-14 md:py-20">
         <div>
           <div className="mb-3 md:mb-5 text-white">
-            <h2 className="font-montserrat-medium lg:pr-10 pb-1 text-2xl xs:text-3xl md:text-4xl">
+            <h1 className="font-montserrat-medium lg:pr-10 pb-1 text-2xl xs:text-3xl md:text-4xl">
               {data.h2}
-            </h2>
+            </h1>
             <h3 className="text-sm xs:text-base sm:text-lg">{data.h3}</h3>
           </div>
           <div className={data.btn}>
