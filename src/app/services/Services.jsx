@@ -19,6 +19,7 @@ export default function Services() {
           "We blend strategy, design, and technology to deliver transformative results for brands looking to stand out and grow"
         }
         btn={"Let’s Build Together"}
+        href={"/contact"}
       />
       <CollapseCardFeatures />
       <FeatureToggles />

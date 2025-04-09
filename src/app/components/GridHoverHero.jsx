@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAnimate, motion } from "framer-motion";
 import Link from "next/link";
 
-export default function GridHoverHero({ h1, p, btn }) {
+export default function GridHoverHero({ h1, p, btn, href }) {
   const [scope, animate] = useAnimate();
 
   const [size, setSize] = useState({ columns: 0, rows: 0 });
@@ -67,11 +67,13 @@ export default function GridHoverHero({ h1, p, btn }) {
         <p className="mb-6 mt-4 text-center px-5 text-sm xs:text-base max-w-4xl sm:text-lg md:text-xl text-white">
           {p}
         </p>
-        <Link href="/contact">
-          <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
-            {btn}
-          </button>
-        </Link>
+        {href && (
+          <Link href={href}>
+            <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
+              {btn}
+            </button>
+          </Link>
+        )}
       </motion.div>
     </div>
   );

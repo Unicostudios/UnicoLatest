@@ -41,7 +41,7 @@ const Copy = () => (
         className={`
           relative z-0 flex items-center gap-2 overflow-hidden rounded-full border-[1px] 
           border-[#5F14E0] bg-[#5F14E0] px-4 py-2
-          text-white transition-all duration-500
+          text-white transition-all duration-500 text-sm md:text-base
           
           before:absolute before:inset-0
           before:-z-10 before:translate-x-[150%]

@@ -5,7 +5,7 @@ export const SEO = () => {
   return (
     <section className="mx-auto max-w-7xl px-4 pb-12 text-black my-10">
       <div className="mb-4 grid grid-cols-12 gap-4">
-        <BounceCard href={"/work/haze"} className="col-span-12 md:col-span-4">
+        <BounceCard href={"/work/hazeuae"} className="col-span-12 md:col-span-4">
           <CardTitle>Haze UAE</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img

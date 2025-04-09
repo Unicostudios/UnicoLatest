@@ -7,11 +7,8 @@ export default function About() {
   return (
     <>
       <GridHoverHero
-        h1={"We build brands that cut through the noise"}
-        p={
-          "A creative-first marketing studio blending design, strategy, and storytelling."
-        }
-        btn={"Meet the team"}
+        h1={"We Don't Just Build Brands — "}
+        p={"We Build Momentum."}
       />
     </>
   );

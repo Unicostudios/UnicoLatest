@@ -23,6 +23,7 @@ export default function Contact() {
         h1={"Let’s Build Something Unico Together"}
         p={"Have a project in mind? Let’s connect and make it real."}
         btn={"Get In Touch"}
+        href={"https://wa.me/+918105459006"}
       />
       <div className="flex flex-col gap-7 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-16 text-white">
         <h2 className="font-montserrat-medium lg:pr-10 text-2xl xs:text-3xl md:text-4xl lg:max-w-sm">

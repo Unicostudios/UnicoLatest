@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import GridHoverHero from "./components/GridHoverHero";
 import CountUpStats from "./components/CountUpStats";
 import Loader from "./components/ui/StartAnimation";
-import { DragCards } from "./components/DragCards";
+import { FiftyFiftyHero } from "./components/FiftyFiftyHero";
 import { FeatureToggles } from "./components/feature-toggles/FeatureToggles";
 import { FoldingLogos } from "./components/FoldingLogos";
 import { BouncyCardsFeatures } from "./components/CardFeatures";
@@ -58,9 +58,10 @@ export default function Home() {
               "We blend strategy, design, and tech to fuel growth for brands that dare to lead"
             }
             btn={"Let’s Build Together"}
+            href={"/contact"}
           />
           <CountUpStats />
-          <DragCards />
+          <FiftyFiftyHero/>
           <FeatureToggles />
           <FoldingLogos />
           <BouncyCardsFeatures />

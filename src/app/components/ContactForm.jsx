@@ -23,7 +23,9 @@ const Form = ({ selected, setSelected }) => {
         selected === "company" ? "bg-black" : "bg-black"
       }`}
     >
-      <h3 className="text-3xl sm:text-4xl font-montserrat-bold mb-6">Contact Us</h3>
+      <h3 className="text-3xl sm:text-4xl font-montserrat-bold mb-6">
+        Contact Us
+      </h3>
 
       {/* Name input */}
       <div className="mb-6">
@@ -176,7 +178,7 @@ const Images = ({ selected }) => {
         className="absolute inset-0 bg-slate-200"
         style={{
           backgroundImage:
-            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/v1744116507/contactbg_h5uibb.jpg)",
+            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/v1744145310/immersifiedbranding2_urxnwy.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

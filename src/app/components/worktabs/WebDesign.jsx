@@ -28,7 +28,7 @@ export const WebDesign = () => {
       </div>
       <div className="grid grid-cols-12 gap-4">
         <BounceCard
-          href={"/work/immersified"}
+          href={"/work/immersifiedgcc"}
           className="col-span-12 md:col-span-8"
         >
           <CardTitle>Immersified</CardTitle>
