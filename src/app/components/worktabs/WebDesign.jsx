@@ -40,7 +40,7 @@ export const WebDesign = () => {
             />
           </div>
         </BounceCard>
-        <BounceCard href={"/work/aashir"} className="col-span-12 md:col-span-4">
+        <BounceCard href={"/work/aashirkhare"} className="col-span-12 md:col-span-4">
           <CardTitle>Aashir Khair</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img

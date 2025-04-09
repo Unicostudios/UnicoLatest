@@ -97,7 +97,7 @@ const features = [
       "“Every move backed by real-time analytics and insights.” - We optimize strategies based on performance data to guarantee measurable growth.",
   },
   {
-    title: "wtt",
+    title: "Lasting Impact",
     description:
       "“Designs that don’t just look good— they perform.” Crafting visual identities that tell stories and drive engagement.",
   },
