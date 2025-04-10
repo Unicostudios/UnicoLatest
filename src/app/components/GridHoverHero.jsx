@@ -69,7 +69,7 @@ export default function GridHoverHero({ h1, p, btn, href, target }) {
         </p>
         {href && (
           <Link href={href} target={target}>
-            <button className="pointer-events-auto rounded-full bg-[#5F14E0] text-white px-4 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
+            <button className="pointer-events-auto rounded-full bg-[#5F14E0] px-5 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
               {btn}
             </button>
           </Link>
