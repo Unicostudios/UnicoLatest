@@ -20,7 +20,7 @@ const Content = ({ h, p, btn, href, target }) => {
         initial={{ opacity: 0, y: 25 }}
         transition={{ duration: 1.25, ease: "easeInOut" }}
         viewport={{ once: true, amount: 0.5 }}
-        className="text-zinc-50 mx-auto mb-4 text-center text-4xl font-montserrat-bold md:text-5xl uppercase"
+        className="text-zinc-50 mx-auto mb-4 text-center text-3xl sm:text-4xl font-montserrat-bold md:text-5xl uppercase"
       >
         {h}
       </motion.h2>

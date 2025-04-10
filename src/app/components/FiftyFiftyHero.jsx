@@ -18,7 +18,7 @@ export const FiftyFiftyHero = () => {
 const Left = () => (
   <div className="col-span-12 flex flex-col justify-between border-r bg-black border-neutral-700 md:col-span-6">
     <div className="px-6 py-20 md:px-12 md:py-24">
-      <h2 className="text-4xl uppercase  md:text-5xl font-montserrat-bold">
+      <h2 className="text-3xl sm:text-4xl uppercase  md:text-5xl font-montserrat-bold">
         <span className="text-[#AD7DFF]"> NO-NONSENSE </span>
         BRANDING & MARKETING THAT ACTUALLY CONVERTS
       </h2>
@@ -48,7 +48,7 @@ const Right = () => {
               style={{
                 pointerEvents: idx === itemIdx ? "all" : "none",
               }}
-              className="absolute inset-0 z-10 grid place-content-center space-y-3 px-6 text-base text-neutral-400 md:px-12 md:text-lg font-montserrat-medium"
+              className="absolute inset-0 z-10 grid place-content-center space-y-3 px-6 text-base text-neutral-300 md:px-12 md:text-lg font-montserrat-medium"
               key={itemIdx}
             >
               {c.content}

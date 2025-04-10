@@ -40,7 +40,7 @@ export const FeatureDisplay = ({
           </AnimatePresence>
         </div>
         <Button className="cursor-pointer">
-          <span className="font-montserrat-medium">Get started today!</span>
+          <span className="text-sm sm:text-base font-montserrat-medium">Get started today!</span>
         </Button>
       </div>
       <div className="relative col-span-1 min-h-80 border-l-0 border-t-2 border-[#9B69F1] bg-zinc-100 shadow-inner shadow-[#9b69f1b4] md:col-span-5 md:border-l-2 md:border-t-0">

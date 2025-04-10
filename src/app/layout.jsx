@@ -1,7 +1,6 @@
 import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
 import Script from "next/script";
-import { ReactLenis } from "lenis/dist/lenis-react";
 import ToasterProvider from "./components/ToasterProvider";
 
 export const metadata = {
@@ -25,14 +24,7 @@ export default function RootLayout({ children }) {
       <body className="font-montserrat-regular">
         <NavbarWrapper />
         <ToasterProvider />
-        <ReactLenis
-          root
-          options={{
-            lerp: 0.05,
-          }}
-        >
-          {children}
-        </ReactLenis>
+        {children}
 
         {/*---------- Clarity -----------*/}
         <Script id="clarity-script" strategy="afterInteractive">

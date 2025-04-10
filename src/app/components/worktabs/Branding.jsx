@@ -59,6 +59,6 @@ const BounceCard = ({ className, children, href }) => {
 
 const CardTitle = ({ children }) => {
   return (
-    <h3 className="mx-auto text-center text-3xl font-semibold">{children}</h3>
+    <h3 className="mx-auto text-center text-2xl sm:text-3xl font-semibold">{children}</h3>
   );
 };
