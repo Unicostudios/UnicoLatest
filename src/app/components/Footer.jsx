@@ -7,7 +7,7 @@ export const Footer = () => {
     <>
       <div className="bg-white rounded-t-[50px] md:rounded-t-[70px]">
         <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
-          <div className="pl-10 xxs:pl-5 grid grid-cols-1 xxs:grid-cols-12 gap-x-1.5 gap-y-6 sm:gap-0 sm:flex justify-around">
+          <div className="pl-10 sm:pl-0 grid grid-cols-1 xxs:grid-cols-12 gap-x-1.5 gap-y-6 sm:gap-0 sm:flex justify-around">
             <LogoColumn />
             <GenericColumn
               title="Content"
