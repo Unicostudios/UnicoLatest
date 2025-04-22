@@ -97,7 +97,7 @@ const image = {
       d1impressions: "0",
       d1ctr: "0",
       d2visits: "7,700",
-      d2impressions: "14,000+",
+      d2impressions: "20,000+",
       d2ctr: "3.7%",
     },
   },
