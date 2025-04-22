@@ -13,7 +13,7 @@ export const metadata = {
       "Learn more about Unico Studios, a results-driven digital marketing agency. Discover our mission, vision, and expertise in SEO, paid ads, social media, and web development.",
     images: [
       {
-        url: "https://res.cloudinary.com/dhrsf44wi/image/upload/v1738175524/Frame_4_rmgix9.png",
+        url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
         width: 800,
         height: 600,
         alt: "Unico Studios",

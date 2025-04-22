@@ -13,7 +13,7 @@ export const metadata = {
       "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
     images: [
       {
-        url: "https://res.cloudinary.com/dhrsf44wi/image/upload/v1738175524/Frame_4_rmgix9.png",
+        url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
         width: 800,
         height: 600,
         alt: "Unico Studios",
