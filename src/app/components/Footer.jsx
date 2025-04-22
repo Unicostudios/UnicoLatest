@@ -78,13 +78,13 @@ const LogoColumn = () => {
   return (
     <div className="col-span-6 md:col-span-4">
       <img
-        src="/assets/unicoblacklogo.svg"
+        src="/assets/unicologo-black.png"
         alt="Unico Studios"
-        className="h-3 xxs:h-3.5 sm:h-4 md:h-auto"
+        className="h-6 xs:h-8 md:h-10"
       />
       <span className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5">
-        Unico Studios <br className="hidden xxs:block md:hidden" />{" "}
-        <span className="xxs:hidden md:inline">-</span> All Rights Reserved
+        Unico Studios <br />
+        All Rights Reserved
       </span>
     </div>
   );

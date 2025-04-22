@@ -7,12 +7,12 @@ import Nav from "./NavComp";
 export default function Navbar() {
   return (
     <div className="sticky w-full top-0 z-50 bg-black/30 backdrop-blur-2xl">
-      <div className="py-7 ml-5 xs:ml-7 md:ml-10">
+      <div className="py-5 ml-4 xs:ml-6 md:ml-10">
         <motion.a href="/">
           <img
-            src="/assets/unicologo.svg"
+            src="/assets/unicologo-white.png"
             alt="Unico Studios"
-            className="h-4 xs:h-5 md:h-6 cursor-pointer"
+            className="h-8 md:h-10 cursor-pointer"
           />
         </motion.a>
       </div>

@@ -30,7 +30,7 @@ const LinksOverlay = () => {
 
 const LinksContainer = () => {
   return (
-    <motion.div className="space-y-4 p-12 px-6 xs:px-8 md:pl-16 lg:pl-20">
+    <motion.div className="space-y-4 p-6 xs:p-9 md:p-14 lg:p-16">
       {LINKS.map((l, idx) => {
         return (
           <NavLink key={l.title} href={l.href} idx={idx}>
@@ -76,12 +76,12 @@ const Logo = () => {
       }}
       exit={{ opacity: 0, y: -12 }}
       href="/"
-      className="grid w-35 xs:w-40 md:w-60 lg:w-70 h-22 place-content-center rounded-br-xl rounded-tl-xl transition-colors"
+      className="grid w-20 xs:w-30 md:w-44 lg:w-48 h-18 md:h-22 place-content-center rounded-br-xl rounded-tl-xl transition-colors"
     >
       <img
-        src="/assets/unicologo.svg"
+        src="/assets/unicologo-white.png"
         alt="Immersified"
-        className="h-5 md:h-6"
+        className="h-8 xs:h-10 md:h-12"
       />
     </motion.a>
   );
@@ -101,7 +101,7 @@ const HamburgerButton = ({ active, setActive }) => {
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive((pv) => !pv)}
-        className={`group fixed right-2 top-1 xs:top-2 md:right-4 z-50 h-16 w-16 transition-all hover:bg-white/10`}
+        className={`group fixed right-2 top-1 md:top-2 md:right-4 z-50 h-16 w-16 transition-all hover:bg-white/10`}
       >
         <motion.span
           variants={HAMBURGER_VARIANTS.top}
@@ -127,7 +127,7 @@ const HamburgerButton = ({ active, setActive }) => {
 
 const FooterCTAs = () => {
   return (
-    <div className="flex flex-col gap-8 xs:gap-0 xs:flex-row justify-between xs:items-center pt-10 xs:pt-20 px-8 md:pl-18 lg:pl-22">
+    <div className="flex flex-col gap-8 xs:gap-0 xs:flex-row justify-between xs:items-center pt-10 xs:pt-16 px-8 md:pl-18 lg:pl-22">
       <div className="flex gap-3">
         {SOCIAL_CTAS.map((l, idx) => {
           return (
