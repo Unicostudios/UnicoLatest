@@ -10,7 +10,10 @@ export const BouncyCardsFeatures = () => {
         </h2>
       </div>
       <div className="mb-4 grid grid-cols-12 gap-4">
-        <BounceCard href={"/work"} className="col-span-12 md:col-span-4">
+        <BounceCard
+          href={"/work#social-media-growth"}
+          className="col-span-12 md:col-span-4"
+        >
           <CardTitle>Social Media Growth</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -20,7 +23,10 @@ export const BouncyCardsFeatures = () => {
             />
           </div>
         </BounceCard>
-        <BounceCard href={"/work"} className="col-span-12 md:col-span-8">
+        <BounceCard
+          href={"/work#brand-strategy-and-design"}
+          className="col-span-12 md:col-span-8"
+        >
           <CardTitle>Brand Strategy & Design</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -32,7 +38,10 @@ export const BouncyCardsFeatures = () => {
         </BounceCard>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <BounceCard href={"/work"} className="col-span-12 md:col-span-8">
+        <BounceCard
+          href={"/work#web-design-and-development"}
+          className="col-span-12 md:col-span-8"
+        >
           <CardTitle>Web Design & Development</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -42,7 +51,10 @@ export const BouncyCardsFeatures = () => {
             />
           </div>
         </BounceCard>
-        <BounceCard href={"/work"} className="col-span-12 md:col-span-4">
+        <BounceCard
+          href={"/work#seo-and-content-writing"}
+          className="col-span-12 md:col-span-4"
+        >
           <CardTitle>SEO & Content Writing</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
@@ -71,6 +83,8 @@ const BounceCard = ({ className, children, href }) => {
 
 const CardTitle = ({ children }) => {
   return (
-    <h3 className="mx-auto text-center text-2xl sm:text-3xl font-semibold">{children}</h3>
+    <h3 className="mx-auto text-center text-2xl sm:text-3xl font-semibold">
+      {children}
+    </h3>
   );
 };

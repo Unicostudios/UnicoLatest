@@ -11,11 +11,11 @@ export const FeatureToggles = () => {
   const el = data.find((d) => d.id === selected);
 
   return (
-    <section className="relative mx-auto max-w-6xl px-2 md:px-4 my-24">
+    <section className="relative mx-auto max-w-6xl px-4 my-24">
       <SectionHeading>What We Do Best</SectionHeading>
       <SectionSubheading>Tailored Solutions. Proven Results</SectionSubheading>
       <div className="w-full">
-        <div className="mb-9 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mb-9 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {data.map((d) => (
             <ToggleButton
               key={d.id}
