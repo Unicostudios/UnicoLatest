@@ -76,7 +76,7 @@ const Logo = () => {
       }}
       exit={{ opacity: 0, y: -12 }}
       href="/"
-      className="grid w-20 xs:w-30 md:w-44 lg:w-48 h-18 md:h-22 place-content-center rounded-br-xl rounded-tl-xl transition-colors"
+      className="grid pt-5 w-20 xs:w-30 md:w-44 lg:w-48 h-18 md:h-22 place-content-center rounded-br-xl rounded-tl-xl transition-colors"
     >
       <img
         src="/assets/unicologo-white.png"
@@ -94,8 +94,7 @@ const HamburgerButton = ({ active, setActive }) => {
         initial={false}
         animate={active ? "open" : "closed"}
         variants={UNDERLAY_VARIANTS}
-        style={{ top: 10, right: 10 }}
-        className="fixed h-[50px] md:h-[60px] w-[55px] md:w-[70px] z-10 rounded-lg bg-[#191919]"
+        className="fixed h-[50px] md:h-[60px] w-[55px] md:w-[70px] z-10"
       />
 
       <motion.button
@@ -214,11 +213,16 @@ const SOCIAL_CTAS = [
 
 const UNDERLAY_VARIANTS = {
   open: {
-    width: "calc(100% - 20px)",
-    height: "calc(100vh - 20px)",
+    width: "calc(100%)",
+    height: "calc(100vh)",
+    top: 0,
+    right: 0,
+    backgroundColor: "#191919",
     transition: { type: "spring", mass: 3, stiffness: 400, damping: 50 },
   },
   closed: {
+    top: 10,
+    right: 10,
     transition: {
       delay: 0.75,
       type: "spring",

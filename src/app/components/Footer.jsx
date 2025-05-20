@@ -2,13 +2,19 @@ import React from "react";
 import { SiFacebook, SiInstagram, SiLinkedin } from "react-icons/si";
 import Link from "next/link";
 
-export const Footer = () => {
+export const Footer = ({ theme }) => {
   return (
-    <>
-      <div className="bg-white rounded-t-[50px] md:rounded-t-[70px]">
+    <div>
+      <div
+        className={`${
+          theme
+            ? "bg-black text-white"
+            : "bg-white rounded-t-[50px] md:rounded-t-[70px]"
+        } `}
+      >
         <footer className="relative mx-auto max-w-6xl overflow-hidden py-12">
           <div className="pl-10 sm:pl-0 grid grid-cols-1 xxs:grid-cols-12 gap-x-1.5 gap-y-6 sm:gap-0 sm:flex justify-around">
-            <LogoColumn />
+            <LogoColumn theme={theme} />
             <GenericColumn
               title="Content"
               links={[
@@ -27,6 +33,10 @@ export const Footer = () => {
                 {
                   title: "Portfolio",
                   href: "/work",
+                },
+                {
+                  title: "Blog",
+                  href: "/blog",
                 },
               ]}
             />
@@ -70,15 +80,17 @@ export const Footer = () => {
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 };
 
-const LogoColumn = () => {
+const LogoColumn = ({ theme }) => {
   return (
     <div className="col-span-6 md:col-span-4">
       <img
-        src="/assets/unicologo-black.png"
+        src={
+          theme ? "/assets/unicologo-white.png" : "/assets/unicologo-black.png"
+        }
         alt="Unico Studios"
         className="h-6 xs:h-8 md:h-10"
       />
@@ -96,10 +108,7 @@ const GenericColumn = ({ title, links }) => {
       <span className="block font-montserrat-bold uppercase">{title}</span>
       {links.map((l) =>
         l.title === "Bangalore, India" ? (
-          <div
-            key={l.title}
-            className="flex items-center break-all gap-1.5"
-          >
+          <div key={l.title} className="flex items-center break-all gap-1.5">
             {l.Icon && <l.Icon />}
             {l.title}
           </div>

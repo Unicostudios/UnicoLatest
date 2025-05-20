@@ -1,10 +1,16 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 
-export const DarkGridHero = ({ h, p, btn, href, target }) => {
+export const DarkGridHero = ({ h, p, btn, href, target, theme }) => {
   return (
-    <section className="relative overflow-hidden bg-zinc-950">
+    <section
+      className={`relative overflow-hidden bg-zinc-950 ${
+        theme ? "rounded-t-[50px] sm:rounded-t-[70px] md:rounded-t-[80px]" : ""
+      } `}
+    >
       <Content h={h} p={p} btn={btn} href={href} target={target} />
       <Beams />
       <GradientGrid />

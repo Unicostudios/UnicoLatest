@@ -42,7 +42,7 @@ export default function GridHoverHero({ h1, p, btn, href, target }) {
     <div className="bg-neutral-950">
       <div
         ref={scope}
-        className="grid h-[calc(100vh-75px)] w-full grid-cols-[repeat(auto-fit,_minmax(75px,_1fr))] grid-rows-[repeat(auto-fit,_minmax(75px,_1fr))]"
+        className="grid h-screen w-full grid-cols-[repeat(auto-fit,_minmax(75px,_1fr))] grid-rows-[repeat(auto-fit,_minmax(75px,_1fr))]"
       >
         {[...Array(size.rows * size.columns)].map((_, i) => (
           <div
@@ -63,7 +63,7 @@ export default function GridHoverHero({ h1, p, btn, href, target }) {
         </p>
         {href && (
           <Link href={href} target={target}>
-            <button className="pointer-events-auto rounded-full bg-[#5F14E0] px-5 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
+            <button className="pointer-events-auto rounded-full bg-[#5F14E0] px-10 py-2 text-xs xs:text-sm md:text-base text-white mix-blend-difference font-montserrat-medium cursor-pointer">
               {btn}
             </button>
           </Link>

@@ -48,6 +48,7 @@ export default function RootLayout({ children }) {
           type="font/ttf"
           crossOrigin="anonymous"
         />
+        <meta name="robots" content="index, follow" />
         {/*---------- Google Site Verification --------*/}
         <meta
           name="google-site-verification"
