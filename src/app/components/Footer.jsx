@@ -87,17 +87,21 @@ export const Footer = ({ theme }) => {
 const LogoColumn = ({ theme }) => {
   return (
     <div className="col-span-6 md:col-span-4">
-      <img
-        src={
-          theme ? "/assets/unicologo-white.png" : "/assets/unicologo-black.png"
-        }
-        alt="Unico Studios"
-        className="h-6 xs:h-8 md:h-10"
-      />
-      <span className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5">
+      <div>
+        <img
+          src={
+            theme
+              ? "/assets/unicologo-white.png"
+              : "/assets/unicologo-black.png"
+          }
+          alt="Unico Studios"
+          className="h-6 xs:h-8 md:h-10"
+        />
+      </div>
+      <p className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5">
         Unico Studios <br />
         All Rights Reserved
-      </span>
+      </p>
     </div>
   );
 };
