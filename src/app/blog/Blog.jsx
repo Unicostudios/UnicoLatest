@@ -134,7 +134,7 @@ export default function Page() {
       ) : (
         <main>
           {/*-------- ALL BLOGS  ---------*/}
-          <section className="px-5 xs:px-10 md:px-0 md:w-[90%] mx-auto py-14 sm:py-16 md:py-20">
+          <section className="px-5 xs:px-10 md:px-0 md:w-[90%] mx-auto py-20 md:py-24">
             <div className="relative flex flex-col xxs:flex-row xxs:justify-center xxs:items-center py-5 md:py-7">
               <button
                 onClick={() => setAllBlogs(false)}

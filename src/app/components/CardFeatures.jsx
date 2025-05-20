@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 export const BouncyCardsFeatures = () => {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 text-black my-10">
-      <div className="mb-8">
+      <div className="mb-16">
         <h2 className="text-white text-center text-4xl xs:text-5xl font-montserrat-bold md:text-5xl">
           See Our Work
         </h2>
