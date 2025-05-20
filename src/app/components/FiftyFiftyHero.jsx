@@ -1,8 +1,5 @@
-import {
-  motion,
-  MotionConfig,
-} from "framer-motion";
-import React, { useState} from "react";
+import { motion, MotionConfig } from "framer-motion";
+import React, { useState } from "react";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 
@@ -18,7 +15,7 @@ export const FiftyFiftyHero = () => {
 const Left = () => (
   <div className="col-span-12 flex flex-col justify-between border-r bg-black border-neutral-700 md:col-span-6">
     <div className="px-6 py-20 md:px-12 md:py-24">
-      <h2 className="text-3xl sm:text-4xl uppercase  md:text-5xl font-montserrat-bold">
+      <h2 className="text-3xl sm:text-4xl uppercase md:text-5xl font-montserrat-bold">
         <span className="text-[#AD7DFF]"> NO-NONSENSE </span>
         BRANDING & MARKETING THAT ACTUALLY CONVERTS
       </h2>
@@ -56,7 +53,6 @@ const Right = () => {
           );
         })}
       </div>
-
       <Buttons idx={idx} setIdx={setIdx} />
     </div>
   );
@@ -145,6 +141,7 @@ const ShiftButton = ({
           "relative overflow-hidden transition-colors",
           btnClasses
         )}
+        aria-label="shift-button"
         onClick={onClick}
       >
         <motion.div

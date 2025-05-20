@@ -13,8 +13,41 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <meta name="robots" content="index, follow" />
-
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Regular.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Medium.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Italic.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Bold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Light.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
         {/*---------- Google Site Verification --------*/}
         <meta
           name="google-site-verification"
