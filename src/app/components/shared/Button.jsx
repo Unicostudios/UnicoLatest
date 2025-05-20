@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 const button = cva(["uppercase", "transition-colors"], {
   variants: {
     intent: {
-      primary: ["bg-[#9B69F1]", "hover:bg-[#7A4FC2]", "text-white"],
+      primary: ["bg-[#9B69F1]", "hover:bg-[#945ef1]", "text-white"],
       secondary: ["bg-zinc-900", "hover:bg-zinc-700", "text-white"],
       outline: ["bg-white", "hover:bg-zinc-200", "border", "border-zinc-900"],
     },

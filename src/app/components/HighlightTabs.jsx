@@ -66,7 +66,7 @@ const ToggleButton = ({ children, selected, setSelected, id }) => {
         }}
         className={`w-full h-full origin-top-left rounded-lg border px-1 py-3 text-[10px] xxs2:text-xs font-montserrat-medium transition-all md:text-base cursor-pointer ${
           selected === id
-            ? "-translate-y-1 border-[#9B69F1] bg-white text-[#9B69F1]"
+            ? "-translate-y-1 border-purple-400 bg-white text-[#9B69F1]"
             : "border-zinc-800 bg-white text-zinc-900 hover:-rotate-1"
         }`}
       >

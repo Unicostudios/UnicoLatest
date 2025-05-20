@@ -106,7 +106,7 @@ const Buttons = ({ idx, setIdx }) => {
           width: "100%",
         }}
         transition={{
-          duration: 12,
+          duration: 6,
           ease: "linear",
         }}
         onAnimationComplete={() => {

@@ -20,7 +20,7 @@ export default function Nav() {
 
 const LinksOverlay = () => {
   return (
-    <nav className="fixed bg-[#191919] right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
+    <nav className="fixed right-0 top-0 z-40 h-[calc(100vh_-_0px)] w-[calc(100%_-_0px)] overflow-hidden">
       <Logo />
       <LinksContainer />
       <FooterCTAs />
@@ -94,14 +94,16 @@ const HamburgerButton = ({ active, setActive }) => {
         initial={false}
         animate={active ? "open" : "closed"}
         variants={UNDERLAY_VARIANTS}
-        className="fixed z-10 rounded-xl"
+        style={{ top: 10, right: 10 }}
+        className="fixed h-[50px] md:h-[60px] w-[55px] md:w-[70px] z-10 rounded-lg bg-[#191919]"
       />
 
       <motion.button
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive((pv) => !pv)}
-        className={`group fixed right-2 top-1 md:top-2 md:right-4 z-50 h-16 w-16 transition-all hover:bg-white/10`}
+        className={`group fixed right-1 top-1 md:top-2 md:right-3 z-50 h-16 w-16 transition-all hover:cursor-pointer rounded-lg`}
+        aria-label={active ? "Close menu" : "Open menu"}
       >
         <motion.span
           variants={HAMBURGER_VARIANTS.top}
@@ -212,13 +214,11 @@ const SOCIAL_CTAS = [
 
 const UNDERLAY_VARIANTS = {
   open: {
-    width: "calc(100% - 32px)",
-    height: "calc(100vh - 32px)",
+    width: "calc(100% - 20px)",
+    height: "calc(100vh - 20px)",
     transition: { type: "spring", mass: 3, stiffness: 400, damping: 50 },
   },
   closed: {
-    width: "80px",
-    height: "80px",
     transition: {
       delay: 0.75,
       type: "spring",

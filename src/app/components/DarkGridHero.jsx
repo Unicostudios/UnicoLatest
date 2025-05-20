@@ -41,7 +41,7 @@ const Content = ({ h, p, btn, href, target }) => {
         className="flex flex-col items-center gap-6 sm:flex-row"
       >
         <a href={href} target={target}>
-          <button className="flex items-center gap-4 text-sm xxs2:text-base bg-[#5F14E0] px-3 py-1 rounded-full w-fit cursor-pointer text-white">
+          <button className="flex items-center gap-3 text-sm xxs2:text-base bg-[#5F14E0] pl-3 pr-2 py-1 rounded-full w-fit cursor-pointer text-white">
             {btn}
             <BsArrowUpRightCircle className="rotate-45 text-lg xxs2:text-xl" />
           </button>

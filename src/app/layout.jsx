@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
         {children}
 
         {/*---------- Clarity -----------*/}
-        <Script id="clarity-script" strategy="afterInteractive">
+        <Script id="clarity-script" strategy="lazyOnload">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -40,9 +40,9 @@ export default function RootLayout({ children }) {
         {/*------------- Google Analytics ------------*/}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -90,7 +90,7 @@ export default function RootLayout({ children }) {
         {/*--------------- ChatBot -------------*/}
         <Script
           id="collectcdn-script"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
             (function(w, d) {

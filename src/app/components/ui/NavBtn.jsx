@@ -4,14 +4,7 @@ import { IoMdArrowForward } from "react-icons/io";
 const NavBtn = () => {
   return (
     <div className="flex">
-      <NeumorphismButton />
-    </div>
-  );
-};
-
-const NeumorphismButton = () => {
-  return (
-    <Link href="https://wa.me/+918105459006" target="_blank">
+       <Link href="https://wa.me/+918105459006" target="_blank">
       <div
         className={`
           relative z-0 flex items-center gap-2 overflow-hidden rounded-lg border-[1px] 
@@ -34,6 +27,7 @@ const NeumorphismButton = () => {
         <IoMdArrowForward className="text-xl md:text-2xl" />
       </div>
     </Link>
+    </div>
   );
 };
 

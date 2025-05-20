@@ -98,7 +98,7 @@ const GenericColumn = ({ title, links }) => {
         l.title === "Bangalore, India" ? (
           <div
             key={l.title}
-            className="flex items-center break-all gap-1.5 text-gray-700"
+            className="flex items-center break-all gap-1.5"
           >
             {l.Icon && <l.Icon />}
             {l.title}

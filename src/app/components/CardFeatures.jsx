@@ -18,7 +18,7 @@ export const BouncyCardsFeatures = () => {
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
               src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943984/Socialmediagrowth_wbaj2t.jpg"
-              alt="Social Media Growth"
+              alt="Social"
               className="h-full w-full object-cover rounded-t-2xl"
             />
           </div>
@@ -31,7 +31,7 @@ export const BouncyCardsFeatures = () => {
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
               src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
-              alt="Brand Strategy & Design"
+              alt="Brand"
               className="h-full w-full object-cover rounded-t-2xl"
             />
           </div>
@@ -46,7 +46,7 @@ export const BouncyCardsFeatures = () => {
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
               src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/webdesign_g6fitp.jpg"
-              alt="Web Design & Development"
+              alt="Web"
               className="h-full w-full object-cover rounded-t-2xl "
             />
           </div>
@@ -59,7 +59,7 @@ export const BouncyCardsFeatures = () => {
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
               src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
-              alt="SEO & Content Writing"
+              alt="SEO"
               className="h-full w-full object-cover rounded-t-2xl"
             />
           </div>
