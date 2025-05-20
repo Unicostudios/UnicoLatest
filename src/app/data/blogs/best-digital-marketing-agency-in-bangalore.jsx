@@ -26,7 +26,7 @@ export const blog = {
   date: "May 20, 2025",
   h1: "Best Digital Marketing Agency in Bangalore: Top 10 List for 2025",
   img: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1747758944/blog1_mar9cp.jpg",
-  imgPos: "center 20%",
+  imgPos: "right 20%",
   alt: "Digital Marketing Agency",
   content1: (
     <>
