@@ -39,7 +39,7 @@ export default function Page() {
           <section className="relative flex px-5 xs:px-10 md:px-0 md:w-[90%] rounded-4xl my-14 sm:my-20 mx-auto h-[20em] sm:h-[25em] md:h-[30em]">
             <div className="hidden md:block md:w-1/3 bg-black rounded-tl-4xl rounded-bl-4xl" />
 
-            <div className="w-full md:w-2/3 bg-[url('https://res.cloudinary.com/dmfisp8ue/image/upload/v1747760078/blogbg_njbany.jpg')] h-[20em] sm:h-[25em] md:h-[30em] bg-cover bg-center rounded-2xl xs:rounded-3xl sm:rounded-4xl md:rounded-tl-none md:rounded-bl-none" />
+            <div className="w-full md:w-2/3 bg-[url('https://res.cloudinary.com/dmfisp8ue/image/upload/v1747857213/blogbg_vyrvzc.jpg')] h-[20em] sm:h-[25em] md:h-[30em] bg-cover bg-center rounded-2xl xs:rounded-3xl sm:rounded-4xl md:rounded-tl-none md:rounded-bl-none" />
 
             <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-16 lg:left-20 bg-white px-7 sm:px-10 py-12 xs:py-14 sm:py-20 md:py-30 w-[200px] xxs:w-[280px] xs:w-[320px] sm:w-[450px] md:w-[500px] rounded-lg md:rounded-xl flex flex-col justify-center">
               <h3 className="font-montserrat-bold leading-tight text-lg sm:text-xl md:text-2xl mb-2 sm:mb-3">

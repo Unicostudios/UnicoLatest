@@ -53,26 +53,26 @@ html {
 
 @font-face {
   font-family: "Montserrat Regular";
-  src: url("/fonts/Montserrat-Regular.ttf") format("woff2");
-  font-display: "swap";
+  src: url("/fonts/Montserrat-Regular.ttf") format("truetype");
+  font-display: swap;
 }
 @font-face {
   font-family: "Montserrat Medium";
-  src: url("/fonts/Montserrat-Medium.ttf") format("woff2");
-  font-display: "swap";
+  src: url("/fonts/Montserrat-Medium.ttf") format("truetype");
+  font-display: swap;
 }
 @font-face {
   font-family: "Montserrat Italic";
-  src: url("/fonts/Montserrat-Italic.ttf") format("woff2");
-  font-display: "swap";
+  src: url("/fonts/Montserrat-Italic.ttf") format("truetype");
+  font-display: swap;
 }
 @font-face {
   font-family: "Montserrat Bold";
-  src: url("/fonts/Montserrat-Bold.ttf") format("woff2");
-  font-display: "swap";
+  src: url("/fonts/Montserrat-Bold.ttf") format("truetype");
+  font-display: swap;
 }
 @font-face {
   font-family: "Montserrat Light";
-  src: url("/fonts/Montserrat-Light.ttf") format("woff2");
-  font-display: "swap";
+  src: url("/fonts/Montserrat-Light.ttf") format("truetype");
+  font-display: swap;
 }
