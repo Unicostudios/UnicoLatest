@@ -11,16 +11,44 @@ import { BouncyCardsFeatures } from "./components/CardFeatures";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { DarkGridHero } from "./components/DarkGridHero";
+import LeadForm from "./components/LeadForm";
+import { AnimatePresence, motion } from "framer-motion";
+
+const SpringModal = ({ isOpen, setIsOpen }) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsOpen(false)}
+          className="bg-black/50 backdrop-blur fixed inset-0 z-50 grid place-items-center cursor-pointer"
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: "12.5deg" }}
+            animate={{ scale: 1, rotate: "0deg" }}
+            exit={{ scale: 0, rotate: "0deg" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LeadForm />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     const isFirstLoad = sessionStorage.getItem("firstLoad");
-
     const screenWidth = window.innerWidth;
+
     if (screenWidth > 767 && !isFirstLoad) {
       setLoading(true);
       sessionStorage.setItem("firstLoad", "true");
@@ -28,6 +56,11 @@ export default function Home() {
         setLoading(false);
       }, 3500);
     }
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+    }, 10000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!isClient) return null;
@@ -41,6 +74,7 @@ export default function Home() {
       ) : (
         <>
           <Navbar />
+          <SpringModal isOpen={isOpen} setIsOpen={setIsOpen} />
           <GridHoverHero
             h1={"Your Brand, Our Obsession"}
             p={

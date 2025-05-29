@@ -95,7 +95,7 @@ const LogoColumn = ({ theme }) => {
               : "/assets/unicologo-black.png"
           }
           alt="Unico Studios"
-          className="h-6 xs:h-8 md:h-10"
+          className="h-6 xs:h-8 md:h-10 md:w-auto"
         />
       </div>
       <p className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5">
