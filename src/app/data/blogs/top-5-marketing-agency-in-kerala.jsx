@@ -204,8 +204,8 @@ export const blog = {
         </ul>
         <p>
           With a strong emphasis on measurable lead quality and conversion
-          optimization, Promiya is the go-to agency for brands aiming to
-          expand their corporate footprint.
+          optimization, Promiya is the go-to agency for brands aiming to expand
+          their corporate footprint.
         </p>
       </div>
       <div className="mb-10">
@@ -300,9 +300,9 @@ export const blog = {
           FAQs
         </h2>
         <div className="mb-5">
-          <p className="font-montserrat-medium">
+          <h3 className="text-xl sm:text-2xl pb-2 font-montserrat-medium">
             Q1: How do I choose the right marketing agency in Kerala?
-          </p>
+          </h3>
           <p>
             Consider your primary objectives (brand awareness, direct sales, or
             lead generation), budget, and need for cultural expertise. If you
@@ -311,9 +311,9 @@ export const blog = {
           </p>
         </div>
         <div className="mb-5">
-          <p className="font-montserrat-medium">
+          <h3 className="text-xl sm:text-2xl pb-2 font-montserrat-medium">
             Q2: What budget should I allocate?
-          </p>
+          </h3>
           <p>
             Premium, fully tailored services typically start from ₹2 lakhs per
             month and can go up depending on scope. Mid-range packages (PPC,
@@ -321,9 +321,9 @@ export const blog = {
           </p>
         </div>
         <div className="mb-5">
-          <p className="font-montserrat-medium">
+          <h3 className="text-xl sm:text-2xl pb-2 font-montserrat-medium">
             Q3: How soon can I see results?
-          </p>
+          </h3>
           <p>
             SEO and organic growth take 3–6 months to show strong traction. Paid
             channels (PPC, social ads) can deliver leads and clicks within days,
@@ -331,9 +331,9 @@ export const blog = {
           </p>
         </div>
         <div className="mb-5">
-          <p className="font-montserrat-medium">
+          <h3 className="text-xl sm:text-2xl pb-2 font-montserrat-medium">
             Q4: Do these agencies work with non-Kerala clients?
-          </p>
+          </h3>
           <p>
             Yes—while they have deep local expertise, all five agencies serve
             national and international clients, especially in hospitality,
@@ -341,9 +341,9 @@ export const blog = {
           </p>
         </div>
         <div>
-          <p className="font-montserrat-medium">
+          <h3 className="text-xl sm:text-2xl pb-2 font-montserrat-medium">
             Q5: What metrics should I track?
-          </p>
+          </h3>
           <p>
             Focus on traffic, engagement rate, cost per lead (CPL), conversion
             rate, and overall ROI. Ask for real-time dashboards and monthly

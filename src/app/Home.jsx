@@ -56,11 +56,6 @@ export default function Home() {
         setLoading(false);
       }, 3500);
     }
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 10000);
-
-    return () => clearTimeout(timer);
   }, []);
 
   if (!isClient) return null;
@@ -81,7 +76,7 @@ export default function Home() {
               "We blend strategy, design, and tech to fuel growth for brands that dare to lead"
             }
             btn={"Let’s Build Together"}
-            href={"/contact"}
+            click={() => setIsOpen(true)}
           />
           <CountUpStats />
           <FiftyFiftyHero />
