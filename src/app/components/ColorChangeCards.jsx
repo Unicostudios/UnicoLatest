@@ -8,25 +8,25 @@ const ColorChangeCards = () => {
         <Card
           heading="Gohar"
           description="Timeless identity for modern jewelry storytelling"
-          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1744145307/goharbranding4_lymvne.jpg"
+          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1744145307/goharbranding4_lymvne.jpg"
           href="/work/gohar"
         />
         <Card
           heading="Immersified"
           description="Expansive identity for world-building experiences."
-          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
+          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943225/brandstrategy_r6617o.jpg"
           href="/work/immersified"
         />
         <Card
           heading="Dupree Armon"
           description="Immersive website for a visual storyteller"
-          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943032/dupree_rq5kdq.jpg"
+          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943032/dupree_rq5kdq.jpg"
           href="/work/dupree"
         />
         <Card
           heading="Haze SEO"
           description="Strategic SEO fueling conscious fashion growth"
-          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
+          imgSrc="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/seo_hkekex.jpg"
           href="/work/hazeuae"
         />
       </div>

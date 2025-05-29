@@ -10,16 +10,28 @@ export const FoldingLogos = () => {
       <LogoRolodex
         items={[
           <LogoItem key={1} className="bg-neutral-800 p-10">
-            <img src="/assets/logos/haze.png" alt="Haze UAE" />
+            <img
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1748505869/haze_y1npfx.png"
+              alt="Haze UAE"
+            />
           </LogoItem>,
           <LogoItem key={2} className="bg-neutral-800 p-10">
-            <img src="/assets/logos/dupree.png" alt="Dupree Armon" />
+            <img
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1748505868/dupree_fbfshb.png"
+              alt="Dupree Armon"
+            />
           </LogoItem>,
           <LogoItem key={3} className="bg-neutral-800 p-10">
-            <img src="/assets/logos/immersified.png" alt="Immersified" />
+            <img
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1748505869/immersified_ioleem.png"
+              alt="Immersified"
+            />
           </LogoItem>,
           <LogoItem key={4} className="bg-neutral-800 p-10">
-            <img src="/assets/logos/aashirkare.png" alt="Aashir Kare" />
+            <img
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1748505870/aashirkare_asisos.png"
+              alt="Aashir Kare"
+            />
           </LogoItem>,
         ]}
       />

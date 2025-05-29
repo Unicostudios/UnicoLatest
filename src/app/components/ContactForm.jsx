@@ -201,7 +201,7 @@ const Images = ({ selected }) => {
         className="absolute inset-0 bg-slate-200"
         style={{
           backgroundImage:
-            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/v1744116507/contactbg_h5uibb.jpg)",
+            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1744116507/contactbg_h5uibb.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -215,7 +215,7 @@ const Images = ({ selected }) => {
         className="absolute inset-0 bg-slate-200"
         style={{
           backgroundImage:
-            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/v1744145310/immersifiedbranding2_urxnwy.jpg)",
+            "url(https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1744145310/immersifiedbranding2_urxnwy.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

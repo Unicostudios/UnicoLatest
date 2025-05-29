@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import GridHoverHero from "./components/GridHoverHero";
 import CountUpStats from "./components/CountUpStats";
 import Loader from "./components/ui/StartAnimation";
@@ -14,39 +13,29 @@ import Navbar from "./components/Navbar";
 import { DarkGridHero } from "./components/DarkGridHero";
 
 export default function Home() {
-  const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const isFirstLoad = sessionStorage.getItem("firstLoad");
-
-    if (!isFirstLoad) {
-      setLoading(true);
-      sessionStorage.setItem("firstLoad", "true");
-      setTimeout(() => {
-        setLoading(false);
-      }, 3000);
-    }
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    const isFirstLoad = sessionStorage.getItem("firstLoad");
+
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 767 && !isFirstLoad) {
+      setLoading(true);
+      sessionStorage.setItem("firstLoad", "true");
+      setTimeout(() => {
+        setLoading(false);
+      }, 3500);
+    }
   }, []);
 
-  if (!isClient) {
-    return null;
-  }
+  if (!isClient) return null;
 
   return (
     <>
       {loading ? (
-        <div className="flex justify-center w-screen items-center font-montserrat-bold bg-[#191919] text-white h-[calc(100vh-10px)]">
+        <div className="hidden md:flex justify-center w-screen items-center font-montserrat-bold bg-[#191919] text-white h-[calc(100vh-10px)]">
           <Loader />
         </div>
       ) : (

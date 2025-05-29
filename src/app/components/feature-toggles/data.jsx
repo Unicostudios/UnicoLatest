@@ -3,7 +3,7 @@ import React from "react";
 const SocialMediaGrowth = () => {
   return (
     <img
-      src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943984/Socialmediagrowth_wbaj2t.jpg"
+      src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943984/Socialmediagrowth_wbaj2t.jpg"
       alt="Social Media Growth"
       className="h-full w-full object-cover"
     />
@@ -13,7 +13,7 @@ const SocialMediaGrowth = () => {
 const WebDesignDevelopment = () => {
   return (
     <img
-      src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/webdesign_g6fitp.jpg"
+      src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/webdesign_g6fitp.jpg"
       alt="Web Design & Development"
       className="h-full w-full object-cover"
     />
@@ -23,7 +23,7 @@ const WebDesignDevelopment = () => {
 const SEOContentWriting = () => {
   return (
     <img
-      src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
+      src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/seo_hkekex.jpg"
       alt="SEO & Content Writing"
       className="h-full w-full object-cover"
     />
@@ -33,7 +33,7 @@ const SEOContentWriting = () => {
 const BrandStrategyDesign = () => {
   return (
     <img
-      src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
+      src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943225/brandstrategy_r6617o.jpg"
       alt="Brand Strategy & Design"
       className="h-full w-full object-cover"
     />

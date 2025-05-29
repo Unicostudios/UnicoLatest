@@ -9,7 +9,7 @@ export const SEO = () => {
           <CardTitle>Haze UAE</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/seo_hkekex.jpg"
               alt="Haze UAE"
               className="h-full w-full object-cover rounded-t-2xl"
             />

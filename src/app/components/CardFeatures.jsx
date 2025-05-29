@@ -17,7 +17,7 @@ export const BouncyCardsFeatures = () => {
           <CardTitle>Social Media Growth</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943984/Socialmediagrowth_wbaj2t.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943984/Socialmediagrowth_wbaj2t.jpg"
               alt="Social"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -30,7 +30,7 @@ export const BouncyCardsFeatures = () => {
           <CardTitle>Brand Strategy & Design</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943225/brandstrategy_r6617o.jpg"
               alt="Brand"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -45,7 +45,7 @@ export const BouncyCardsFeatures = () => {
           <CardTitle>Web Design & Development</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/webdesign_g6fitp.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/webdesign_g6fitp.jpg"
               alt="Web"
               className="h-full w-full object-cover rounded-t-2xl "
             />
@@ -58,7 +58,7 @@ export const BouncyCardsFeatures = () => {
           <CardTitle>SEO & Content Writing</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/seo_hkekex.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/seo_hkekex.jpg"
               alt="SEO"
               className="h-full w-full object-cover rounded-t-2xl"
             />

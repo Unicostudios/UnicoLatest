@@ -9,7 +9,7 @@ export const WebDesign = () => {
           <CardTitle>Haze UAE</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/haze_oeggpz.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/haze_oeggpz.jpg"
               alt="Haze UAE"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -19,7 +19,7 @@ export const WebDesign = () => {
           <CardTitle>Dupree Armon</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943032/dupree_rq5kdq.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943032/dupree_rq5kdq.jpg"
               alt="Dupree Armon"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -34,17 +34,20 @@ export const WebDesign = () => {
           <CardTitle>Immersified</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943032/immersified_zpqfo2.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943032/immersified_zpqfo2.jpg"
               alt="Immersified"
               className="h-full w-full object-cover rounded-t-2xl "
             />
           </div>
         </BounceCard>
-        <BounceCard href={"/work/aashirkhare"} className="col-span-12 md:col-span-4">
+        <BounceCard
+          href={"/work/aashirkhare"}
+          className="col-span-12 md:col-span-4"
+        >
           <CardTitle>Aashir Khair</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/aashirkhair_cwwlok.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/aashirkhair_cwwlok.jpg"
               alt="Aashir Khair"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -69,6 +72,8 @@ const BounceCard = ({ className, children, href }) => {
 
 const CardTitle = ({ children }) => {
   return (
-    <h3 className="mx-auto text-center text-2xl sm:text-3xl font-semibold">{children}</h3>
+    <h3 className="mx-auto text-center text-2xl sm:text-3xl font-semibold">
+      {children}
+    </h3>
   );
 };

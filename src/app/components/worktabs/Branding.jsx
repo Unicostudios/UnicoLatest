@@ -9,7 +9,7 @@ export const Branding = () => {
           <CardTitle>Gohar</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/gohar_nw8yvd.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/gohar_nw8yvd.jpg"
               alt="Gohar"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -22,7 +22,7 @@ export const Branding = () => {
           <CardTitle>Immersified</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943225/brandstrategy_r6617o.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943225/brandstrategy_r6617o.jpg"
               alt="Immersified"
               className="h-full w-full object-cover rounded-t-2xl"
             />
@@ -34,7 +34,7 @@ export const Branding = () => {
           <CardTitle>Doonya</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <img
-              src="https://res.cloudinary.com/dmfisp8ue/image/upload/v1743943031/doonya_din5vs.jpg"
+              src="https://res.cloudinary.com/dmfisp8ue/image/upload/q_auto,f_auto/v1743943031/doonya_din5vs.jpg"
               alt="Doonya"
               className="h-full w-full object-cover rounded-t-2xl "
             />
