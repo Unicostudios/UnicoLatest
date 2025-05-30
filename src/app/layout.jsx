@@ -90,37 +90,66 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
-              "@context": "https://schema.org/",
+              "@context": "https://schema.org",
               "@type": "BreadcrumbList",
               itemListElement: [
                 {
                   "@type": "ListItem",
                   position: 1,
-                  name: "About us",
-                  item: "https://unicostudios.in/about",
-                },
-                {
-                  "@type": "ListItem",
-                  position: 2,
-                  name: "Services",
-                  item: "https://unicostudios.in/services",
-                },
-                {
-                  "@type": "ListItem",
-                  position: 3,
-                  name: "Our Work",
-                  item: "https://unicostudios.in/work",
-                },
-                {
-                  "@type": "ListItem",
-                  position: 4,
-                  name: "Contact Us",
-                  item: "https://unicostudios.in/contact",
+                  name: "Home",
+                  item: "https://unicostudios.in",
                 },
               ],
             }),
           }}
         />
+        <Script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://unicostudios.in",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "About",
+                  item: "https://unicostudios.in/about",
+                },
+              ],
+            }),
+          }}
+        />
+        <Script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://unicostudios.in",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Our Work",
+                  item: "https://unicostudios.in/work",
+                },
+              ],
+            }),
+          }}
+        />
+
         {/*--------------- ChatBot -------------*/}
         <Script
           id="collectcdn-script"
