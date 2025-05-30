@@ -1,5 +1,6 @@
 import React from "react";
 import Home from "./Home";
+import Script from "next/script";
 
 export const metadata = {
   title: "Best Digital Marketing Agency in India | Unico Studios",
@@ -30,6 +31,23 @@ export default function Page() {
   return (
     <>
       <Home />
+      <Script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://unicostudios.in",
+              },
+            ],
+          }),
+        }}
+      />
     </>
   );
 }
