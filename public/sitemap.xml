@@ -3,82 +3,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://unicostudios.in/</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/about</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/services</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/contact</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/gohar</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/immersified</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/dupree</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/hazeuae</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/haze</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/immersifiedgcc</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/aashirkhare</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/work/doonya</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/blog</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/blog/best-digital-marketing-agency-in-bangalore</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://unicostudios.in/blog/top-5-marketing-agency-in-kerala</loc>
-    <lastmod>2025-05-29T09:08:11+00:00</lastmod>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unicostudios.in/blog/digital-marketing-agency-in-mysore</loc>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unicostudios.in/blog/digital-marketing-agency-in-jodhpur</loc>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unicostudios.in/blog/digital-marketing-agency-in-pondicherry</loc>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://unicostudios.in/blog/digital-marketing-consultant-in-bangalore</loc>
+    <lastmod>2025-06-04T20:17:04+00:00</lastmod>
     <priority>0.7</priority>
   </url>
 </urlset>

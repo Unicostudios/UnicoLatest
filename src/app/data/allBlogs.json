@@ -19,11 +19,38 @@
   },
   {
     "id": 3,
-    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1748505355/blog2_fsx4zk.jpg",
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1748779470/blog3_ruyphj.jpg",
+    "imgPos": "left",
+    "date": "June 4, 2025",
+    "title": "Best Digital Marketing Agency in Mysore: A Complete Guide for 2025",
+    "description": "Did you know that over 70% of consumers search online before deciding where to shop locally—even in cities like Mysore? If your business isn’t showing up when they search, you’re already behind. In today’s fast-moving digital world, relying on outdated marketing tactics can quietly erode your growth. For local brands, startups, and service providers in Karnataka, investing in the right digital marketing services in Mysore is no longer optional—it’s essential for survival and scale.",
+    "slug": "/blog/digital-marketing-agency-in-mysore"
+  },
+  {
+    "id": 4,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1749069350/blog4_ogpm39.jpg",
     "imgPos": "center",
-    "date": "May 29, 2025",
-    "title": "The Top 5 Marketing Agency in Kerala",
-    "description": "In today’s hyper-competitive digital landscape, having the right marketing partner can mean the difference between thriving and merely surviving. For luxury and high-end brands in Kerala—a region renowned for its rich culture, natural beauty, and rapidly growing economy—a top-tier agency doesn’t just deliver campaigns—it crafts experiences that resonate with discerning audiences, elevates brand prestige, and drives measurable growth.",
-    "slug": "/blog/top-5-marketing-agency-in-kerala"
+    "date": "June 4, 2025",
+    "title": "Top Digital Marketing Company in Jodhpur: Your 2025 Guide to Online Growth",
+    "description": "Is your business struggling to get noticed online in Jodhpur? You’re not alone—and that’s exactly why smart local brands are investing in professional digital marketing. With increasing internet usage in Rajasthan, having a strong digital presence is more important than ever. This blog dives deep into how a digital marketing company in Jodhpur can transform your visibility, generate leads, and drive real revenue.",
+    "slug": "/blog/digital-marketing-agency-in-jodhpur"
+  },
+  {
+    "id": 5,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1749069349/blog5_wlffnw.jpg",
+    "imgPos": "bottom",
+    "date": "June 5, 2025",
+    "title": "How to Choose Best Digital Marketing Company in Pondicherry",
+    "description": "Are you struggling to grow your business online in Pondicherry? You’re not alone. In today’s competitive landscape, building a strong online presence is no longer optional—it’s essential. Whether you're a small local café, a wellness studio, or a growing e-commerce business, working with a professional digital marketing company in Pondicherry can give you the competitive edge you need.",
+    "slug": "/blog/digital-marketing-agency-in-pondicherry"
+  },
+  {
+    "id": 6,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1749069349/blog6_hsftgq.jpg",
+    "imgPos": "bottom left",
+    "date": "June 5, 2025",
+    "title": "Top 10 Digital Marketing Consultants in Bangalore (2025 Edition)",
+    "description": "In the dynamic digital landscape of Bangalore, partnering with the right digital marketing consultant in Bangalore can significantly elevate your brand's online presence. Whether you're a startup aiming for rapid growth or an established enterprise seeking to refine your digital strategy, the consultants listed below have demonstrated excellence in delivering impactful results.",
+    "slug": "/blog/digital-marketing-consultant-in-bangalore"
   }
 ]

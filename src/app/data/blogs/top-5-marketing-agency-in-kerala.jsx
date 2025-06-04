@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const blog = {
-  id: 1,
+  id: 2,
   slug: "top-5-marketing-agency-in-kerala",
   title: "Top 5 Marketing Agency in Kerala 2025 | Unico Studios",
   description:
