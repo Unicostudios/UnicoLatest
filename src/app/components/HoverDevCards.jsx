@@ -9,22 +9,22 @@ const HoverDevCards = () => {
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card
           title="Brand Identity"
-          href="/work"
+          href="/work#brand-strategy-and-design"
           img={"/assets/icons/brand.svg"}
         />
         <Card
           title="Social Media Strategy"
-          href="/work"
+          href="/work#social-media-growth"
           img={"/assets/icons/socialmedia.svg"}
         />
         <Card
           title="Web Design & Dev"
-          href="/work"
+          href="/work#web-design-and-development"
           img={"/assets/icons/webdesign.svg"}
         />
         <Card
           title="SEO & Paid Growth"
-          href="/work"
+          href="/work#seo-and-content-writing"
           img={"/assets/icons/seo.svg"}
         />
       </div>
