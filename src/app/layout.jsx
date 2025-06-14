@@ -71,6 +71,29 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
+        {/* Organization Schema */}
+        <Script id="organization-schema" type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Unico Studios",
+            url: "http://unicostudios.in/",
+            logo: "http://unicostudios.in/assets/unicologo-white.png",
+            description:
+              "Unico Studios is the leading software development company in Bangalore offering custom software, web, and mobile app solutions.",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+91-8105459006",
+              contactType: "Customer Service",
+              email: "contact@unicostudios.in",
+            },
+            sameAs: [
+              "https://www.linkedin.com/company/unicostudios",
+              "https://twitter.com/unicostudios",
+            ],
+          })}
+        </Script>
+
         {/*------------- Google Analytics ------------*/}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10"
