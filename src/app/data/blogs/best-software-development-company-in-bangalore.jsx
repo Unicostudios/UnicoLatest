@@ -15,7 +15,7 @@ export const blog = {
       "Looking for a reliable software development company in Bangalore? Unico Studios offers custom software solutions, web & mobile app development, and IT consulting. Discover why we are your trusted partner for digital transformation!",
     images: [
       {
-        url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+        url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1750167746/blog7_qa0298.jpg",
         alt: "Software Development",
       },
     ],
@@ -24,10 +24,10 @@ export const blog = {
     canonical:
       "https://unicostudios.in/blog/best-software-development-company-in-bangalore",
   },
-  date: "June 15, 2025",
+  date: "June 17, 2025",
   h1: "Best Software Development Company in Bangalore: Unico Studios",
-  img: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
-  imgPos: "center",
+  img: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1750167746/blog7_qa0298.jpg",
+  imgPos: "center 10%",
   alt: "Software Development",
   content1: (
     <>
