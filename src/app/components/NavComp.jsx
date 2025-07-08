@@ -128,7 +128,7 @@ const HamburgerButton = ({ active, setActive }) => {
 
 const FooterCTAs = () => {
   return (
-    <div className="flex flex-col gap-8 xs:gap-0 xs:flex-row justify-between xs:items-center pt-10 xs:pt-16 px-8 md:pl-18 lg:pl-22">
+    <div className="flex flex-col gap-8 xs:gap-0 xs:flex-row justify-between xs:items-center pt-10 xs:pt-12 px-8 md:pl-18 lg:pl-22">
       <div className="flex gap-3">
         {SOCIAL_CTAS.map((l, idx) => {
           return (

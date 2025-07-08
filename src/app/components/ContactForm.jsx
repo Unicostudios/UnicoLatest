@@ -25,7 +25,7 @@ const Form = ({ selected, setSelected }) => {
     e.preventDefault();
 
     const scriptURL =
-      "https://script.google.com/macros/s/AKfycbzZ75q3j_OWwSsaA9Vi-n13IuU1Pot03z6_KcIT76r3_HcaGO8E2L_CLbrEQFkFXKVw/exec";
+      "https://script.google.com/macros/s/AKfycbzouJfPPBTXs7MXPUgQcGFKjNbD0m66uNr0d6_LfLGG-LFS4eHC4BhJWJUvo-RBVUxT/exec";
     const formData = new FormData();
     formData.append("Name", name);
     formData.append("Company", company);
