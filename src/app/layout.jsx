@@ -126,6 +126,10 @@ export default function RootLayout({ children }) {
           `,
           }}
         />
+        <Script
+          src="https://cdn-in.pagesense.io/js/60046150395/195c43b01fc345ecb55929c67d234793.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
