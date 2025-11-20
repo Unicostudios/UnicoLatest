@@ -108,7 +108,7 @@ export default function RootLayout({ children }) {
               "Unico Studios is the leading software development company in Bangalore offering custom software, web, and mobile app solutions.",
             contactPoint: {
               "@type": "ContactPoint",
-              telephone: "+91-8105459006",
+              telephone: "+91-8147057109",
               contactType: "Customer Service",
               email: "contact@unicostudios.in",
             },

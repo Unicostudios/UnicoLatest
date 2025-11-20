@@ -23,7 +23,7 @@ export default function Contact() {
         h1={"Let’s Build Something Unico Together"}
         p={"Have a project in mind? Let’s connect and make it real."}
         btn={"Get In Touch"}
-        href={"https://wa.me/+918105459006"}
+        href={"https://wa.me/+918147057109"}
         target={"_blank"}
       />
       <div className="flex flex-col gap-7 lg:gap-0 px-5 sm:px-14 lg:px-10 items-start lg:flex-row w-full justify-around py-16 text-white">
@@ -51,11 +51,11 @@ export default function Contact() {
         <div>
           <p className="font-montserrat-medium text-lg">Contact Number</p>
           <a
-            href="tel:+918105459006"
+            href="tel:+918147057109"
             target="_blank"
             className="hover:underline"
           >
-            +91 8105459006
+            +91 8147057109
           </a>
         </div>
         <div>

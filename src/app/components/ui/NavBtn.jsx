@@ -4,7 +4,7 @@ import { IoMdArrowForward } from "react-icons/io";
 const NavBtn = () => {
   return (
     <div className="flex">
-       <Link href="https://wa.me/+918105459006" target="_blank">
+       <Link href="https://wa.me/+918147057109" target="_blank">
       <div
         className={`
           relative z-0 flex items-center gap-2 overflow-hidden rounded-lg border-[1px] 

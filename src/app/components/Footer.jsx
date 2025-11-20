@@ -64,8 +64,8 @@ export const Footer = ({ theme }) => {
               title="Contact"
               links={[
                 {
-                  title: "+91 8105459006",
-                  href: "https://wa.me/+918105459006",
+                  title: "+91 8147057109",
+                  href: "https://wa.me/+918147057109",
                 },
                 {
                   title: "contact@unicostudios.in",
