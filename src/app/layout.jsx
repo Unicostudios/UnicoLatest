@@ -2,6 +2,7 @@ import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
 import Script from "next/script";
 import ToasterProvider from "./components/ToasterProvider";
+import ChatWidget from "./components/ChatWidget";
 
 export const metadata = {
   title: "Best Digital Marketing Agency in India | Unico Studios",
@@ -19,12 +20,10 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/fonts/Montserrat-Bold.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/Montserrat-Light.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <meta name="robots" content="index, follow" />
-
         <meta
           name="google-site-verification"
           content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM"
         />
-
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
@@ -103,9 +102,10 @@ export default function RootLayout({ children }) {
           strategy="afterInteractive"
         />
 
+        <ChatWidget />
         {children}
 
-        {/* ✅ ONLY CHATBOT (TIDIO) */}
+        {/* Tidio */}
         <Script
           src="//code.tidio.co/hhz0riuxbblu0fzbdnqvpn7qpbrooz6r.js"
           strategy="afterInteractive"
