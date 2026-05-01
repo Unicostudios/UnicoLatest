@@ -8,28 +8,28 @@ export async function POST(request) {
 
     const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
-    const data = {
+    const rowData = {
       Email: email,
-      Phone: returning ? "Returning visitor" : (phone || "Not provided"),
+      Phone: returning ? "Returning" : (phone || "Not provided"),
       Tool: tool,
       Date: date,
       Status: returning ? "Return Visit" : "New Lead",
       "Demo Completed": "No",
     };
 
-    console.log("Saving to SheetDB:", JSON.stringify(data));
+    console.log("Posting to SheetDB:", JSON.stringify(rowData));
 
-    const response = await fetch(process.env.SHEETDB_API_URL, {
+    const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
       method: "POST",
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ data: [data] }),
+      body: JSON.stringify({ data: [rowData] }),
     });
 
-    const result = await response.json();
-    console.log("SheetDB result:", JSON.stringify(result));
+    const sheetData = await sheetRes.json();
+    console.log("SheetDB response:", JSON.stringify(sheetData));
 
     return Response.json({ success: true });
 
