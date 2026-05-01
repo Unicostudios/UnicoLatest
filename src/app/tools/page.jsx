@@ -24,6 +24,7 @@ const TOOLS = {
       "Give me 3 thumbnail concepts for my startup",
     ],
     mode: "content",
+    limit: 10,
   },
   code: {
     id: "code",
@@ -47,12 +48,13 @@ const TOOLS = {
       "Make this code faster and more performant",
     ],
     mode: "code",
+    limit: 10,
   },
   niquo: {
     id: "niquo",
     name: "Niquo — AI Sales Demo",
     shortName: "Niquo",
-    desc: "See how AI can sell for your specific business",
+    desc: "See how AI closes clients for your specific business",
     icon: "⚡",
     color: "#22d3ee",
     bgActive: "rgba(34,211,238,0.07)",
@@ -70,6 +72,7 @@ const TOOLS = {
       "I own a restaurant chain",
     ],
     mode: "niquo",
+    limit: 50,
   },
 };
 
@@ -84,9 +87,9 @@ function isValidPhone(phone) {
 export default function ToolsPage() {
   const [currentTool, setCurrentTool] = useState("content");
   const [messages, setMessages] = useState({ content: [], code: [], niquo: [] });
+  const [uses, setUses] = useState({ content: 0, code: 0, niquo: 0 });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [uses, setUses] = useState(0);
   const [email, setEmail] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [phoneInput, setPhoneInput] = useState("");
@@ -96,9 +99,9 @@ export default function ToolsPage() {
   const [gateSuccess, setGateSuccess] = useState(false);
   const [submittingEmail, setSubmittingEmail] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [demoCompleted, setDemoCompleted] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
-  const FREE_LIMIT = 10;
 
   useEffect(() => {
     const saved = localStorage.getItem("unico_tools_email");
@@ -110,6 +113,8 @@ export default function ToolsPage() {
   }, [messages, loading]);
 
   const tool = TOOLS[currentTool];
+  const currentUses = uses[currentTool];
+  const currentLimit = tool.limit;
 
   const handleEmailSubmit = async () => {
     setEmailError("");
@@ -145,24 +150,38 @@ export default function ToolsPage() {
   const sendMessage = async (text) => {
     const msg = text || input.trim();
     if (!msg) return;
-    if (uses >= FREE_LIMIT) { setShowUpgrade(true); return; }
+    if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
+
     const userMsg = { role: "user", content: msg };
     setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], userMsg] }));
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
-    setUses((u) => u + 1);
+    setUses((prev) => ({ ...prev, [currentTool]: prev[currentTool] + 1 }));
+
     try {
       const history = [...messages[currentTool], userMsg];
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, history: history.slice(0, -1), mode: tool.mode }),
+        body: JSON.stringify({
+          message: msg,
+          history: history.slice(0, -1),
+          mode: tool.mode,
+          email: email,
+        }),
       });
       const data = await res.json();
-      setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: data.reply }] }));
+      setMessages((prev) => ({
+        ...prev,
+        [currentTool]: [...prev[currentTool], { role: "assistant", content: data.reply }],
+      }));
+      if (data.demoCompleted) setDemoCompleted(true);
     } catch {
-      setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }] }));
+      setMessages((prev) => ({
+        ...prev,
+        [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }],
+      }));
     }
     setLoading(false);
   };
@@ -203,7 +222,7 @@ export default function ToolsPage() {
         .t-status { display:flex; align-items:center; gap:6px; font-size:12px; color:#3a3a3a; margin-left:auto; }
         .t-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; animation:blink 2s ease infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .t-messages { flex:1; min-height:360px; max-height:420px; overflow-y:auto; padding:24px 22px; display:flex; flex-direction:column; gap:18px; scrollbar-width:thin; scrollbar-color:#222 transparent; }
+        .t-messages { flex:1; min-height:360px; max-height:500px; overflow-y:auto; padding:24px 22px; display:flex; flex-direction:column; gap:18px; scrollbar-width:thin; scrollbar-color:#222 transparent; }
         .t-messages::-webkit-scrollbar { width:4px; }
         .t-messages::-webkit-scrollbar-thumb { background:#222; border-radius:4px; }
         .t-msg { display:flex; gap:10px; animation:fadeUp 0.25s ease both; }
@@ -257,6 +276,7 @@ export default function ToolsPage() {
         .t-continue-btn:hover { background:rgba(167,139,250,0.16); }
         .t-upgrade { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
         .t-upgrade-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:420px; text-align:center; }
+        .t-demo-banner { background:rgba(34,211,238,0.05); border:1px solid rgba(34,211,238,0.15); border-radius:12px; padding:16px 20px; margin-bottom:16px; text-align:center; }
         @media(max-width:600px) { .t-selector{gap:4px;padding:4px;} .t-btn{padding:9px 12px;font-size:12px;} .t-gate-modal{padding:32px 24px;} }
       `}</style>
 
@@ -296,6 +316,18 @@ export default function ToolsPage() {
           </div>
 
           <div className="t-messages">
+            {/* Demo completed banner */}
+            {demoCompleted && currentTool === "niquo" && (
+              <div className="t-demo-banner">
+                <p style={{ color: "#22d3ee", fontWeight: 600, marginBottom: 8 }}>⚡ Demo Complete!</p>
+                <p style={{ color: "#555", fontSize: 13 }}>Ready to build this for your business?</p>
+                <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
+                  style={{ display: "inline-block", marginTop: 10, padding: "10px 20px", background: "rgba(34,211,238,0.1)", border: "1px solid rgba(34,211,238,0.2)", borderRadius: 8, color: "#22d3ee", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>
+                  📅 Book a Free Call with Naveen →
+                </a>
+              </div>
+            )}
+
             <div className="t-msg">
               <div className="t-avatar" style={{ background: tool.headerBg }}>{tool.icon}</div>
               <div className="t-msg-body">
@@ -323,7 +355,8 @@ export default function ToolsPage() {
                   <div className="t-bubble" style={msg.role === "user" ? { background: tool.userBg, borderColor: tool.borderActive, color: "#ddd", borderRadius: "12px 4px 12px 12px" } : {}}>
                     {msg.content.split(/(https?:\/\/[^\s]+)/g).map((part, j) =>
                       part.match(/^https?:\/\//) ? (
-                        <a key={j} href={part} target="_blank" rel="noopener noreferrer" style={{ color: tool.color, textDecoration: "underline", display: "block", marginTop: 4 }}>
+                        <a key={j} href={part} target="_blank" rel="noopener noreferrer"
+                          style={{ color: tool.color, textDecoration: "underline", display: "block", marginTop: 4, fontWeight: 600 }}>
                           👉 Click here to book your call
                         </a>
                       ) : <span key={j}>{part}</span>
@@ -359,7 +392,9 @@ export default function ToolsPage() {
                 </svg>
               </button>
             </div>
-            <p className="t-hint">{email ? `${FREE_LIMIT - uses} free uses remaining` : "Free · No credit card · No spam"}</p>
+            <p className="t-hint">
+              {email ? `${currentLimit - currentUses} free uses remaining · ${tool.shortName}` : "Free · No credit card · No spam"}
+            </p>
           </div>
         </div>
       </div>
@@ -414,15 +449,21 @@ export default function ToolsPage() {
         <div className="t-upgrade">
           <div className="t-upgrade-modal">
             <div style={{ fontSize: 48, marginBottom: 16 }}>🔥</div>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 12 }}>You're on a roll!</h2>
-            <p style={{ color: "#555", marginBottom: 24, lineHeight: 1.6, fontSize: 14 }}>You've used all your free credits. Upgrade to keep going!</p>
-            <button style={{ width: "100%", padding: 14, background: tool.color, border: "none", borderRadius: 12, color: "#000", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12 }}>
+            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 12 }}>
+              {currentTool === "niquo" ? "You've seen what Niquo can do!" : "You're on a roll!"}
+            </h2>
+            <p style={{ color: "#555", marginBottom: 24, lineHeight: 1.6, fontSize: 14 }}>
+              {currentTool === "niquo"
+                ? "You've used all your free Niquo credits. Ready to build this for your business?"
+                : "You've used all your free credits. Upgrade to keep going!"}
+            </p>
+            <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
+              style={{ display: "block", width: "100%", padding: 14, background: tool.color, border: "none", borderRadius: 12, color: "#000", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12, textDecoration: "none", textAlign: "center" }}>
+              📅 Book a Free Call with Naveen
+            </a>
+            <button style={{ width: "100%", padding: 14, background: "#1a1a1a", border: "1px solid #333", borderRadius: 12, color: "#fff", fontSize: 14, cursor: "pointer", marginBottom: 12 }}>
               🚀 Upgrade — Coming Soon
             </button>
-            <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
-              style={{ display: "block", padding: 14, background: "#1a1a1a", border: "1px solid #333", borderRadius: 12, color: "#fff", fontSize: 14, textDecoration: "none", marginBottom: 12 }}>
-              📅 Book a Free Call Instead
-            </a>
             <button onClick={() => setShowUpgrade(false)} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 14 }}>Close</button>
           </div>
         </div>
