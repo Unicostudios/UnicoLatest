@@ -1,15 +1,23 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ChatWidget() {
-  const pathname = usePathname();
+  const [hide, setHide] = useState(true);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const path = window.location.pathname;
+
+    if (path.startsWith("/tools")) {
+      setHide(true);
+    } else {
+      setHide(false);
+    }
+  }, []);
 
   // 🚫 Hide on tools page
-  if (pathname.startsWith("/tools")) return null;
-
-  const [open, setOpen] = useState(false);
+  if (hide) return null;
 
   return (
     <>
