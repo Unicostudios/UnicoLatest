@@ -20,8 +20,10 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/fonts/Montserrat-Light.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <meta name="robots" content="index, follow" />
 
-        {/* Google Site Verification */}
-        <meta name="google-site-verification" content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM" />
+        <meta
+          name="google-site-verification"
+          content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM"
+        />
 
         {/* Google Tag Manager */}
         <Script
@@ -84,7 +86,10 @@ export default function RootLayout({ children }) {
         </Script>
 
         {/* Google Analytics */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10" strategy="lazyOnload" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10"
+          strategy="lazyOnload"
+        />
         <Script id="google-analytics" strategy="lazyOnload">
           {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -100,7 +105,7 @@ export default function RootLayout({ children }) {
 
         {children}
 
-        {/* TIDIO CHAT */}
+        {/* TIDIO CHAT (ONLY CHATBOT NOW) */}
         <Script
           src="//code.tidio.co/hhz0riuxbblu0fzbdnqvpn7qpbrooz6r.js"
           strategy="afterInteractive"
