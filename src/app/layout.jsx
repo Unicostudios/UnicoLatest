@@ -1,7 +1,7 @@
 import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
 import ToasterProvider from "./components/ToasterProvider";
-import ChatWidget from "./components/ChatWidget";
+import ChatWrapper from "./components/ChatWrapper";
 
 export const metadata = {
   title: "Best Digital Marketing Agency in India | Unico Studios",
@@ -18,7 +18,8 @@ export default function RootLayout({ children }) {
 
         {children}
 
-        <ChatWidget />
+        {/* ✅ THIS is the correct one */}
+        <ChatWrapper />
       </body>
     </html>
   );
