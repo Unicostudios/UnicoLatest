@@ -1,25 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function ChatWidget() {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const path = window.location.pathname;
-
-    // 🚫 Block on tools
-    if (path.startsWith("/tools")) {
-      setShow(false);
-    } else {
-      setShow(true);
-    }
-  }, []);
-
-  // 🚫 HARD BLOCK
-  if (!show) return null;
-
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  if (!pathname) return null;
+  if (pathname === "/tools" || pathname.startsWith("/tools/")) return null;
 
   return (
     <>

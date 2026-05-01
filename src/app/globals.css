@@ -76,9 +76,3 @@ html {
   src: url("/fonts/Montserrat-Light.ttf") format("truetype");
   font-display: swap;
 }
-/* 🚫 FORCE HIDE FLOATING CHAT ON /tools */
-body[data-route="/tools"] iframe,
-body[data-route="/tools"] div[style*="position: fixed"],
-body[data-route="/tools"] button[style*="position: fixed"] {
-  display: none !important;
-}
