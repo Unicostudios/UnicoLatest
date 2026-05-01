@@ -1,23 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function ChatWidget() {
-  const [hide, setHide] = useState(true);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
+  // 🚫 HARD BLOCK BEFORE ANY RENDER
+  if (typeof window !== "undefined") {
     const path = window.location.pathname;
-
     if (path.startsWith("/tools")) {
-      setHide(true);
-    } else {
-      setHide(false);
+      return null;
     }
-  }, []);
+  }
 
-  // 🚫 Hide on tools page
-  if (hide) return null;
+  const [open, setOpen] = useState(false);
 
   return (
     <>
