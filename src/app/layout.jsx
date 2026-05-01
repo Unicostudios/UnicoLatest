@@ -13,63 +13,30 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link
-          rel="preload"
-          href="/fonts/Montserrat-Regular.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Montserrat-Medium.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Montserrat-Italic.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Montserrat-Bold.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Montserrat-Light.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
+        <link rel="preload" href="/fonts/Montserrat-Regular.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Montserrat-Medium.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Montserrat-Italic.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Montserrat-Bold.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Montserrat-Light.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <meta name="robots" content="index, follow" />
-        {/*---------- Google Site Verification --------*/}
-        <meta
-          name="google-site-verification"
-          content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM"
-        />
+
+        {/* Google Site Verification */}
+        <meta name="google-site-verification" content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM" />
+
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `
-              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','GTM-PXKLWVQC');
-            `,
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-PXKLWVQC');`,
           }}
         />
-        {/* End Google Tag Manager */}
       </head>
+
       <body className="font-montserrat-regular">
         <NavbarWrapper />
         <ToasterProvider />
@@ -83,17 +50,14 @@ export default function RootLayout({ children }) {
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        {/* End Google Tag Manager (noscript) */}
 
-        {/*---------- Clarity -----------*/}
+        {/* Microsoft Clarity */}
         <Script id="clarity-script" strategy="lazyOnload">
-          {`
-            (function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "q09r24hzf3");
-              `}
+          {`(function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "q09r24hzf3");`}
         </Script>
 
         {/* Organization Schema */}
@@ -119,43 +83,28 @@ export default function RootLayout({ children }) {
           })}
         </Script>
 
-        {/*------------- Google Analytics ------------*/}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10"
-          strategy="lazyOnload"
-        />
+        {/* Google Analytics */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-0LQYLWVY10" strategy="lazyOnload" />
         <Script id="google-analytics" strategy="lazyOnload">
-          {`
-          window.dataLayer = window.dataLayer || [];
+          {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-0LQYLWVY10');
-          `}
+          gtag('config', 'G-0LQYLWVY10');`}
         </Script>
 
-        {/*--------------- ChatBot -------------*/}
-        <Script
-          id="collectcdn-script"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function(w, d) {
-              w.CollectId = "680b8c361f59b1cbec8b04f5";
-              var h = d.head || d.getElementsByTagName("head")[0];
-              var s = d.createElement("script");
-              s.setAttribute("type", "text/javascript");
-              s.async = true;
-              s.setAttribute("src", "https://collectcdn.com/launcher.js");
-              h.appendChild(s);
-              })(window, document);
-              `,
-          }}
-        />
+        {/* Zoho PageSense */}
         <Script
           src="https://cdn-in.pagesense.io/js/60046150395/195c43b01fc345ecb55929c67d234793.js"
           strategy="afterInteractive"
         />
+
         {children}
+
+        {/* TIDIO CHAT */}
+        <Script
+          src="//code.tidio.co/hhz0riuxbblu0fzbdnqvpn7qpbrooz6r.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
