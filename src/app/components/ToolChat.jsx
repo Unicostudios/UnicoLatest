@@ -1,67 +1,91 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ToolChat({ tool, email, onBack }) {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `Hi! 👋 You're using ${tool.name}. How can I help you today?`,
+      content: `Hi! 👋 Welcome to ${tool.name}. ${
+        tool.id === "content"
+          ? "Tell me about your business or startup idea and I'll create killer content for you!"
+          : tool.id === "code"
+          ? "Share your code or describe the problem you're facing and I'll fix it!"
+          : "I'm Aria! Tell me about your business and I'll help you grow!"
+      }`,
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [uses, setUses] = useState(0);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const messagesEndRef = useRef(null);
+  const FREE_LIMIT = 10;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Decide mode based on selected tool
-  const getMode = () => {
-    if (tool.id === "content") return "content";
-    if (tool.id === "code") return "code";
-    return "sales";
+  const renderMessage = (content, role) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = content.split(urlRegex);
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{
+            color: role === "user" ? "white" : tool.color,
+            textDecoration: "underline",
+            fontWeight: "bold",
+            display: "block",
+            marginTop: "6px",
+          }}>
+            👉 Click here to book your call
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
   };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    if (uses >= FREE_LIMIT) {
+      setShowUpgrade(true);
+      return;
+    }
+
     const userMessage = { role: "user", content: input };
     const updatedMessages = [...messages, userMessage];
-
     setMessages(updatedMessages);
     setInput("");
     setLoading(true);
+    setUses((prev) => prev + 1);
 
     try {
+      const history = updatedMessages.slice(1).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: input,
-          history: messages,
-          mode: getMode(),
+          history: history.slice(0, -1),
+          mode: tool.id,
         }),
       });
 
       const data = await response.json();
-
-      const botMessage = {
-        role: "assistant",
-        content: data.reply,
-      };
-
-      setMessages([...updatedMessages, botMessage]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply },
+      ]);
     } catch (error) {
-      setMessages([
-        ...updatedMessages,
-        {
-          role: "assistant",
-          content: "Something went wrong. Please try again.",
-        },
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, something went wrong. Please try again!" },
       ]);
     }
 
@@ -69,133 +93,40 @@ export default function ToolChat({ tool, email, onBack }) {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0a0a0a",
-        color: "white",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div style={{
+      minHeight: "100vh",
+      background: "#0a0a0a",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: "sans-serif",
+    }}>
       {/* Header */}
-      <div
-        style={{
-          padding: "20px",
-          borderBottom: "1px solid #222",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-        }}
-      >
+      <div style={{
+        background: tool.gradient,
+        padding: "16px 24px",
+        display: "flex",
+        alignItems: "center",
+        gap: "16px",
+      }}>
         <button
           onClick={onBack}
           style={{
-            background: "#111",
-            border: "1px solid #333",
+            background: "rgba(255,255,255,0.2)",
+            border: "none",
             color: "white",
-            padding: "8px 14px",
             borderRadius: "8px",
+            padding: "8px 12px",
             cursor: "pointer",
+            fontSize: "14px",
           }}
         >
           ← Back
         </button>
-
-        <div style={{ fontSize: "20px", fontWeight: "600" }}>
-          {tool.emoji} {tool.name}
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent:
-                msg.role === "user" ? "flex-end" : "flex-start",
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "70%",
-                padding: "12px 16px",
-                borderRadius: "14px",
-                background:
-                  msg.role === "user" ? tool.gradient : "#1a1a1a",
-                fontSize: "14px",
-                lineHeight: "1.5",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {msg.content}
-            </div>
-          </div>
-        ))}
-
-        {loading && (
-          <div style={{ color: "#888", fontSize: "14px" }}>
-            typing...
-          </div>
-        )}
-
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input */}
-      <div
-        style={{
-          padding: "16px",
-          borderTop: "1px solid #222",
-          display: "flex",
-          gap: "10px",
-        }}
-      >
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
-          style={{
-            flex: 1,
-            padding: "12px 14px",
-            borderRadius: "10px",
-            border: "1px solid #333",
-            background: "#111",
-            color: "white",
-            outline: "none",
-          }}
-        />
-
-        <button
-          onClick={sendMessage}
-          style={{
-            padding: "12px 16px",
-            borderRadius: "10px",
-            border: "none",
-            background: tool.gradient,
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  );
-}
+        <div styl
