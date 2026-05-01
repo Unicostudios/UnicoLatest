@@ -104,8 +104,16 @@ export default function ToolsPage() {
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("unico_tools_email");
-    if (saved) { setEmail(saved); setShowGate(false); }
+    const saved = sessionStorage.getItem("unico_tools_email");
+    if (saved) {
+      setEmail(saved);
+      setShowGate(false);
+      fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: saved, phone: "Returning", tool: "Tools Page", returning: true }),
+      }).catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -127,15 +135,18 @@ export default function ToolsPage() {
     if (!valid) return;
     setSubmittingEmail(true);
     try {
-      await fetch("/api/leads", {
+      const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailInput, phone: phoneInput, tool: tool.name }),
       });
-      localStorage.setItem("unico_tools_email", emailInput);
+      const data = await res.json();
+      console.log("Leads API response:", data);
+      sessionStorage.setItem("unico_tools_email", emailInput);
       setEmail(emailInput);
       setGateSuccess(true);
-    } catch {
+    } catch (err) {
+      console.error("Leads error:", err);
       setEmailError("Something went wrong. Please try again.");
     }
     setSubmittingEmail(false);
@@ -151,46 +162,30 @@ export default function ToolsPage() {
     const msg = text || input.trim();
     if (!msg) return;
     if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
-
     const userMsg = { role: "user", content: msg };
     setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], userMsg] }));
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
     setUses((prev) => ({ ...prev, [currentTool]: prev[currentTool] + 1 }));
-
     try {
       const history = [...messages[currentTool], userMsg];
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: msg,
-          history: history.slice(0, -1),
-          mode: tool.mode,
-          email: email,
-        }),
+        body: JSON.stringify({ message: msg, history: history.slice(0, -1), mode: tool.mode, email }),
       });
       const data = await res.json();
-      setMessages((prev) => ({
-        ...prev,
-        [currentTool]: [...prev[currentTool], { role: "assistant", content: data.reply }],
-      }));
+      setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: data.reply }] }));
       if (data.demoCompleted) setDemoCompleted(true);
     } catch {
-      setMessages((prev) => ({
-        ...prev,
-        [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }],
-      }));
+      setMessages((prev) => ({ ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }] }));
     }
     setLoading(false);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (!showGate) sendMessage();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (!showGate) sendMessage(); }
   };
 
   const currentMessages = messages[currentTool];
@@ -288,13 +283,11 @@ export default function ToolsPage() {
             Back to Unico
           </a>
         </nav>
-
         <div className="t-hero">
           <div className="t-badge">Free AI Tools by Unico Studios</div>
           <h1 className="t-title">AI Tools That <span>Actually Work</span></h1>
           <p className="t-sub">Free tools built for founders, startups and brands who want to grow faster.</p>
         </div>
-
         <div className="t-selector">
           {Object.values(TOOLS).map((t) => (
             <button key={t.id} className="t-btn" onClick={() => setCurrentTool(t.id)}
@@ -304,7 +297,6 @@ export default function ToolsPage() {
             </button>
           ))}
         </div>
-
         <div className="t-window">
           <div className="t-header">
             <div className="t-header-icon" style={{ background: tool.headerBg, border: `1px solid ${tool.borderFaint}` }}>{tool.icon}</div>
@@ -314,9 +306,7 @@ export default function ToolsPage() {
             </div>
             <div className="t-status"><div className="t-dot" />Live</div>
           </div>
-
           <div className="t-messages">
-            {/* Demo completed banner */}
             {demoCompleted && currentTool === "niquo" && (
               <div className="t-demo-banner">
                 <p style={{ color: "#22d3ee", fontWeight: 600, marginBottom: 8 }}>⚡ Demo Complete!</p>
@@ -327,7 +317,6 @@ export default function ToolsPage() {
                 </a>
               </div>
             )}
-
             <div className="t-msg">
               <div className="t-avatar" style={{ background: tool.headerBg }}>{tool.icon}</div>
               <div className="t-msg-body">
@@ -344,7 +333,6 @@ export default function ToolsPage() {
                 </div>
               </div>
             </div>
-
             {currentMessages.map((msg, i) => (
               <div key={i} className={`t-msg ${msg.role === "user" ? "user" : ""}`}>
                 <div className="t-avatar" style={{ background: msg.role === "user" ? "rgba(255,255,255,0.04)" : tool.headerBg }}>
@@ -365,7 +353,6 @@ export default function ToolsPage() {
                 </div>
               </div>
             ))}
-
             {loading && (
               <div className="t-msg">
                 <div className="t-avatar" style={{ background: tool.headerBg }}>{tool.icon}</div>
@@ -377,14 +364,12 @@ export default function ToolsPage() {
             )}
             <div ref={messagesEndRef} />
           </div>
-
           <div className="t-input-area">
             <div className="t-input-row">
               <div className="t-input-wrap" style={{ borderColor: input ? tool.color : "#222" }}>
                 <textarea ref={textareaRef} className="t-textarea" rows={1} value={input}
                   onChange={(e) => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Type your message…" />
+                  onKeyDown={handleKeyDown} placeholder="Type your message…" />
               </div>
               <button className="t-send" style={{ background: tool.color }} onClick={() => sendMessage()}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.8)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -392,14 +377,11 @@ export default function ToolsPage() {
                 </svg>
               </button>
             </div>
-            <p className="t-hint">
-              {email ? `${currentLimit - currentUses} free uses remaining · ${tool.shortName}` : "Free · No credit card · No spam"}
-            </p>
+            <p className="t-hint">{email ? `${currentLimit - currentUses} free uses remaining · ${tool.shortName}` : "Free · No credit card · No spam"}</p>
           </div>
         </div>
       </div>
 
-      {/* Email Gate */}
       {showGate && (
         <div className="t-gate">
           <div className="t-gate-modal">
@@ -413,13 +395,13 @@ export default function ToolsPage() {
                   <div className="t-gate-perk"><div className="t-gate-perk-dot" />New tools added every month</div>
                   <div className="t-gate-perk"><div className="t-gate-perk-dot" />Early access to Unico product drops</div>
                 </div>
-                <input type="email" className={`t-gate-input ${emailError ? "error" : ""}`}
+                <input type="email" id="gate-email" className={`t-gate-input ${emailError ? "error" : ""}`}
                   placeholder="your@email.com" value={emailInput}
                   onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
                   autoComplete="email" autoFocus />
                 {emailError && <p className="t-gate-error">⚠️ {emailError}</p>}
-                <input type="tel" className={`t-gate-input ${phoneError ? "error" : ""}`}
+                <input type="tel" id="gate-phone" className={`t-gate-input ${phoneError ? "error" : ""}`}
                   placeholder="10-digit mobile number" value={phoneInput}
                   onChange={(e) => { setPhoneInput(e.target.value); setPhoneError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
@@ -434,17 +416,14 @@ export default function ToolsPage() {
               <>
                 <div className="t-success-icon">✓</div>
                 <div className="t-success-title">You're in!</div>
-                <p className="t-success-sub">Check your email for a confirmation. Welcome to Unico Tools!</p>
-                <button className="t-continue-btn" onClick={closeGate}>
-                  Start using {tool.shortName} →
-                </button>
+                <p className="t-success-sub">Welcome to Unico Tools. Let's get to work!</p>
+                <button className="t-continue-btn" onClick={closeGate}>Start using {tool.shortName} →</button>
               </>
             )}
           </div>
         </div>
       )}
 
-      {/* Upgrade Modal */}
       {showUpgrade && (
         <div className="t-upgrade">
           <div className="t-upgrade-modal">
@@ -453,12 +432,10 @@ export default function ToolsPage() {
               {currentTool === "niquo" ? "You've seen what Niquo can do!" : "You're on a roll!"}
             </h2>
             <p style={{ color: "#555", marginBottom: 24, lineHeight: 1.6, fontSize: 14 }}>
-              {currentTool === "niquo"
-                ? "You've used all your free Niquo credits. Ready to build this for your business?"
-                : "You've used all your free credits. Upgrade to keep going!"}
+              {currentTool === "niquo" ? "Ready to build this for your business?" : "Upgrade to keep going!"}
             </p>
             <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
-              style={{ display: "block", width: "100%", padding: 14, background: tool.color, border: "none", borderRadius: 12, color: "#000", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12, textDecoration: "none", textAlign: "center" }}>
+              style={{ display: "block", width: "100%", padding: 14, background: tool.color, borderRadius: 12, color: "#000", fontSize: 16, fontWeight: 600, textDecoration: "none", textAlign: "center", marginBottom: 12 }}>
               📅 Book a Free Call with Naveen
             </a>
             <button style={{ width: "100%", padding: 14, background: "#1a1a1a", border: "1px solid #333", borderRadius: 12, color: "#fff", fontSize: 14, cursor: "pointer", marginBottom: 12 }}>
