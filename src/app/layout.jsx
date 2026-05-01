@@ -105,11 +105,6 @@ export default function RootLayout({ children }) {
         <ChatWidget />
         {children}
 
-        {/* Tidio */}
-        <Script
-          src="//code.tidio.co/hhz0riuxbblu0fzbdnqvpn7qpbrooz6r.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );
