@@ -7,8 +7,12 @@ export default function ChatWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // 🚫 HARD BLOCK — DO NOT SHOW ON /tools
   if (!pathname) return null;
-  if (pathname === "/tools" || pathname.startsWith("/tools/")) return null;
+
+  if (pathname === "/tools" || pathname.startsWith("/tools/")) {
+    return null;
+  }
 
   return (
     <>
@@ -26,7 +30,7 @@ export default function ChatWidget() {
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
-          zIndex: 1000,
+          zIndex: 9999,
           color: "white",
           fontSize: "24px",
         }}
@@ -47,7 +51,7 @@ export default function ChatWidget() {
             borderRadius: "12px",
             padding: "10px",
             color: "white",
-            zIndex: 1000,
+            zIndex: 9999,
           }}
         >
           Chatbot coming soon...
