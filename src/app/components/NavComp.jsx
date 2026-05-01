@@ -191,6 +191,10 @@ const LINKS = [
     href: "/work",
   },
   {
+    title: "AI Tools.",
+    href: "/tools",
+  },
+  {
     title: "Contact.",
     href: "/contact",
   },
