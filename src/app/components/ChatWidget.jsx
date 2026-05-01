@@ -6,7 +6,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi! 👋 I'm the Unico Studios AI assistant. How can I help you grow your business today?",
+      content: "Hey! 👋 I'm Aria from Unico Studios. I help businesses like yours grow faster with SEO, Paid Ads, and killer websites. What kind of business are you running?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -21,15 +21,24 @@ export default function ChatWidget() {
     if (!input.trim()) return;
 
     const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setLoading(true);
 
     try {
+      const history = updatedMessages.slice(1).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+          message: input,
+          history: history.slice(0, -1),
+        }),
       });
 
       const data = await response.json();
@@ -56,7 +65,6 @@ export default function ChatWidget() {
 
   return (
     <div style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 1000 }}>
-      {/* Chat Window */}
       {isOpen && (
         <div style={{
           width: "350px",
@@ -78,9 +86,21 @@ export default function ChatWidget() {
             alignItems: "center",
             justifyContent: "space-between",
           }}>
-            <div>
-              <div style={{ fontWeight: "bold", fontSize: "16px" }}>Unico Studios AI</div>
-              <div style={{ fontSize: "12px", opacity: 0.8 }}>🟢 Online — Ask me anything</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "20px",
+              }}>🤖</div>
+              <div>
+                <div style={{ fontWeight: "bold", fontSize: "16px" }}>Aria</div>
+                <div style={{ fontSize: "12px", opacity: 0.8 }}>🟢 Unico Studios AI</div>
+              </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -102,23 +122,51 @@ export default function ChatWidget() {
               <div key={index} style={{
                 display: "flex",
                 justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                alignItems: "flex-end",
+                gap: "8px",
               }}>
+                {msg.role === "assistant" && (
+                  <div style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "14px",
+                    flexShrink: 0,
+                  }}>🤖</div>
+                )}
                 <div style={{
-                  maxWidth: "80%",
+                  maxWidth: "75%",
                   padding: "10px 14px",
                   borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                  background: msg.role === "user" ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : "#ffffff",
+                  background: msg.role === "user"
+                    ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                    : "#ffffff",
                   color: msg.role === "user" ? "white" : "#333",
                   fontSize: "14px",
                   lineHeight: "1.5",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  whiteSpace: "pre-wrap",
                 }}>
                   {msg.content}
                 </div>
               </div>
             ))}
             {loading && (
-              <div style={{ display: "flex", justifyContent: "flex-start" }}>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "8px" }}>
+                <div style={{
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "14px",
+                }}>🤖</div>
                 <div style={{
                   padding: "10px 14px",
                   borderRadius: "18px 18px 18px 4px",
@@ -126,7 +174,7 @@ export default function ChatWidget() {
                   fontSize: "14px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}>
-                  typing...
+                  Aria is typing...
                 </div>
               </div>
             )}
@@ -140,6 +188,7 @@ export default function ChatWidget() {
             borderTop: "1px solid #eee",
             display: "flex",
             gap: "8px",
+            alignItems: "center",
           }}>
             <input
               value={input}
@@ -169,13 +218,25 @@ export default function ChatWidget() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >➤</button>
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            padding: "6px",
+            textAlign: "center",
+            fontSize: "11px",
+            color: "#999",
+            background: "#ffffff",
+          }}>
+            Powered by Unico Studios AI
           </div>
         </div>
       )}
 
-      {/* Chat Bubble Button */}
+      {/* Chat Bubble */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
