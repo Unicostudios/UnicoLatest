@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ToolChat from "../components/ToolChat";
 
 const tools = [
@@ -32,15 +32,26 @@ const tools = [
   },
 ];
 
+function isValidEmail(email) {
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
+}
+
 export default function ToolsPage() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [email, setEmail] = useState("");
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingTool, setPendingTool] = useState(null);
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("unico_tools_email");
+    if (savedEmail) setEmail(savedEmail);
+  }, []);
+
   const handleToolClick = (tool) => {
-    if (emailSubmitted) {
+    if (email) {
       setSelectedTool(tool);
     } else {
       setPendingTool(tool);
@@ -48,20 +59,34 @@ export default function ToolsPage() {
   };
 
   const handleEmailSubmit = async () => {
-    if (!email || !email.includes("@")) return;
+    setEmailError("");
+
+    if (!emailInput) {
+      setEmailError("Please enter your email address");
+      return;
+    }
+
+    if (!isValidEmail(emailInput)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
 
     try {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, tool: pendingTool?.name || "Tools Page" }),
+        body: JSON.stringify({ email: emailInput, tool: pendingTool?.name || "Tools Page" }),
       });
 
-      setEmailSubmitted(true);
+      localStorage.setItem("unico_tools_email", emailInput);
+      setEmail(emailInput);
       setSelectedTool(pendingTool);
+      setPendingTool(null);
     } catch (error) {
       console.error(error);
+      setEmailError("Something went wrong. Please try again.");
     }
 
     setLoading(false);
@@ -188,7 +213,7 @@ export default function ToolsPage() {
       </div>
 
       {/* Email Gate Modal */}
-      {pendingTool && !emailSubmitted && (
+      {pendingTool && !email && (
         <div style={{
           position: "fixed",
           inset: 0,
@@ -217,23 +242,31 @@ export default function ToolsPage() {
             </p>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailInput}
+              onChange={(e) => {
+                setEmailInput(e.target.value);
+                setEmailError("");
+              }}
               onKeyPress={(e) => e.key === "Enter" && handleEmailSubmit()}
               placeholder="Enter your email address"
               style={{
                 width: "100%",
                 padding: "14px 16px",
                 background: "#1a1a1a",
-                border: "1px solid #333",
+                border: emailError ? "1px solid #f5576c" : "1px solid #333",
                 borderRadius: "12px",
                 color: "white",
                 fontSize: "16px",
-                marginBottom: "12px",
+                marginBottom: "8px",
                 boxSizing: "border-box",
                 outline: "none",
               }}
             />
+            {emailError && (
+              <p style={{ color: "#f5576c", fontSize: "13px", marginBottom: "12px", textAlign: "left" }}>
+                ⚠️ {emailError}
+              </p>
+            )}
             <button
               onClick={handleEmailSubmit}
               disabled={loading}
@@ -248,6 +281,8 @@ export default function ToolsPage() {
                 fontWeight: "600",
                 cursor: "pointer",
                 marginBottom: "12px",
+                marginTop: "8px",
+                opacity: loading ? 0.7 : 1,
               }}
             >
               {loading ? "Getting access..." : "Get Free Access →"}
