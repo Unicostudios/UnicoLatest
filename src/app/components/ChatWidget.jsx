@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function ChatWidget() {
   const pathname = usePathname();
 
-  // ❌ Hide chatbot on tools pages
+  // 🚫 Hide on tools page
   if (pathname.startsWith("/tools")) return null;
 
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      {/* Floating Button */}
       <div
         onClick={() => setOpen(!open)}
         style={{
@@ -23,19 +22,19 @@ export default function ChatWidget() {
           width: "60px",
           height: "60px",
           borderRadius: "50%",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#667eea",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           zIndex: 9999,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+          color: "white",
+          fontSize: "24px",
         }}
       >
         💬
       </div>
 
-      {/* Chat Box */}
       {open && (
         <div
           style={{
@@ -48,13 +47,11 @@ export default function ChatWidget() {
             border: "1px solid #333",
             borderRadius: "12px",
             padding: "10px",
-            zIndex: 9999,
             color: "white",
+            zIndex: 9999,
           }}
         >
-          <div style={{ fontSize: "14px", marginBottom: "10px" }}>
-            Chatbot coming soon...
-          </div>
+          Chatbot coming soon...
         </div>
       )}
     </>
