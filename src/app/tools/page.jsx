@@ -1,3 +1,6 @@
+Here is the complete `src/app/tools/page.jsx`:
+
+```jsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 
@@ -102,10 +105,14 @@ export default function ToolsPage() {
   const [demoCompleted, setDemoCompleted] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const ONE_HOUR = 60 * 60 * 1000;
 
   useEffect(() => {
     const saved = sessionStorage.getItem("unico_tools_email");
-    if (saved) {
+    const savedTime = sessionStorage.getItem("unico_tools_time");
+    const now = Date.now();
+
+    if (saved && savedTime && (now - parseInt(savedTime)) < ONE_HOUR) {
       setEmail(saved);
       setShowGate(false);
       fetch("/api/leads", {
@@ -113,6 +120,10 @@ export default function ToolsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: saved, phone: "Returning", tool: "Tools Page", returning: true }),
       }).catch(() => {});
+    } else {
+      sessionStorage.removeItem("unico_tools_email");
+      sessionStorage.removeItem("unico_tools_time");
+      setShowGate(true);
     }
   }, []);
 
@@ -143,6 +154,7 @@ export default function ToolsPage() {
       const data = await res.json();
       console.log("Leads API response:", data);
       sessionStorage.setItem("unico_tools_email", emailInput);
+      sessionStorage.setItem("unico_tools_time", Date.now().toString());
       setEmail(emailInput);
       setGateSuccess(true);
     } catch (err) {
@@ -448,3 +460,6 @@ export default function ToolsPage() {
     </>
   );
 }
+```
+
+Commit and tell me when done! 🚀
