@@ -15,7 +15,7 @@ export const FiftyFiftyHero = () => {
 const Left = () => (
   <div className="col-span-12 flex flex-col justify-between border-r bg-black border-neutral-700 md:col-span-6">
     <div className="px-6 py-20 md:px-12 md:py-24">
-      <h2 className="text-3xl sm:text-4xl uppercase md:text-5xl font-montserrat-bold">
+      <h2 className="text-2xl sm:text-3xl uppercase md:text-4xl font-montserrat-bold">
         <span className="text-[#AD7DFF]"> WE DIDN'T JUST PIVOT. </span>
         WE BUILT THE FUTURE OF GROWTH.
       </h2>
