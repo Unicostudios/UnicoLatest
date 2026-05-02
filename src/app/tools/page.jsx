@@ -17,19 +17,19 @@ const TOOLS = {
     userBg: "rgba(167,139,250,0.06)",
     chipBg: "rgba(167,139,250,0.05)",
     chipBorder: "rgba(167,139,250,0.18)",
-    greeting: "Hey! I generate high-conversion content for your startup — reel scripts, hook ideas, CTA lines, thumbnail concepts. What's your brand about?",
-    chips: ["Write me a reel hook for a SaaS product", "Write 5 CTA lines for a landing page", "Write a 30-second reel script for a D2C brand", "Give me 3 thumbnail concepts for my startup"],
+    greeting: "Hey! Tell me about your brand and I'll immediately generate 3 scroll-stopping hooks for you — then we'll build out the full content from there. What's your business?",
+    chips: ["I run a D2C skincare brand", "I have a SaaS product for HR teams", "I run a real estate agency", "I own a fashion brand on Instagram"],
     mode: "content",
     limit: 10,
     tag: "Most Popular",
   },
   code: {
     id: "code",
-    name: "Vibe Code Fixer",
-    shortName: "Vibe Code Fixer",
-    desc: "Paste messy code, get back clean production-ready code",
-    longDesc: "Fix bugs, clean up architecture, optimize performance. Paste any code and get back production-ready, well-structured code instantly.",
-    icon: "💻",
+    name: "Website & Landing Page Consultant",
+    shortName: "Page Consultant",
+    desc: "Fix your website or landing page — no tech skills needed",
+    longDesc: "Not converting visitors? Get a plain-English diagnosis of exactly what's wrong with your website and how to fix it — from a senior digital strategist.",
+    icon: "🌐",
     color: "#f472b6",
     bgActive: "rgba(244,114,182,0.08)",
     borderActive: "rgba(244,114,182,0.22)",
@@ -38,18 +38,18 @@ const TOOLS = {
     userBg: "rgba(244,114,182,0.06)",
     chipBg: "rgba(244,114,182,0.05)",
     chipBorder: "rgba(244,114,182,0.18)",
-    greeting: "Paste your messy, broken, or unoptimized code and I'll give it back clean, readable, and production-ready. What are we fixing today?",
-    chips: ["Fix the bugs in my JavaScript", "Clean up and optimize this React component", "Review my code architecture and suggest improvements", "Make this code faster and more performant"],
+    greeting: "Hey! I help business owners fix websites and landing pages that aren't converting — no tech skills needed. Share your website URL or describe what you want your site to do and I'll tell you exactly what's wrong and how to fix it.",
+    chips: ["My website isn't getting leads", "Review my landing page", "I want to build a new website", "Why isn't my site converting?"],
     mode: "code",
     limit: 10,
-    tag: "For Developers",
+    tag: "For Founders",
   },
   niquo: {
     id: "niquo",
     name: "Niquo — AI Sales Demo",
     shortName: "Niquo",
     desc: "See how AI closes clients for your specific business",
-    longDesc: "Experience a live demo of an AI sales assistant built specifically for YOUR business. See how it handles objections and closes deals.",
+    longDesc: "Experience a live demo of an AI sales assistant built specifically for YOUR business. See how it handles objections and closes deals 24/7.",
     icon: "⚡",
     color: "#22d3ee",
     bgActive: "rgba(34,211,238,0.07)",
@@ -59,7 +59,7 @@ const TOOLS = {
     userBg: "rgba(34,211,238,0.05)",
     chipBg: "rgba(34,211,238,0.04)",
     chipBorder: "rgba(34,211,238,0.16)",
-    greeting: "Hi! I'm Niquo. I'll show you exactly how an AI sales assistant would work for YOUR business. To get started — what's your company name and what do you sell?",
+    greeting: "Hi! I'm Niquo. I'll show you exactly how an AI sales assistant would work for YOUR business — live, right now. Tell me about your business: what you sell, who your customer is, and what your biggest sales challenge is.",
     chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
     mode: "niquo",
     limit: 50,
@@ -67,10 +67,10 @@ const TOOLS = {
   },
   audit: {
     id: "audit",
-    name: "Website Audit Tool",
-    shortName: "Site Audit",
-    desc: "Get a free AI audit of your website in 60 seconds",
-    longDesc: "Get a premium ₹50,000 consultant-level audit of your website covering SEO, UX, conversion rate, content and mobile performance.",
+    name: "Website Revenue Audit",
+    shortName: "Revenue Audit",
+    desc: "Find out exactly how much revenue your website is losing",
+    longDesc: "Get a brutal, no-sugarcoat audit of your website. Find out exactly where revenue is bleeding — with real numbers, real fixes and real competitor benchmarks.",
     icon: "🔍",
     color: "#fb923c",
     bgActive: "rgba(251,146,60,0.08)",
@@ -80,8 +80,8 @@ const TOOLS = {
     userBg: "rgba(251,146,60,0.06)",
     chipBg: "rgba(251,146,60,0.05)",
     chipBorder: "rgba(251,146,60,0.18)",
-    greeting: "Hi! I'm your Website Audit AI. Give me your website URL and I'll analyse it for SEO, design, conversion gaps, speed issues and more — in 60 seconds. What's your website URL?",
-    chips: ["Audit unicostudios.in", "Check my landing page conversion", "Analyse my competitor's website", "Give me an SEO audit"],
+    greeting: "Drop your website URL. I'll show you exactly how much revenue it's bleeding — with real numbers, real fixes, and what your competitors are doing that you're not.",
+    chips: ["Audit unicostudios.in", "Audit my competitor's website", "Find my conversion killers", "How much revenue am I losing?"],
     mode: "audit",
     limit: 3,
     tag: "New ✨",
@@ -117,7 +117,7 @@ function isValidEmail(email) {
 }
 
 export default function ToolsPage() {
-  const [screen, setScreen] = useState("landing"); // landing | chat
+  const [screen, setScreen] = useState("landing");
   const [currentTool, setCurrentTool] = useState(null);
   const [messages, setMessages] = useState({ content: [], code: [], niquo: [], audit: [] });
   const [uses, setUses] = useState({ content: 0, code: 0, niquo: 0, audit: 0 });
@@ -254,14 +254,10 @@ export default function ToolsPage() {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #080808; }
         .tp { min-height:100vh; background:#080808; color:#e8e8e8; font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
-
-        /* NAV */
         .tp-nav { width:100%; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #111; }
         .tp-logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#fff; letter-spacing:-1px; text-decoration:none; }
         .tp-back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:#555; background:none; border:none; cursor:pointer; transition:color 0.2s; padding:0; }
         .tp-back-btn:hover { color:#e8e8e8; }
-
-        /* LANDING */
         .tp-landing { max-width:960px; margin:0 auto; padding:60px 24px 80px; }
         .tp-hero { text-align:center; margin-bottom:64px; }
         .tp-badge { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; letter-spacing:0.04em; color:#a78bfa; background:rgba(167,139,250,0.08); border:1px solid rgba(167,139,250,0.18); border-radius:100px; padding:5px 14px; margin-bottom:20px; }
@@ -269,21 +265,17 @@ export default function ToolsPage() {
         .tp-h1 { font-family:'Syne',sans-serif; font-size:clamp(32px,6vw,64px); font-weight:800; letter-spacing:-0.04em; line-height:1.05; color:#fff; margin-bottom:16px; }
         .tp-h1 span { background:linear-gradient(135deg,#a78bfa 0%,#f472b6 50%,#22d3ee 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .tp-sub { font-size:17px; color:#555; font-weight:300; max-width:480px; margin:0 auto; line-height:1.6; }
-
-        /* TOOL CARDS GRID */
         .tp-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
         .tp-card { background:#0f0f0f; border:1px solid #1e1e1e; border-radius:20px; padding:28px 24px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
-        .tp-card:hover { transform:translateY(-3px); border-color:#2e2e2e; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+        .tp-card:hover { transform:translateY(-3px); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
         .tp-card-tag { position:absolute; top:16px; right:16px; font-size:10px; font-weight:600; letter-spacing:0.05em; padding:3px 10px; border-radius:100px; }
         .tp-card-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:18px; }
         .tp-card-name { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; color:#fff; letter-spacing:-0.01em; margin-bottom:8px; }
         .tp-card-desc { font-size:13px; color:#555; line-height:1.6; margin-bottom:20px; font-weight:300; }
         .tp-card-footer { display:flex; align-items:center; justify-content:space-between; }
-        .tp-card-limit { font-size:11px; color:#3a3a3a; letter-spacing:0.03em; }
+        .tp-card-limit { font-size:11px; color:#3a3a3a; }
         .tp-card-cta { font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; transition:gap 0.2s; }
         .tp-card:hover .tp-card-cta { gap:8px; }
-
-        /* CHAT SCREEN */
         .tp-chat { max-width:720px; margin:0 auto; padding:20px 16px 40px; display:flex; flex-direction:column; min-height:calc(100vh - 65px); }
         .tp-chat-window { background:#0f0f0f; border:1px solid #1e1e1e; border-radius:20px; overflow:hidden; display:flex; flex-direction:column; flex:1; box-shadow:0 0 0 1px rgba(255,255,255,0.03),0 32px 80px rgba(0,0,0,0.6); }
         .tp-chat-header { padding:16px 20px; border-bottom:1px solid #1e1e1e; display:flex; align-items:center; gap:12px; background:#141414; }
@@ -319,8 +311,6 @@ export default function ToolsPage() {
         .tp-send:hover { opacity:0.82; transform:scale(0.96); }
         .tp-hint { text-align:center; font-size:11px; color:#2a2a2a; margin-top:8px; }
         .tp-demo-banner { background:rgba(34,211,238,0.05); border:1px solid rgba(34,211,238,0.15); border-radius:12px; padding:14px 18px; margin-bottom:12px; text-align:center; }
-
-        /* GATE */
         .tp-gate { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
         .tp-gate-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:36px 32px; width:100%; max-width:440px; text-align:center; box-shadow:0 40px 100px rgba(0,0,0,0.8); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); max-height:90vh; overflow-y:auto; }
         .tp-gate-icon { width:56px; height:56px; border-radius:16px; background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 20px; }
@@ -346,16 +336,12 @@ export default function ToolsPage() {
         .tp-gate-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
         .tp-gate-fine { font-size:11px; color:#2e2e2e; margin-top:12px; }
         .tp-success-icon { width:52px; height:52px; border-radius:50%; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 16px; }
-
-        /* UPGRADE */
         .tp-upgrade { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
         .tp-upgrade-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:36px 32px; width:100%; max-width:400px; text-align:center; }
-
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
         @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
         @media(max-width:600px) {
           .tp-grid { grid-template-columns:1fr; }
           .tp-landing { padding:40px 16px 60px; }
@@ -364,7 +350,6 @@ export default function ToolsPage() {
         }
       `}</style>
 
-      {/* NAV */}
       <nav className="tp-nav">
         <a href="/" className="tp-logo">∂</a>
         {screen === "chat" ? (
@@ -380,18 +365,16 @@ export default function ToolsPage() {
         )}
       </nav>
 
-      {/* LANDING SCREEN */}
       {screen === "landing" && (
         <div className="tp-landing">
           <div className="tp-hero">
             <div className="tp-badge">Free AI Tools by Unico Studios</div>
             <h1 className="tp-h1">AI Tools That<br /><span>Actually Work</span></h1>
-            <p className="tp-sub">Pick a tool and get started — completely free. Built for founders, startups and brands.</p>
+            <p className="tp-sub">Pick a tool and get started — completely free. Built for founders, startups and brands who want to grow faster.</p>
           </div>
           <div className="tp-grid">
             {Object.values(TOOLS).map((t) => (
               <div key={t.id} className="tp-card" onClick={() => openTool(t.id)}
-                style={{ "--tool-color": t.color }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = t.color + "44"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1e1e1e"; }}>
                 {t.tag && (
@@ -405,7 +388,7 @@ export default function ToolsPage() {
                 <div className="tp-card-name">{t.name}</div>
                 <div className="tp-card-desc">{t.longDesc}</div>
                 <div className="tp-card-footer">
-                  <div className="tp-card-limit" style={{ color: "#3a3a3a" }}>
+                  <div className="tp-card-limit">
                     {t.limit === 3 ? "3 free audits" : t.limit === 50 ? "50 free messages" : "10 free messages"}
                   </div>
                   <div className="tp-card-cta" style={{ color: t.color }}>
@@ -418,7 +401,6 @@ export default function ToolsPage() {
         </div>
       )}
 
-      {/* CHAT SCREEN */}
       {screen === "chat" && tool && (
         <div className="tp-chat">
           <div className="tp-chat-window">
@@ -470,13 +452,13 @@ export default function ToolsPage() {
                             <a key={j} href={part} target="_blank" rel="noopener noreferrer"
                               style={{ color: tool.color, textDecoration: "underline", display: "block", marginTop: 4, fontWeight: 600 }}>
                               👉 Click here to book your call
-                             </a>
+                            </a>
                           ) : (
                             <a key={j} href={part} target="_blank" rel="noopener noreferrer"
                               style={{ color: tool.color, textDecoration: "underline" }}>
                               {part}
-                             </a>
-                         )
+                            </a>
+                          )
                         ) : <span key={j}>{part}</span>
                       )}
                     </div>
@@ -513,7 +495,6 @@ export default function ToolsPage() {
         </div>
       )}
 
-      {/* GATE */}
       {showGate && (
         <div className="tp-gate">
           <div className="tp-gate-modal">
@@ -574,16 +555,15 @@ export default function ToolsPage() {
         </div>
       )}
 
-      {/* UPGRADE */}
       {showUpgrade && tool && (
         <div className="tp-upgrade">
           <div className="tp-upgrade-modal">
             <div style={{ fontSize: 44, marginBottom: 14 }}>🔥</div>
             <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 10 }}>
-              {currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Audit complete!" : "You're on a roll!"}
+              {currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Your audit is complete!" : "You're on a roll!"}
             </h2>
             <p style={{ color: "#555", marginBottom: 22, lineHeight: 1.6, fontSize: 14 }}>
-              {currentTool === "niquo" ? "Ready to build this for your business?" : currentTool === "audit" ? "Want us to fix everything in your audit?" : "Upgrade to keep going!"}
+              {currentTool === "niquo" ? "Ready to build this for your business?" : currentTool === "audit" ? "Want us to fix everything we found?" : "Upgrade to keep going!"}
             </p>
             <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
               style={{ display: "block", width: "100%", padding: 13, background: tool.color, borderRadius: 12, color: "#000", fontSize: 15, fontWeight: 600, textDecoration: "none", textAlign: "center", marginBottom: 10 }}>
