@@ -168,23 +168,23 @@ function isValidEmail(email) {
 }
 function LiveCounter({ base, delta, interval, prefix, suffix }) {
   const [value, setValue] = useState(base);
-  const [direction, setDirection] = useState(1);
+  const directionRef = useRef(1);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setValue((prev) => {
         const change = Math.floor(Math.random() * delta) + 1;
-        const next = prev + (direction * change);
-        if (next > base + delta * 4) setDirection(-1);
-        if (next < base - delta * 2) setDirection(1);
+        const next = prev + (directionRef.current * change);
+        if (next > base + delta * 4) directionRef.current = -1;
+        if (next < base - delta * 2) directionRef.current = 1;
         return next;
       });
     }, interval);
     return () => clearInterval(timer);
-  }, [direction, base, delta, interval]);
+  }, [base, delta, interval]);
 
   const formatted = value >= 1000 ? value.toLocaleString("en-IN") : value;
-  return <span style={{ transition: "all 0.5s ease" }}>{prefix}{formatted}{suffix}</span>;
+  return <span>{prefix}{formatted}{suffix}</span>;
 }
 export default function ToolsPage() {
   const [screen, setScreen] = useState("landing");
