@@ -1,35 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 
-const COUNTRIES = [
-  { code: "+91", name: "India", flag: "🇮🇳", country: "India" },
-  { code: "+1", name: "USA/Canada", flag: "🇺🇸", country: "United States" },
-  { code: "+44", name: "UK", flag: "🇬🇧", country: "United Kingdom" },
-  { code: "+61", name: "Australia", flag: "🇦🇺", country: "Australia" },
-  { code: "+971", name: "UAE", flag: "🇦🇪", country: "UAE" },
-  { code: "+65", name: "Singapore", flag: "🇸🇬", country: "Singapore" },
-  { code: "+60", name: "Malaysia", flag: "🇲🇾", country: "Malaysia" },
-  { code: "+49", name: "Germany", flag: "🇩🇪", country: "Germany" },
-  { code: "+33", name: "France", flag: "🇫🇷", country: "France" },
-  { code: "+81", name: "Japan", flag: "🇯🇵", country: "Japan" },
-  { code: "+82", name: "South Korea", flag: "🇰🇷", country: "South Korea" },
-  { code: "+55", name: "Brazil", flag: "🇧🇷", country: "Brazil" },
-  { code: "+52", name: "Mexico", flag: "🇲🇽", country: "Mexico" },
-  { code: "+27", name: "South Africa", flag: "🇿🇦", country: "South Africa" },
-  { code: "+234", name: "Nigeria", flag: "🇳🇬", country: "Nigeria" },
-  { code: "+20", name: "Egypt", flag: "🇪🇬", country: "Egypt" },
-  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦", country: "Saudi Arabia" },
-  { code: "+90", name: "Turkey", flag: "🇹🇷", country: "Turkey" },
-  { code: "+7", name: "Russia", flag: "🇷🇺", country: "Russia" },
-  { code: "+86", name: "China", flag: "🇨🇳", country: "China" },
-  { code: "+62", name: "Indonesia", flag: "🇮🇩", country: "Indonesia" },
-  { code: "+63", name: "Philippines", flag: "🇵🇭", country: "Philippines" },
-  { code: "+92", name: "Pakistan", flag: "🇵🇰", country: "Pakistan" },
-  { code: "+880", name: "Bangladesh", flag: "🇧🇩", country: "Bangladesh" },
-  { code: "+94", name: "Sri Lanka", flag: "🇱🇰", country: "Sri Lanka" },
-  { code: "+977", name: "Nepal", flag: "🇳🇵", country: "Nepal" },
-];
-
 const TOOLS = {
   content: {
     id: "content",
@@ -90,6 +61,30 @@ const TOOLS = {
   },
 };
 
+const COUNTRIES = [
+  { code: "+91", name: "India", flag: "🇮🇳", country: "India" },
+  { code: "+1", name: "USA/Canada", flag: "🇺🇸", country: "United States" },
+  { code: "+44", name: "UK", flag: "🇬🇧", country: "United Kingdom" },
+  { code: "+61", name: "Australia", flag: "🇦🇺", country: "Australia" },
+  { code: "+971", name: "UAE", flag: "🇦🇪", country: "UAE" },
+  { code: "+65", name: "Singapore", flag: "🇸🇬", country: "Singapore" },
+  { code: "+60", name: "Malaysia", flag: "🇲🇾", country: "Malaysia" },
+  { code: "+49", name: "Germany", flag: "🇩🇪", country: "Germany" },
+  { code: "+33", name: "France", flag: "🇫🇷", country: "France" },
+  { code: "+81", name: "Japan", flag: "🇯🇵", country: "Japan" },
+  { code: "+55", name: "Brazil", flag: "🇧🇷", country: "Brazil" },
+  { code: "+52", name: "Mexico", flag: "🇲🇽", country: "Mexico" },
+  { code: "+27", name: "South Africa", flag: "🇿🇦", country: "South Africa" },
+  { code: "+234", name: "Nigeria", flag: "🇳🇬", country: "Nigeria" },
+  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦", country: "Saudi Arabia" },
+  { code: "+62", name: "Indonesia", flag: "🇮🇩", country: "Indonesia" },
+  { code: "+63", name: "Philippines", flag: "🇵🇭", country: "Philippines" },
+  { code: "+92", name: "Pakistan", flag: "🇵🇰", country: "Pakistan" },
+  { code: "+880", name: "Bangladesh", flag: "🇧🇩", country: "Bangladesh" },
+  { code: "+94", name: "Sri Lanka", flag: "🇱🇰", country: "Sri Lanka" },
+  { code: "+977", name: "Nepal", flag: "🇳🇵", country: "Nepal" },
+];
+
 function isValidEmail(email) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
@@ -104,15 +99,11 @@ export default function ToolsPage() {
   const [emailInput, setEmailInput] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [phoneInput, setPhoneInput] = useState("");
-  const [otpInput, setOtpInput] = useState("");
-  const [otpToken, setOtpToken] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [otpError, setOtpError] = useState("");
   const [showGate, setShowGate] = useState(true);
-  const [gateStep, setGateStep] = useState("details");
+  const [gateSuccess, setGateSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [resendTimer, setResendTimer] = useState(0);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
@@ -143,19 +134,11 @@ export default function ToolsPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  useEffect(() => {
-    if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [resendTimer]);
-
   const tool = TOOLS[currentTool];
   const currentUses = uses[currentTool];
   const currentLimit = tool.limit;
-  const fullPhone = `${selectedCountry.code}${phoneInput}`;
 
-  const handleSendOTP = async () => {
+  const handleSubmit = async () => {
     setEmailError("");
     setPhoneError("");
     let valid = true;
@@ -166,62 +149,29 @@ export default function ToolsPage() {
     if (!valid) return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/otp", {
+      await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "send", phone: fullPhone }),
+        body: JSON.stringify({
+          email: emailInput,
+          phone: `${selectedCountry.code}${phoneInput}`,
+          tool: tool.name,
+          country: selectedCountry.country,
+        }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setOtpToken(data.token);
-        setGateStep("otp");
-        setResendTimer(60);
-      } else {
-        setPhoneError(data.error || "Failed to send OTP. Please try again.");
-      }
+      sessionStorage.setItem("unico_tools_email", emailInput);
+      sessionStorage.setItem("unico_tools_time", Date.now().toString());
+      setEmail(emailInput);
+      setGateSuccess(true);
     } catch {
-      setPhoneError("Something went wrong. Please try again.");
-    }
-    setSubmitting(false);
-  };
-
-  const handleVerifyOTP = async () => {
-    setOtpError("");
-    if (!otpInput || otpInput.length !== 6) { setOtpError("Please enter the 6-digit OTP"); return; }
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "verify", phone: fullPhone, otp: otpInput, token: otpToken }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        await fetch("/api/leads", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: emailInput,
-            phone: fullPhone,
-            tool: tool.name,
-            country: selectedCountry.country,
-          }),
-        });
-        sessionStorage.setItem("unico_tools_email", emailInput);
-        sessionStorage.setItem("unico_tools_time", Date.now().toString());
-        setEmail(emailInput);
-        setGateStep("success");
-      } else {
-        setOtpError(data.error || "Incorrect OTP. Please try again.");
-      }
-    } catch {
-      setOtpError("Something went wrong. Please try again.");
+      setEmailError("Something went wrong. Please try again.");
     }
     setSubmitting(false);
   };
 
   const closeGate = () => {
     setShowGate(false);
+    setGateSuccess(false);
     setTimeout(() => textareaRef.current?.focus(), 100);
   };
 
@@ -314,12 +264,15 @@ export default function ToolsPage() {
         .t-hint { text-align:center; font-size:11px; color:#2a2a2a; margin-top:10px; letter-spacing:0.03em; }
         .t-gate { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.2s ease; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .t-gate-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:440px; text-align:center; box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 40px 100px rgba(0,0,0,0.8); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .t-gate-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:440px; text-align:center; box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 40px 100px rgba(0,0,0,0.8); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); max-height:90vh; overflow-y:auto; }
         @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .t-gate-icon { width:60px; height:60px; border-radius:16px; background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.18); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 22px; }
         .t-gate-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.02em; margin-bottom:10px; }
         .t-gate-sub { font-size:14px; color:#555; line-height:1.6; margin-bottom:24px; font-weight:300; }
         .t-gate-sub strong { color:#a78bfa; font-weight:500; }
+        .t-gate-perks { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; text-align:left; }
+        .t-gate-perk { display:flex; align-items:center; gap:10px; font-size:13px; color:#777; }
+        .t-gate-perk-dot { width:6px; height:6px; border-radius:50%; background:#a78bfa; flex-shrink:0; opacity:0.7; }
         .t-gate-input { width:100%; background:#111; border:1px solid #242424; border-radius:10px; padding:13px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:#ccc; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
         .t-gate-input::placeholder { color:#333; }
         .t-gate-input:focus { border-color:#a78bfa; }
@@ -332,19 +285,14 @@ export default function ToolsPage() {
         .t-phone-row { display:flex; gap:8px; margin-bottom:8px; }
         .t-country-btn { background:#111; border:1px solid #242424; border-radius:10px; padding:13px 12px; color:#ccc; cursor:pointer; font-size:14px; white-space:nowrap; display:flex; align-items:center; gap:6px; transition:border-color 0.2s; flex-shrink:0; }
         .t-country-btn:hover { border-color:#a78bfa; }
-        .t-country-dropdown { position:absolute; top:100%; left:0; right:0; background:#111; border:1px solid #333; border-radius:10px; max-height:200px; overflow-y:auto; z-index:200; margin-top:4px; }
+        .t-country-dropdown { position:absolute; top:100%; left:0; right:0; background:#1a1a1a; border:1px solid #333; border-radius:10px; max-height:180px; overflow-y:auto; z-index:200; margin-top:4px; }
         .t-country-option { padding:10px 14px; cursor:pointer; font-size:13px; color:#ccc; display:flex; align-items:center; gap:8px; transition:background 0.15s; }
-        .t-country-option:hover { background:#1a1a1a; color:#fff; }
-        .t-otp-input { width:100%; background:#111; border:1px solid #242424; border-radius:10px; padding:16px; font-family:'Syne',sans-serif; font-size:24px; color:#fff; outline:none; transition:border-color 0.2s; margin-bottom:8px; text-align:center; letter-spacing:8px; }
-        .t-otp-input:focus { border-color:#a78bfa; }
-        .t-otp-input.error { border-color:#f87171; }
-        .t-resend { background:none; border:none; color:#555; cursor:pointer; font-size:13px; margin-top:8px; transition:color 0.2s; }
-        .t-resend:hover { color:#a78bfa; }
+        .t-country-option:hover { background:#222; color:#fff; }
         .t-success-icon { width:56px; height:56px; border-radius:50%; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 18px; }
         .t-upgrade { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
         .t-upgrade-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:420px; text-align:center; }
         .t-demo-banner { background:rgba(34,211,238,0.05); border:1px solid rgba(34,211,238,0.15); border-radius:12px; padding:16px 20px; margin-bottom:16px; text-align:center; }
-        @media(max-width:600px) { .t-selector{gap:4px;padding:4px;} .t-btn{padding:9px 12px;font-size:12px;} .t-gate-modal{padding:32px 24px;} }
+        @media(max-width:600px) { .t-selector{gap:4px;padding:4px;} .t-btn{padding:9px 12px;font-size:12px;} .t-gate-modal{padding:28px 20px;} }
       `}</style>
 
       <div className="tools-page">
@@ -456,14 +404,20 @@ export default function ToolsPage() {
       {showGate && (
         <div className="t-gate">
           <div className="t-gate-modal">
-            {gateStep === "details" && (
+            {!gateSuccess ? (
               <>
                 <div className="t-gate-icon">{tool.icon}</div>
                 <h2 className="t-gate-title">Get Free Access</h2>
                 <p className="t-gate-sub">Enter your details to unlock <strong>{tool.name}</strong> — completely free.</p>
+                <div className="t-gate-perks">
+                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />Access all 3 AI tools instantly</div>
+                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />New tools added every month</div>
+                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />Early access to Unico product drops</div>
+                </div>
                 <input type="email" className={`t-gate-input ${emailError ? "error" : ""}`}
                   placeholder="your@email.com" value={emailInput}
                   onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   autoComplete="email" autoFocus />
                 {emailError && <p className="t-gate-error">⚠️ {emailError}</p>}
                 <div style={{ position: "relative" }}>
@@ -475,6 +429,7 @@ export default function ToolsPage() {
                       style={{ margin: 0, flex: 1 }}
                       placeholder="Phone number" value={phoneInput}
                       onChange={(e) => { setPhoneInput(e.target.value.replace(/\D/g, "")); setPhoneError(""); }}
+                      onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                       autoComplete="tel" />
                   </div>
                   {showCountryDropdown && (
@@ -489,46 +444,15 @@ export default function ToolsPage() {
                   )}
                 </div>
                 {phoneError && <p className="t-gate-error">⚠️ {phoneError}</p>}
-                <button className="t-gate-btn" onClick={handleSendOTP} disabled={submitting}>
-                  {submitting ? "Sending OTP..." : "→ Send Verification Code"}
+                <button className="t-gate-btn" onClick={handleSubmit} disabled={submitting}>
+                  {submitting ? "Getting access..." : "→ Unlock Free Access"}
                 </button>
-                <p className="t-gate-fine">We'll send a 6-digit OTP to verify your number.</p>
+                <p className="t-gate-fine">No spam. No credit card. Just free tools.</p>
               </>
-            )}
-            {gateStep === "otp" && (
-              <>
-                <div className="t-gate-icon">📱</div>
-                <h2 className="t-gate-title">Verify Your Number</h2>
-                <p className="t-gate-sub">We sent a 6-digit code to <strong>{fullPhone}</strong></p>
-                <input type="number" className={`t-otp-input ${otpError ? "error" : ""}`}
-                  placeholder="000000" value={otpInput} maxLength={6}
-                  onChange={(e) => { setOtpInput(e.target.value.slice(0, 6)); setOtpError(""); }}
-                  autoFocus />
-                {otpError && <p className="t-gate-error">⚠️ {otpError}</p>}
-                <button className="t-gate-btn" onClick={handleVerifyOTP} disabled={submitting}>
-                  {submitting ? "Verifying..." : "→ Verify & Get Access"}
-                </button>
-                <div style={{ marginTop: 12 }}>
-                  {resendTimer > 0 ? (
-                    <p style={{ color: "#555", fontSize: 13 }}>Resend OTP in {resendTimer}s</p>
-                  ) : (
-                    <button className="t-resend" onClick={() => { setGateStep("details"); setOtpInput(""); setOtpToken(""); }}>
-                      ← Change number or resend
-                    </button>
-                  )}
-                </div>
-                <button style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 12, marginTop: 8 }}
-                  onClick={() => { setGateStep("details"); setOtpInput(""); setOtpToken(""); }}>
-                  ← Go back
-                </button>
-              </>
-            )}
-            {gateStep === "success" && (
+            ) : (
               <>
                 <div className="t-success-icon">✓</div>
-                <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
-                  You're verified! 🎉
-                </h2>
+                <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>You're in! 🎉</h2>
                 <p style={{ color: "#555", fontSize: 14, marginBottom: 24 }}>Welcome to Unico Tools. Let's get to work!</p>
                 <button className="t-gate-btn" onClick={closeGate}>Start using {tool.shortName} →</button>
               </>
