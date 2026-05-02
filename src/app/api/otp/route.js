@@ -5,11 +5,25 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-const otpStore = new Map();
+function encodeOTP(otp, phone) {
+  const expiry = Date.now() + 5 * 60 * 1000;
+  const data = `${otp}:${phone}:${expiry}`;
+  return Buffer.from(data).toString("base64");
+}
+
+function decodeOTP(token) {
+  try {
+    const data = Buffer.from(token, "base64").toString("utf8");
+    const [otp, phone, expiry] = data.split(":");
+    return { otp, phone, expiry: parseInt(expiry) };
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request) {
   try {
-    const { action, phone, otp } = await request.json();
+    const { action, phone, otp, token } = await request.json();
 
     if (action === "send") {
       if (!phone) {
@@ -17,9 +31,7 @@ export async function POST(request) {
       }
 
       const generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
-
-      otpStore.set(phone, { otp: generatedOTP, expiry });
+      const otpToken = encodeOTP(generatedOTP, phone);
 
       await client.messages.create({
         body: `Your Unico Studios verification code is: ${generatedOTP}. Valid for 5 minutes.`,
@@ -28,31 +40,33 @@ export async function POST(request) {
       });
 
       console.log("OTP sent to:", phone);
-      return Response.json({ success: true, message: "OTP sent successfully" });
+      return Response.json({ success: true, token: otpToken });
     }
 
     if (action === "verify") {
-      if (!phone || !otp) {
-        return Response.json({ error: "Phone and OTP required" }, { status: 400 });
+      if (!phone || !otp || !token) {
+        return Response.json({ error: "Missing fields" }, { status: 400 });
       }
 
-      const stored = otpStore.get(phone);
+      const decoded = decodeOTP(token);
 
-      if (!stored) {
-        return Response.json({ error: "OTP expired or not found. Please request a new one." }, { status: 400 });
+      if (!decoded) {
+        return Response.json({ error: "Invalid token. Please request a new OTP." }, { status: 400 });
       }
 
-      if (Date.now() > stored.expiry) {
-        otpStore.delete(phone);
+      if (Date.now() > decoded.expiry) {
         return Response.json({ error: "OTP has expired. Please request a new one." }, { status: 400 });
       }
 
-      if (stored.otp !== otp) {
+      if (decoded.phone !== phone) {
+        return Response.json({ error: "Phone number mismatch." }, { status: 400 });
+      }
+
+      if (decoded.otp !== otp) {
         return Response.json({ error: "Incorrect OTP. Please try again." }, { status: 400 });
       }
 
-      otpStore.delete(phone);
-      return Response.json({ success: true, message: "Phone verified successfully" });
+      return Response.json({ success: true });
     }
 
     return Response.json({ error: "Invalid action" }, { status: 400 });
