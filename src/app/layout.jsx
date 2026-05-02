@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '1623697998884538');
+          fbq('init', '1294155329125499');
           fbq('track', 'PageView');`
         }} />
         <link rel="preload" href="/fonts/Montserrat-Regular.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
       <body className="font-montserrat-regular">
         {/* Meta Pixel NoScript */}
         <noscript>
-          <img height="1" width="1" style={{display: 'none'}} src="https://www.facebook.com/tr?id=1623697998884538&ev=PageView&noscript=1" alt="fb-pixel" />
+          <img height="1" width="1" style={{display: 'none'}} src="https://www.facebook.com/tr?id=1294155329125499&ev=PageView&noscript=1" alt="fb-pixel" />
         </noscript>
         <NavbarWrapper />
         <ToasterProvider />
