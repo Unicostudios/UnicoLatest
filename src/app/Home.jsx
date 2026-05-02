@@ -11,7 +11,6 @@ import Navbar from "./components/Navbar";
 import { DarkGridHero } from "./components/DarkGridHero";
 import LeadForm from "./components/LeadForm";
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
 
 const SpringModal = ({ isOpen, setIsOpen }) => {
   return (
@@ -112,7 +111,7 @@ const AIToolsSection = () => {
         </div>
 
         <div className="ais-cta-row">
-          <Link href="/tools" className="ais-btn-primary">→ Try All 4 Tools Free</Link>
+          <a href="/tools" className="ais-btn-primary">→ Try All 4 Tools Free</a>
           <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="ais-btn-secondary">Book a Strategy Call</a>
         </div>
       </div>
@@ -157,7 +156,7 @@ const NiquoTeaser = () => {
             <div className="nq-feature"><div className="nq-feature-dot" />Works for ANY industry — e-commerce, real estate, SaaS, D2C</div>
             <div className="nq-feature"><div className="nq-feature-dot" />Live demo built specifically for YOUR business in 5 minutes</div>
           </div>
-          <Link href="/tools" className="nq-cta">Try Niquo Free →</Link>
+          <a href="/tools" className="nq-cta">Try Niquo Free →</a>
         </div>
         <div className="nq-window">
           <div className="nq-win-header">
@@ -196,9 +195,9 @@ const NiquoTeaser = () => {
               </div>
             </div>
             <div style={{ textAlign: "center", paddingTop: 6, borderTop: "1px solid #1a1a1a", marginTop: 4 }}>
-              <Link href="/tools" style={{ fontSize: 11, color: "#22d3ee", textDecoration: "none", fontWeight: 600 }}>
+              <a href="/tools" style={{ fontSize: 11, color: "#22d3ee", textDecoration: "none", fontWeight: 600 }}>
                 Continue this demo on the tools page →
-              </Link>
+              </a>
             </div>
           </div>
         </div>
