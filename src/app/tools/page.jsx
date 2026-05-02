@@ -1,13 +1,3 @@
-No! The `otp/route.js` is already created and ready. 
-
-Now I need to give you the updated `tools/page.jsx` with:
-- Country code selector
-- OTP send + verify flow
-- Country auto-detection from country code
-
-This is a big file so let me build it properly. Here is the complete `src/app/tools/page.jsx`:
-
-```jsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 
@@ -575,58 +565,3 @@ export default function ToolsPage() {
     </>
   );
 }
-```
-
----
-
-Also update `src/app/api/leads/route.js` to accept the `country` field:
-
-```javascript
-export async function POST(request) {
-  try {
-    const { email, phone, tool, returning, country } = await request.json();
-
-    if (!email || !tool) {
-      return Response.json({ error: "Missing fields" }, { status: 400 });
-    }
-
-    const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-
-    const checkRes = await fetch(
-      `${process.env.SHEETDB_API_URL}/search?Email=${encodeURIComponent(email)}`,
-      { headers: { "Accept": "application/json" } }
-    );
-    const existing = await checkRes.json();
-    const isReturning = returning || (Array.isArray(existing) && existing.length > 0);
-
-    const rowData = {
-      Email: email,
-      Phone: isReturning ? (existing[0]?.Phone || "Returning") : (phone || "Not provided"),
-      Tool: tool,
-      Date: date,
-      Status: isReturning ? "Return Visit" : "New Lead",
-      "Demo Completed": "No",
-      Country: isReturning ? (existing[0]?.Country || "Unknown") : (country || "Unknown"),
-    };
-
-    console.log("Saving:", JSON.stringify(rowData));
-
-    const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
-      method: "POST",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify({ data: [rowData] }),
-    });
-
-    const result = await sheetRes.json();
-    console.log("SheetDB:", JSON.stringify(result));
-
-    return Response.json({ success: true, isReturning });
-
-  } catch (error) {
-    console.error("Error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
-  }
-}
-```
-
-Commit both files and tell me when done! 🚀
