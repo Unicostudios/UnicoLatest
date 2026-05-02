@@ -16,8 +16,8 @@ const Left = () => (
   <div className="col-span-12 flex flex-col justify-between border-r bg-black border-neutral-700 md:col-span-6">
     <div className="px-6 py-20 md:px-12 md:py-24">
       <h2 className="text-3xl sm:text-4xl uppercase md:text-5xl font-montserrat-bold">
-        <span className="text-[#AD7DFF]"> NO-NONSENSE </span>
-        BRANDING & MARKETING THAT ACTUALLY CONVERTS
+        <span className="text-[#AD7DFF]"> WE DIDN'T JUST PIVOT. </span>
+        WE BUILT THE FUTURE OF GROWTH.
       </h2>
     </div>
   </div>
@@ -95,16 +95,9 @@ const Buttons = ({ idx, setIdx }) => {
 
       <motion.span
         key={idx}
-        initial={{
-          width: "0%",
-        }}
-        animate={{
-          width: "100%",
-        }}
-        transition={{
-          duration: 6,
-          ease: "linear",
-        }}
+        initial={{ width: "0%" }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 6, ease: "linear" }}
         onAnimationComplete={() => {
           setIdx((pv) => {
             if (pv === CONTENT.length - 1) {
@@ -128,51 +121,23 @@ const ShiftButton = ({
   bottomDivClasses,
 }) => {
   return (
-    <MotionConfig
-      transition={{
-        ease: "circOut",
-        duration: 0.25,
-      }}
-    >
+    <MotionConfig transition={{ ease: "circOut", duration: 0.25 }}>
       <motion.button
         initial="initial"
         whileHover="hovered"
-        className={twMerge(
-          "relative overflow-hidden transition-colors",
-          btnClasses
-        )}
+        className={twMerge("relative overflow-hidden transition-colors", btnClasses)}
         aria-label="shift-button"
         onClick={onClick}
       >
         <motion.div
-          variants={{
-            initial: {
-              y: "0%",
-            },
-            hovered: {
-              y: "-100%",
-            },
-          }}
-          className={twMerge(
-            "grid h-full place-content-center bg-neutral-950",
-            topDivClasses
-          )}
+          variants={{ initial: { y: "0%" }, hovered: { y: "-100%" } }}
+          className={twMerge("grid h-full place-content-center bg-neutral-950", topDivClasses)}
         >
           {children}
         </motion.div>
         <motion.div
-          variants={{
-            initial: {
-              y: "100%",
-            },
-            hovered: {
-              y: "0%",
-            },
-          }}
-          className={twMerge(
-            "absolute inset-0 grid h-full place-content-center",
-            bottomDivClasses
-          )}
+          variants={{ initial: { y: "100%" }, hovered: { y: "0%" } }}
+          className={twMerge("absolute inset-0 grid h-full place-content-center", bottomDivClasses)}
         >
           {children}
         </motion.div>
@@ -186,8 +151,8 @@ const CONTENT = [
     content: (
       <>
         <p>
-          Hey, we’re Unico Studios👋 <br /> Started in a college dorm, built to
-          disrupt the game.
+          Hey, we're Unico Studios 👋<br />
+          Started in a college dorm. Now building AI systems that close clients for businesses across India and beyond.
         </p>
       </>
     ),
@@ -196,8 +161,8 @@ const CONTENT = [
     content: (
       <>
         <p>
-          Not just pretty pixels. <br /> We craft brand identities, websites,
-          and campaigns that actually perform.
+          We pivoted to AI because we saw the future.<br />
+          While other agencies are still running generic ads, we're building sales machines that work 24/7.
         </p>
       </>
     ),
@@ -206,8 +171,8 @@ const CONTENT = [
     content: (
       <>
         <p>
-          300K+ organic impressions. <br /> Real results, not vanity metrics. We
-          let the work speak.
+          9,073+ founders. ₹4.2Cr audited.<br />
+          Real results from real AI — not vanity metrics from recycled strategies.
         </p>
       </>
     ),
@@ -216,9 +181,8 @@ const CONTENT = [
     content: (
       <>
         <p>
-          You bring the vision.
-          <br />
-          We’ll bring the strategy, design, and execution to make it real
+          You bring the vision.<br />
+          We bring the AI, the strategy, and the execution to turn it into revenue.
         </p>
       </>
     ),
