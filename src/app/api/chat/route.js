@@ -215,7 +215,7 @@ export async function POST(request) {
       model: "gpt-4o-mini",
       messages,
       temperature: 0.9,
-      max_tokens: 800,
+      max_tokens: 600,
     });
 
     const rawReply = completion.choices[0].message.content;
