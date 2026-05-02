@@ -159,27 +159,6 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
 
-function LiveCounter({ base, delta, interval, prefix, suffix }) {
-  const [value, setValue] = useState(base);
-  const directionRef = useRef(1);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setValue((prev) => {
-        const change = Math.floor(Math.random() * delta) + 1;
-        const next = prev + directionRef.current * change;
-        if (next > base + delta * 4) directionRef.current = -1;
-        if (next < base - delta * 2) directionRef.current = 1;
-        return next;
-      });
-    }, interval);
-    return () => clearInterval(timer);
-  }, [base, delta, interval]);
-
-  const formatted = value >= 1000 ? value.toLocaleString("en-IN") : value;
-  return <span>{prefix}{formatted}{suffix}</span>;
-}
-
 export default function ToolsPage() {
   const [screen, setScreen] = useState("landing");
   const [currentTool, setCurrentTool] = useState(null);
@@ -487,21 +466,20 @@ export default function ToolsPage() {
 
           <div className="tp-stats">
             <div className="tp-stat">
-              <div className="tp-stat-num"><LiveCounter base={9073} delta={3} interval={2800} prefix="" suffix="" /></div>
+              <div className="tp-stat-num">9,073+</div>
               <div className="tp-stat-label">Founders using these tools</div>
             </div>
             <div className="tp-stat-divider" />
             <div className="tp-stat">
-              <div className="tp-stat-num"><LiveCounter base={420} delta={2} interval={3200} prefix="₹" suffix="L" /></div>
+              <div className="tp-stat-num">₹4.2Cr</div>
               <div className="tp-stat-label">Revenue audited this month</div>
             </div>
             <div className="tp-stat-divider" />
             <div className="tp-stat">
-              <div className="tp-stat-num"><LiveCounter base={340} delta={5} interval={2400} prefix="" suffix="%" /></div>
+              <div className="tp-stat-num">340%</div>
               <div className="tp-stat-label">Avg lead increase with Niquo</div>
             </div>
           </div>
-
           <div className="tp-grid">
             {Object.values(TOOLS).map((t) => (
               <div key={t.id} className="tp-card" onClick={() => openTool(t.id)}
