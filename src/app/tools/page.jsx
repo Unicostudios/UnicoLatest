@@ -23,7 +23,7 @@ const TOOLS = {
 ✍️ Hook #2 (Pain): "If you're a founder and you're still posting generic content, this is going to hurt to watch."
 ✍️ Hook #3 (Result): "I went from 0 to 50,000 followers in 90 days — here's exactly what changed."
 
-These are just samples. Tell me about YOUR business and I'll generate 3 hooks made specifically for your brand, your audience, your platform. What do you do?`,
+These are just samples. Tell me about YOUR business and I'll generate 3 hooks made specifically for your brand. What do you do?`,
     chips: ["I run a D2C skincare brand", "I have a SaaS product for HR teams", "I run a real estate agency", "I own a fashion brand on Instagram"],
     mode: "content",
     limit: 10,
@@ -46,8 +46,6 @@ These are just samples. Tell me about YOUR business and I'll generate 3 hooks ma
     chipBg: "rgba(244,114,182,0.05)",
     chipBorder: "rgba(244,114,182,0.18)",
     greeting: `Most websites lose 80% of their visitors in the first 10 seconds. Not because the product is bad — because the website fails to communicate value fast enough.
-
-I help business owners diagnose exactly what's broken and fix it — in plain English. No tech knowledge needed.
 
 Share your website URL or describe what your site is supposed to do and I'll tell you exactly what's costing you leads.`,
     chips: ["My website isn't getting leads", "Review my landing page", "I want to build a new website", "Why isn't my site converting?"],
@@ -73,11 +71,9 @@ Share your website URL or describe what your site is supposed to do and I'll tel
     chipBorder: "rgba(34,211,238,0.16)",
     greeting: `Hi. I'm Niquo.
 
-In the next 5 minutes, I'm going to show you exactly how an AI sales assistant would work for YOUR specific business — not a demo, not a simulation. A live, personalised experience.
+In the next 5 minutes I'll show you exactly how an AI sales assistant works for YOUR business — live and personalised.
 
-I'll become your sales rep. I'll speak your customer's language. I'll handle the objections your team struggles with every day.
-
-To start — tell me: what's your business, who's your customer, and what's the #1 reason deals fall through for you?`,
+Tell me: what's your business, who's your customer, and what's the #1 reason deals fall through?`,
     chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
     mode: "niquo",
     limit: 50,
@@ -99,13 +95,9 @@ To start — tell me: what's your business, who's your customer, and what's the 
     userBg: "rgba(251,146,60,0.06)",
     chipBg: "rgba(251,146,60,0.05)",
     chipBorder: "rgba(251,146,60,0.18)",
-    greeting: `I've audited 1000+ websites. The average business is bleeding ₹40,000–₹80,000 every month from 5 specific issues — and most owners have no idea.
+    greeting: `I've audited 1000+ websites. The average business bleeds ₹40,000–₹80,000 every month from 5 specific issues — and most owners have no idea.
 
-Drop your website URL below.
-
-I'll show you exactly where your revenue is bleeding, how much it's costing you per day, what your competitors are doing instead, and the exact fix for each issue.
-
-No fluff. No generic advice. Just brutal, specific truth about YOUR website.`,
+Drop your website URL and I'll show you exactly where your money is going.`,
     chips: ["Audit unicostudios.in", "Audit my competitor's website", "Find my conversion killers", "How much revenue am I losing?"],
     mode: "audit",
     limit: 3,
@@ -166,6 +158,7 @@ const COUNTRIES = [
 function isValidEmail(email) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
+
 function LiveCounter({ base, delta, interval, prefix, suffix }) {
   const [value, setValue] = useState(base);
   const directionRef = useRef(1);
@@ -174,7 +167,7 @@ function LiveCounter({ base, delta, interval, prefix, suffix }) {
     const timer = setInterval(() => {
       setValue((prev) => {
         const change = Math.floor(Math.random() * delta) + 1;
-        const next = prev + (directionRef.current * change);
+        const next = prev + directionRef.current * change;
         if (next > base + delta * 4) directionRef.current = -1;
         if (next < base - delta * 2) directionRef.current = 1;
         return next;
@@ -186,6 +179,7 @@ function LiveCounter({ base, delta, interval, prefix, suffix }) {
   const formatted = value >= 1000 ? value.toLocaleString("en-IN") : value;
   return <span>{prefix}{formatted}{suffix}</span>;
 }
+
 export default function ToolsPage() {
   const [screen, setScreen] = useState("landing");
   const [currentTool, setCurrentTool] = useState(null);
@@ -214,7 +208,7 @@ export default function ToolsPage() {
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
-    if (saved && savedTime && (now - parseInt(savedTime)) < ONE_HOUR) {
+    if (saved && savedTime && now - parseInt(savedTime) < ONE_HOUR) {
       setEmail(saved);
       setShowGate(false);
       fetch("/api/leads", {
@@ -328,7 +322,6 @@ export default function ToolsPage() {
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #080808; }
-
         .tp-nav { width:100%; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #111; position:sticky; top:0; background:#080808; z-index:50; }
         .tp-logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#fff; letter-spacing:-1px; text-decoration:none; }
         .tp-nav-right { display:flex; align-items:center; gap:16px; }
@@ -336,43 +329,36 @@ export default function ToolsPage() {
         .tp-back-btn:hover { color:#e8e8e8; }
         .tp-nav-cta { font-size:12px; font-weight:600; color:#080808; background:#a78bfa; border:none; border-radius:8px; padding:7px 14px; cursor:pointer; font-family:'Syne',sans-serif; transition:opacity 0.15s; text-decoration:none; }
         .tp-nav-cta:hover { opacity:0.88; }
-
         .tp-landing { max-width:1000px; margin:0 auto; padding:56px 24px 80px; font-family:'DM Sans',sans-serif; }
-
         .tp-hero { text-align:center; margin-bottom:24px; }
         .tp-badge { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; letter-spacing:0.04em; color:#a78bfa; background:rgba(167,139,250,0.08); border:1px solid rgba(167,139,250,0.18); border-radius:100px; padding:5px 14px; margin-bottom:20px; }
         .tp-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:#a78bfa; animation:blink 2s ease infinite; }
         .tp-h1 { font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,58px); font-weight:700; letter-spacing:-0.02em; line-height:1.08; color:#fff; margin-bottom:16px; }
         .tp-h1 span { background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .tp-sub { font-size:17px; color:#555; font-weight:300; max-width:520px; margin:0 auto 32px; line-height:1.6; }
-
-        .tp-stats { display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:56px; }
+        .tp-sub { font-size:16px; color:#555; font-weight:300; max-width:480px; margin:0 auto 32px; line-height:1.6; }
+        .tp-stats { display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:48px; }
         .tp-stat { text-align:center; }
-        .tp-stat-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:700; color:#fff; letter-spacing:-0.01em; }
-        .tp-stat-label { font-size:12px; color:#444; margin-top:2px; }
-        .tp-stat-divider { width:1px; height:32px; background:#1e1e1e; }
-
-        .tp-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; margin-bottom:40px; }
-        .tp-card { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:20px; padding:26px 22px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
-        .tp-card::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.3s; border-radius:20px; }
-        .tp-card:hover { transform:translateY(-4px); }
+        .tp-stat-num { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.01em; }
+        .tp-stat-label { font-size:11px; color:#444; margin-top:2px; }
+        .tp-stat-divider { width:1px; height:28px; background:#1e1e1e; }
+        .tp-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:32px; }
+        .tp-card { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:18px; padding:22px 20px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
+        .tp-card:hover { transform:translateY(-3px); }
         .tp-card-tag { position:absolute; top:14px; right:14px; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:3px 10px; border-radius:100px; }
-        .tp-card-icon { width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:16px; }
-        .tp-card-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:#fff; letter-spacing:-0.01em; margin-bottom:6px; }
-        .tp-card-desc { font-size:13px; color:#4a4a4a; line-height:1.6; margin-bottom:18px; font-weight:300; }
+        .tp-card-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:14px; }
+        .tp-card-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:#fff; letter-spacing:-0.01em; margin-bottom:5px; }
+        .tp-card-desc { font-size:12px; color:#444; line-height:1.55; margin-bottom:16px; font-weight:300; }
         .tp-card-footer { display:flex; align-items:center; justify-content:space-between; }
         .tp-card-users { font-size:11px; color:#333; display:flex; align-items:center; gap:4px; }
         .tp-card-users::before { content:''; width:5px; height:5px; border-radius:50%; background:#22c55e; display:inline-block; }
         .tp-card-cta { font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; transition:gap 0.2s; }
         .tp-card:hover .tp-card-cta { gap:8px; }
-
-        .tp-social-proof { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:16px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .tp-social-proof { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:14px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
         .tp-sp-text { font-size:13px; color:#555; line-height:1.5; }
-        .tp-sp-text strong { color:#888; }
+        .tp-sp-text strong { color:#777; }
         .tp-sp-avatars { display:flex; }
-        .tp-sp-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#a78bfa,#22d3ee); border:2px solid #080808; margin-left:-8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; flex-shrink:0; }
-
-        .tp-chat { max-width:740px; margin:0 auto; padding:20px 16px 40px; display:flex; flex-direction:column; min-height:calc(100vh - 65px); font-family:'DM Sans',sans-serif; }
+        .tp-sp-avatar { width:28px; height:28px; border-radius:50%; border:2px solid #080808; margin-left:-7px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
+        .tp-chat { max-width:720px; margin:0 auto; padding:20px 16px 40px; display:flex; flex-direction:column; min-height:calc(100vh - 65px); font-family:'DM Sans',sans-serif; }
         .tp-chat-window { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:20px; overflow:hidden; display:flex; flex-direction:column; flex:1; box-shadow:0 0 0 1px rgba(255,255,255,0.02),0 40px 100px rgba(0,0,0,0.7); }
         .tp-chat-header { padding:14px 18px; border-bottom:1px solid #1a1a1a; display:flex; align-items:center; gap:12px; background:#111; }
         .tp-chat-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
@@ -381,12 +367,9 @@ export default function ToolsPage() {
         .tp-chat-desc { font-size:11px; color:#444; margin-top:1px; }
         .tp-chat-status { display:flex; align-items:center; gap:5px; font-size:11px; color:#333; }
         .tp-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:blink 2s ease infinite; }
-
-        .tp-progress-bar { height:2px; background:#1a1a1a; position:relative; }
-        .tp-progress-fill { height:100%; transition:width 0.5s ease; border-radius:0; }
-        .tp-progress-label { position:absolute; right:12px; top:6px; font-size:10px; color:#333; }
-
-        .tp-messages { flex:1; min-height:300px; max-height:calc(100vh - 300px); overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px; scrollbar-width:thin; scrollbar-color:#1a1a1a transparent; }
+        .tp-progress-bar { height:2px; background:#1a1a1a; }
+        .tp-progress-fill { height:100%; transition:width 0.5s ease; }
+        .tp-messages { flex:1; min-height:300px; max-height:calc(100vh - 290px); overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px; scrollbar-width:thin; scrollbar-color:#1a1a1a transparent; }
         .tp-messages::-webkit-scrollbar { width:3px; }
         .tp-messages::-webkit-scrollbar-thumb { background:#1a1a1a; border-radius:3px; }
         .tp-msg { display:flex; gap:8px; animation:fadeUp 0.25s ease both; }
@@ -404,13 +387,11 @@ export default function ToolsPage() {
         .tp-typing span { width:5px; height:5px; border-radius:50%; background:#333; animation:bounce 1.2s ease infinite; }
         .tp-typing span:nth-child(2) { animation-delay:0.2s; }
         .tp-typing span:nth-child(3) { animation-delay:0.4s; }
-
         .tp-banner { border-radius:12px; padding:14px 18px; margin-bottom:10px; text-align:center; }
-        .tp-banner-title { font-weight:700; font-size:15px; margin-bottom:6px; }
-        .tp-banner-sub { font-size:12px; margin-bottom:12px; }
-        .tp-banner-btn { display:inline-block; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; transition:opacity 0.15s; }
+        .tp-banner-title { font-weight:700; font-size:14px; margin-bottom:5px; }
+        .tp-banner-sub { font-size:12px; margin-bottom:10px; }
+        .tp-banner-btn { display:inline-block; padding:8px 18px; border-radius:8px; font-size:12px; font-weight:600; text-decoration:none; transition:opacity 0.15s; }
         .tp-banner-btn:hover { opacity:0.85; }
-
         .tp-input-area { border-top:1px solid #1a1a1a; padding:12px 14px; background:#080808; }
         .tp-input-row { display:flex; align-items:flex-end; gap:8px; }
         .tp-input-wrap { flex:1; background:#0d0d0d; border:1px solid #1a1a1a; border-radius:12px; padding:10px 14px; transition:border-color 0.2s; }
@@ -419,71 +400,65 @@ export default function ToolsPage() {
         .tp-send { width:34px; height:34px; border-radius:9px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity 0.15s,transform 0.1s; }
         .tp-send:hover { opacity:0.82; transform:scale(0.96); }
         .tp-hint { text-align:center; font-size:10px; color:#222; margin-top:8px; }
-
         .tp-gate { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
-        .tp-gate-modal { background:#0d0d0d; border:1px solid #222; border-radius:24px; padding:36px 32px; width:100%; max-width:460px; text-align:center; box-shadow:0 60px 120px rgba(0,0,0,0.9); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); max-height:92vh; overflow-y:auto; }
-        .tp-gate-icon { width:60px; height:60px; border-radius:18px; background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.1)); border:1px solid rgba(167,139,250,0.2); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 22px; }
-        .tp-gate-title { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; color:#fff; margin-bottom:8px; letter-spacing:-0.02em; }
+        .tp-gate-modal { background:#0d0d0d; border:1px solid #222; border-radius:24px; padding:36px 32px; width:100%; max-width:440px; text-align:center; box-shadow:0 60px 120px rgba(0,0,0,0.9); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); max-height:92vh; overflow-y:auto; }
+        .tp-gate-icon { width:56px; height:56px; border-radius:16px; background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.1)); border:1px solid rgba(167,139,250,0.2); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 20px; }
+        .tp-gate-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#fff; margin-bottom:8px; letter-spacing:-0.02em; }
         .tp-gate-sub { font-size:14px; color:#555; line-height:1.6; margin-bottom:6px; }
         .tp-gate-sub strong { color:#a78bfa; }
-        .tp-gate-value { font-size:12px; color:#333; margin-bottom:24px; }
-        .tp-gate-perks { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; text-align:left; background:#111; border-radius:12px; padding:16px; }
-        .tp-gate-perk { display:flex; align-items:center; gap:10px; font-size:13px; color:#666; }
-        .tp-gate-perk-icon { font-size:14px; flex-shrink:0; }
-        .tp-gate-input { width:100%; background:#111; border:1px solid #222; border-radius:10px; padding:13px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:#ccc; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
+        .tp-gate-value { font-size:12px; color:#333; margin-bottom:20px; }
+        .tp-gate-perks { display:flex; flex-direction:column; gap:7px; margin-bottom:20px; text-align:left; background:#111; border-radius:10px; padding:14px; }
+        .tp-gate-perk { display:flex; align-items:center; gap:9px; font-size:12px; color:#555; }
+        .tp-gate-perk-icon { font-size:13px; flex-shrink:0; }
+        .tp-gate-input { width:100%; background:#111; border:1px solid #222; border-radius:10px; padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:#ccc; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
         .tp-gate-input::placeholder { color:#2a2a2a; }
         .tp-gate-input:focus { border-color:#a78bfa; }
         .tp-gate-input.error { border-color:#f87171; }
         .tp-gate-error { font-size:12px; color:#f87171; margin-bottom:8px; text-align:left; }
         .tp-phone-row { display:flex; gap:8px; margin-bottom:8px; }
-        .tp-country-btn { background:#111; border:1px solid #222; border-radius:10px; padding:13px 10px; color:#ccc; cursor:pointer; font-size:13px; white-space:nowrap; display:flex; align-items:center; gap:5px; flex-shrink:0; transition:border-color 0.2s; }
+        .tp-country-btn { background:#111; border:1px solid #222; border-radius:10px; padding:12px 10px; color:#ccc; cursor:pointer; font-size:13px; white-space:nowrap; display:flex; align-items:center; gap:5px; flex-shrink:0; transition:border-color 0.2s; }
         .tp-country-btn:hover { border-color:#a78bfa; }
         .tp-country-dropdown { position:absolute; top:100%; left:0; right:0; background:#161616; border:1px solid #2a2a2a; border-radius:10px; max-height:180px; overflow-y:auto; z-index:200; margin-top:4px; box-shadow:0 20px 40px rgba(0,0,0,0.5); }
         .tp-country-option { padding:10px 14px; cursor:pointer; font-size:13px; color:#aaa; display:flex; align-items:center; gap:8px; }
         .tp-country-option:hover { background:#1e1e1e; color:#fff; }
-        .tp-gate-btn { width:100%; background:linear-gradient(135deg,#a78bfa,#8b5cf6); border:none; border-radius:12px; padding:14px; font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:#fff; cursor:pointer; transition:opacity 0.15s,transform 0.1s; margin-top:4px; letter-spacing:0.01em; }
+        .tp-gate-btn { width:100%; background:linear-gradient(135deg,#a78bfa,#8b5cf6); border:none; border-radius:11px; padding:13px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#fff; cursor:pointer; transition:opacity 0.15s,transform 0.1s; margin-top:4px; }
         .tp-gate-btn:hover { opacity:0.88; transform:translateY(-1px); }
         .tp-gate-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-        .tp-gate-fine { font-size:11px; color:#252525; margin-top:12px; }
-        .tp-success-icon { width:56px; height:56px; border-radius:50%; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 18px; }
-
+        .tp-gate-fine { font-size:11px; color:#252525; margin-top:10px; }
+        .tp-success-icon { width:52px; height:52px; border-radius:50%; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 16px; }
         .tp-upgrade { position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(10px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
-        .tp-upgrade-modal { background:#0d0d0d; border:1px solid #1e1e1e; border-radius:24px; padding:32px 28px; width:100%; max-width:480px; text-align:center; max-height:92vh; overflow-y:auto; }
-        .tp-upgrade-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#fff; margin-bottom:8px; letter-spacing:-0.02em; }
-        .tp-upgrade-sub { font-size:14px; color:#555; margin-bottom:28px; line-height:1.6; }
-        .tp-plans { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-        .tp-plan { background:#111; border:1px solid #1e1e1e; border-radius:14px; padding:16px 18px; text-align:left; cursor:pointer; transition:all 0.2s; position:relative; text-decoration:none; display:block; }
+        .tp-upgrade-modal { background:#0d0d0d; border:1px solid #1e1e1e; border-radius:22px; padding:30px 26px; width:100%; max-width:460px; text-align:center; max-height:92vh; overflow-y:auto; }
+        .tp-upgrade-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#fff; margin-bottom:8px; letter-spacing:-0.02em; }
+        .tp-upgrade-sub { font-size:13px; color:#555; margin-bottom:24px; line-height:1.6; }
+        .tp-plans { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+        .tp-plan { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:14px 16px; text-align:left; cursor:pointer; transition:all 0.2s; position:relative; text-decoration:none; display:block; }
         .tp-plan:hover { border-color:#333; transform:translateY(-1px); }
         .tp-plan.popular { border-color:rgba(34,211,238,0.3); background:rgba(34,211,238,0.04); }
-        .tp-plan-popular-tag { position:absolute; top:-8px; right:16px; font-size:10px; font-weight:700; background:#22d3ee; color:#000; padding:2px 10px; border-radius:100px; }
-        .tp-plan-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-        .tp-plan-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:#fff; }
-        .tp-plan-price { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; }
+        .tp-plan-popular-tag { position:absolute; top:-8px; right:14px; font-size:10px; font-weight:700; background:#22d3ee; color:#000; padding:2px 9px; border-radius:100px; }
+        .tp-plan-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+        .tp-plan-name { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#fff; }
+        .tp-plan-price { font-family:'Syne',sans-serif; font-size:17px; font-weight:800; }
         .tp-plan-price span { font-size:11px; font-weight:400; color:#444; }
-        .tp-plan-features { display:flex; flex-wrap:wrap; gap:6px; }
-        .tp-plan-feature { font-size:11px; color:#555; background:#1a1a1a; padding:3px 8px; border-radius:100px; }
-        .tp-or { font-size:12px; color:#333; margin:8px 0; }
-        .tp-calendly-btn { display:block; width:100%; padding:13px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:12px; color:#fff; font-size:14px; font-weight:500; text-decoration:none; text-align:center; transition:background 0.15s; }
-        .tp-calendly-btn:hover { background:#222; }
-
+        .tp-plan-features { display:flex; flex-wrap:wrap; gap:5px; }
+        .tp-plan-feature { font-size:11px; color:#555; background:#1a1a1a; padding:2px 7px; border-radius:100px; }
+        .tp-or { font-size:12px; color:#2a2a2a; margin:8px 0; }
+        .tp-calendly-btn { display:block; width:100%; padding:12px; background:#1a1a1a; border:1px solid #222; border-radius:11px; color:#888; font-size:13px; font-weight:500; text-decoration:none; text-align:center; transition:background 0.15s; }
+        .tp-calendly-btn:hover { background:#1e1e1e; color:#aaa; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
         @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-
         @media(max-width:640px) {
           .tp-grid { grid-template-columns:1fr; }
-          .tp-landing { padding:32px 16px 60px; }
-          .tp-gate-modal { padding:28px 20px; }
+          .tp-landing { padding:32px 16px 56px; }
+          .tp-gate-modal { padding:24px 18px; }
           .tp-chat { padding:10px 10px 28px; }
-          .tp-stats { gap:20px; }
-          .tp-stat-num { font-size:22px; }
+          .tp-stats { gap:18px; }
+          .tp-stat-num { font-size:20px; }
           .tp-social-proof { flex-direction:column; text-align:center; }
-          .tp-plans { gap:8px; }
         }
       `}</style>
 
-      {/* NAV */}
       <nav className="tp-nav">
         <a href="/" className="tp-logo">∂ Unico</a>
         <div className="tp-nav-right">
@@ -498,13 +473,10 @@ export default function ToolsPage() {
               Back to Unico
             </a>
           )}
-          <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="tp-nav-cta">
-            Book a Call
-          </a>
+          <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="tp-nav-cta">Book a Call</a>
         </div>
       </nav>
 
-      {/* LANDING */}
       {screen === "landing" && (
         <div className="tp-landing">
           <div className="tp-hero">
@@ -513,89 +485,60 @@ export default function ToolsPage() {
             <p className="tp-sub">4 free AI tools built for founders and brands who are serious about growth. No fluff. No generic output. Just results.</p>
           </div>
 
-          {/* Stats */}
           <div className="tp-stats">
             <div className="tp-stat">
-              <div className="tp-stat-num">
-                <LiveCounter base={9073} delta={3} interval={2800} prefix="" suffix="" />
-              </div>
+              <div className="tp-stat-num"><LiveCounter base={9073} delta={3} interval={2800} prefix="" suffix="" /></div>
               <div className="tp-stat-label">Founders using these tools</div>
             </div>
             <div className="tp-stat-divider" />
             <div className="tp-stat">
-              <div className="tp-stat-num">
-                <LiveCounter base={420} delta={2} interval={3200} prefix="₹" suffix="L" />
-              </div>
+              <div className="tp-stat-num"><LiveCounter base={420} delta={2} interval={3200} prefix="₹" suffix="L" /></div>
               <div className="tp-stat-label">Revenue audited this month</div>
             </div>
             <div className="tp-stat-divider" />
             <div className="tp-stat">
-              <div className="tp-stat-num">
-                <LiveCounter base={340} delta={5} interval={2400} prefix="" suffix="%" />
-              </div>
+              <div className="tp-stat-num"><LiveCounter base={340} delta={5} interval={2400} prefix="" suffix="%" /></div>
               <div className="tp-stat-label">Avg lead increase with Niquo</div>
             </div>
           </div>
-          
-          {/* Tool Cards */}
+
           <div className="tp-grid">
             {Object.values(TOOLS).map((t) => (
               <div key={t.id} className="tp-card" onClick={() => openTool(t.id)}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = t.color + "55";
-                  e.currentTarget.style.boxShadow = `0 20px 60px ${t.color}11`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#1a1a1a";
-                  e.currentTarget.style.boxShadow = "none";
-                }}>
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = t.color + "55"; e.currentTarget.style.boxShadow = `0 16px 48px ${t.color}11`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1a1a1a"; e.currentTarget.style.boxShadow = "none"; }}>
                 {t.tag && (
-                  <div className="tp-card-tag" style={{ background: t.bgActive, color: t.color, border: `1px solid ${t.borderFaint}` }}>
-                    {t.tag}
-                  </div>
+                  <div className="tp-card-tag" style={{ background: t.bgActive, color: t.color, border: `1px solid ${t.borderFaint}` }}>{t.tag}</div>
                 )}
-                <div className="tp-card-icon" style={{ background: t.headerBg, border: `1px solid ${t.borderFaint}` }}>
-                  {t.icon}
-                </div>
+                <div className="tp-card-icon" style={{ background: t.headerBg, border: `1px solid ${t.borderFaint}` }}>{t.icon}</div>
                 <div className="tp-card-name">{t.name}</div>
                 <div className="tp-card-desc">{t.longDesc}</div>
                 <div className="tp-card-footer">
-                  <div className="tp-card-users" style={{ color: "#333" }}>
-                    {t.users} using this
-                  </div>
-                  <div className="tp-card-cta" style={{ color: t.color }}>
-                    Try free →
-                  </div>
+                  <div className="tp-card-users" style={{ color: "#333" }}>{t.users} using this</div>
+                  <div className="tp-card-cta" style={{ color: t.color }}>Try free →</div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Social Proof */}
           <div className="tp-social-proof">
             <div className="tp-sp-avatars">
-              {["S", "R", "A", "P", "M"].map((l, i) => (
-                <div key={i} className="tp-sp-avatar" style={{ background: `linear-gradient(135deg, ${["#a78bfa","#f472b6","#22d3ee","#fb923c","#a78bfa"][i]}, ${["#8b5cf6","#e879f9","#06b6d4","#f97316","#8b5cf6"][i]})` }}>
-                  {l}
-                </div>
+              {["S","R","A","P","M"].map((l, i) => (
+                <div key={i} className="tp-sp-avatar" style={{ background: `linear-gradient(135deg,${["#a78bfa","#f472b6","#22d3ee","#fb923c","#a78bfa"][i]},${["#8b5cf6","#e879f9","#06b6d4","#f97316","#8b5cf6"][i]})` }}>{l}</div>
               ))}
             </div>
-            <div className="tp-sp-text">
-              <strong>9,073+ founders</strong> from India, UAE, Singapore and 18 other countries are already using these tools. Join them — it's completely free.
-            </div>
+            <div className="tp-sp-text"><strong>9,073+ founders</strong> from India, UAE, Singapore and 18 other countries are already using these tools. Completely free.</div>
             <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
-              style={{ flexShrink: 0, padding: "10px 20px", background: "linear-gradient(135deg,#a78bfa,#8b5cf6)", borderRadius: 10, color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700, fontFamily: "'Syne',sans-serif", whiteSpace: "nowrap" }}>
+              style={{ flexShrink:0, padding:"9px 18px", background:"linear-gradient(135deg,#a78bfa,#8b5cf6)", borderRadius:9, color:"#fff", textDecoration:"none", fontSize:13, fontWeight:700, fontFamily:"'Syne',sans-serif", whiteSpace:"nowrap" }}>
               Book a Call →
             </a>
           </div>
         </div>
       )}
 
-      {/* CHAT SCREEN */}
       {screen === "chat" && tool && (
         <div className="tp-chat">
           <div className="tp-chat-window">
-            {/* Header */}
             <div className="tp-chat-header">
               <div className="tp-chat-icon" style={{ background: tool.headerBg, border: `1px solid ${tool.borderFaint}` }}>{tool.icon}</div>
               <div className="tp-chat-info">
@@ -605,40 +548,31 @@ export default function ToolsPage() {
               <div className="tp-chat-status"><div className="tp-dot" />Live</div>
             </div>
 
-            {/* Usage Progress Bar */}
             {email && (
               <div className="tp-progress-bar">
-                <div className="tp-progress-fill" style={{
-                  width: `${usagePercent}%`,
-                  background: usagePercent > 80 ? "#ef4444" : usagePercent > 50 ? tool.color : tool.color,
-                  opacity: 0.7
-                }} />
+                <div className="tp-progress-fill" style={{ width: `${usagePercent}%`, background: usagePercent > 80 ? "#ef4444" : tool.color, opacity: 0.7 }} />
               </div>
             )}
 
-            {/* Messages */}
             <div className="tp-messages">
-              {/* Niquo demo completed banner */}
               {demoCompleted && currentTool === "niquo" && (
-                <div className="tp-banner" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.2)" }}>
-                  <div className="tp-banner-title" style={{ color: "#22d3ee" }}>⚡ Demo Complete!</div>
-                  <div className="tp-banner-sub" style={{ color: "#555" }}>You just experienced what Niquo can do for YOUR business. Ready to make it real?</div>
+                <div className="tp-banner" style={{ background:"rgba(34,211,238,0.05)", border:"1px solid rgba(34,211,238,0.2)" }}>
+                  <div className="tp-banner-title" style={{ color:"#22d3ee" }}>⚡ Demo Complete!</div>
+                  <div className="tp-banner-sub" style={{ color:"#555" }}>You just experienced what Niquo can do for YOUR business. Ready to make it real?</div>
                   <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
-                    className="tp-banner-btn" style={{ background: "rgba(34,211,238,0.1)", border: "1px solid rgba(34,211,238,0.25)", color: "#22d3ee" }}>
+                    className="tp-banner-btn" style={{ background:"rgba(34,211,238,0.1)", border:"1px solid rgba(34,211,238,0.25)", color:"#22d3ee" }}>
                     📅 Book Your Free Call with Saurav →
                   </a>
                 </div>
               )}
 
-              {/* Audit Part 1 completed banner */}
-              {auditPart1Done && currentTool === "audit" && !demoCompleted && (
-                <div className="tp-banner" style={{ background: "rgba(251,146,60,0.05)", border: "1px solid rgba(251,146,60,0.2)" }}>
-                  <div className="tp-banner-title" style={{ color: "#fb923c" }}>🔥 Part 1 Complete — 2 more bleeds to go</div>
-                  <div className="tp-banner-sub" style={{ color: "#555" }}>Reply "yes" to see the 2 most critical issues — including the one that's costing you the most leads right now.</div>
+              {auditPart1Done && currentTool === "audit" && (
+                <div className="tp-banner" style={{ background:"rgba(251,146,60,0.05)", border:"1px solid rgba(251,146,60,0.2)" }}>
+                  <div className="tp-banner-title" style={{ color:"#fb923c" }}>🔥 Part 1 Complete</div>
+                  <div className="tp-banner-sub" style={{ color:"#555" }}>Reply "yes" to see the 2 most critical issues — the ones costing you the most leads.</div>
                 </div>
               )}
 
-              {/* Greeting */}
               <div className="tp-msg">
                 <div className="tp-avatar" style={{ background: tool.headerBg }}>{tool.icon}</div>
                 <div className="tp-msg-body">
@@ -646,7 +580,8 @@ export default function ToolsPage() {
                   <div className="tp-bubble">{tool.greeting}</div>
                   <div className="tp-chips">
                     {tool.chips.map((chip) => (
-                      <span key={chip} className="tp-chip" onClick={() => { if (!showGate) sendMessage(chip); }}
+                      <span key={chip} className="tp-chip"
+                        onClick={() => { if (!showGate) sendMessage(chip); }}
                         style={{ color: tool.color, background: tool.chipBg, borderColor: tool.chipBorder }}>
                         ↗ {chip}
                       </span>
@@ -655,7 +590,6 @@ export default function ToolsPage() {
                 </div>
               </div>
 
-              {/* Messages */}
               {currentMessages.map((msg, i) => (
                 <div key={i} className={`tp-msg ${msg.role === "user" ? "user" : ""}`}>
                   <div className="tp-avatar" style={{ background: msg.role === "user" ? "rgba(255,255,255,0.03)" : tool.headerBg }}>
@@ -668,14 +602,11 @@ export default function ToolsPage() {
                         part.match(/^https?:\/\//) ? (
                           part.includes("calendly") ? (
                             <a key={j} href={part} target="_blank" rel="noopener noreferrer"
-                              style={{ color: tool.color, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, marginTop: 8, padding: "8px 14px", background: tool.bgActive, border: `1px solid ${tool.borderActive}`, borderRadius: 8, fontWeight: 600, fontSize: 13 }}>
+                              style={{ color: tool.color, textDecoration:"none", display:"inline-flex", alignItems:"center", gap:6, marginTop:8, padding:"8px 14px", background: tool.bgActive, border:`1px solid ${tool.borderActive}`, borderRadius:8, fontWeight:600, fontSize:13 }}>
                               📅 Click here to book your call
                             </a>
                           ) : (
-                            <a key={j} href={part} target="_blank" rel="noopener noreferrer"
-                              style={{ color: tool.color, textDecoration: "underline" }}>
-                              {part}
-                            </a>
+                            <a key={j} href={part} target="_blank" rel="noopener noreferrer" style={{ color: tool.color, textDecoration:"underline" }}>{part}</a>
                           )
                         ) : <span key={j}>{part}</span>
                       )}
@@ -684,7 +615,6 @@ export default function ToolsPage() {
                 </div>
               ))}
 
-              {/* Typing indicator */}
               {loading && (
                 <div className="tp-msg">
                   <div className="tp-avatar" style={{ background: tool.headerBg }}>{tool.icon}</div>
@@ -697,7 +627,6 @@ export default function ToolsPage() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
             <div className="tp-input-area">
               <div className="tp-input-row">
                 <div className="tp-input-wrap" style={{ borderColor: input ? tool.color + "88" : "#1a1a1a" }}>
@@ -711,15 +640,12 @@ export default function ToolsPage() {
                   </svg>
                 </button>
               </div>
-              <p className="tp-hint">
-                {email ? `${currentLimit - currentUses} of ${currentLimit} free uses remaining · ${tool.shortName}` : "Free · No credit card · No spam ever"}
-              </p>
+              <p className="tp-hint">{email ? `${currentLimit - currentUses} of ${currentLimit} free uses remaining · ${tool.shortName}` : "Free · No credit card · No spam ever"}</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* GATE */}
       {showGate && (
         <div className="tp-gate">
           <div className="tp-gate-modal">
@@ -773,9 +699,9 @@ export default function ToolsPage() {
             ) : (
               <>
                 <div className="tp-success-icon">✓</div>
-                <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 8, letterSpacing: "-0.02em" }}>Welcome to Unico Tools! 🎉</h2>
-                <p style={{ color: "#555", fontSize: 14, marginBottom: 8, lineHeight: 1.6 }}>You now have access to 4 AI tools that most businesses pay ₹15,000/month for.</p>
-                <p style={{ color: "#333", fontSize: 12, marginBottom: 28 }}>Check your email — we sent you a quick guide on how to get max value.</p>
+                <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:21, fontWeight:800, color:"#fff", marginBottom:8, letterSpacing:"-0.02em" }}>Welcome to Unico Tools! 🎉</h2>
+                <p style={{ color:"#555", fontSize:14, marginBottom:8, lineHeight:1.6 }}>You now have access to 4 AI tools that most businesses pay ₹15,000/month for.</p>
+                <p style={{ color:"#333", fontSize:12, marginBottom:24 }}>Check your email — we sent you a quick guide on how to get max value.</p>
                 <button className="tp-gate-btn" onClick={closeGate}>Explore the Tools →</button>
               </>
             )}
@@ -783,20 +709,18 @@ export default function ToolsPage() {
         </div>
       )}
 
-      {/* UPGRADE MODAL WITH PRICING */}
       {showUpgrade && tool && (
         <div className="tp-upgrade">
           <div className="tp-upgrade-modal">
-            <div style={{ fontSize: 40, marginBottom: 12 }}>
+            <div style={{ fontSize:38, marginBottom:10 }}>
               {currentTool === "niquo" ? "⚡" : currentTool === "audit" ? "🔍" : "🔥"}
             </div>
             <div className="tp-upgrade-title">
               {currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Audit credits used up!" : "You've hit your free limit!"}
             </div>
             <div className="tp-upgrade-sub">
-              {currentTool === "niquo" ? "Ready to build a custom AI sales system for your business?" : currentTool === "audit" ? "Want unlimited audits + all other tools?" : `Upgrade to keep using ${tool.name} and all other tools.`}
+              {currentTool === "niquo" ? "Ready to build a custom AI sales system for your business?" : currentTool === "audit" ? "Want unlimited audits + all other tools?" : `Upgrade to keep using ${tool.name}.`}
             </div>
-
             <div className="tp-plans">
               {PLANS.map((plan) => (
                 <a key={plan.name} href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
@@ -807,20 +731,17 @@ export default function ToolsPage() {
                     <div className="tp-plan-price" style={{ color: plan.color }}>{plan.price}<span>{plan.period}</span></div>
                   </div>
                   <div className="tp-plan-features">
-                    {plan.features.map((f) => (
-                      <span key={f} className="tp-plan-feature">{f}</span>
-                    ))}
+                    {plan.features.map((f) => <span key={f} className="tp-plan-feature">{f}</span>)}
                   </div>
                 </a>
               ))}
             </div>
-
             <div className="tp-or">— or —</div>
             <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="tp-calendly-btn">
-              📅 Book a Free Strategy Call with Saurav Instead
+              📅 Book a Free Strategy Call with Saurav
             </a>
             <button onClick={() => setShowUpgrade(false)}
-              style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 12, marginTop: 14, display: "block", width: "100%" }}>
+              style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:12, marginTop:12, display:"block", width:"100%" }}>
               Close
             </button>
           </div>
