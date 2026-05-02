@@ -1,6 +1,6 @@
 export async function POST(request) {
   try {
-    const { email, phone, tool, returning } = await request.json();
+    const { email, phone, tool, returning, country } = await request.json();
 
     if (!email || !tool) {
       return Response.json({ error: "Missing fields" }, { status: 400 });
@@ -8,12 +8,9 @@ export async function POST(request) {
 
     const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
-    // Check if email already exists in sheet
     const checkRes = await fetch(
       `${process.env.SHEETDB_API_URL}/search?Email=${encodeURIComponent(email)}`,
-      {
-        headers: { "Accept": "application/json" },
-      }
+      { headers: { "Accept": "application/json" } }
     );
     const existing = await checkRes.json();
     const isReturning = returning || (Array.isArray(existing) && existing.length > 0);
@@ -25,16 +22,14 @@ export async function POST(request) {
       Date: date,
       Status: isReturning ? "Return Visit" : "New Lead",
       "Demo Completed": "No",
+      Country: isReturning ? (existing[0]?.Country || "Unknown") : (country || "Unknown"),
     };
 
     console.log("Saving:", JSON.stringify(rowData));
 
     const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
       method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
       body: JSON.stringify({ data: [rowData] }),
     });
 
