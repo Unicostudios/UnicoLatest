@@ -1,5 +1,44 @@
+No! The `otp/route.js` is already created and ready. 
+
+Now I need to give you the updated `tools/page.jsx` with:
+- Country code selector
+- OTP send + verify flow
+- Country auto-detection from country code
+
+This is a big file so let me build it properly. Here is the complete `src/app/tools/page.jsx`:
+
+```jsx
 "use client";
 import { useState, useRef, useEffect } from "react";
+
+const COUNTRIES = [
+  { code: "+91", name: "India", flag: "🇮🇳", country: "India" },
+  { code: "+1", name: "USA/Canada", flag: "🇺🇸", country: "United States" },
+  { code: "+44", name: "UK", flag: "🇬🇧", country: "United Kingdom" },
+  { code: "+61", name: "Australia", flag: "🇦🇺", country: "Australia" },
+  { code: "+971", name: "UAE", flag: "🇦🇪", country: "UAE" },
+  { code: "+65", name: "Singapore", flag: "🇸🇬", country: "Singapore" },
+  { code: "+60", name: "Malaysia", flag: "🇲🇾", country: "Malaysia" },
+  { code: "+49", name: "Germany", flag: "🇩🇪", country: "Germany" },
+  { code: "+33", name: "France", flag: "🇫🇷", country: "France" },
+  { code: "+81", name: "Japan", flag: "🇯🇵", country: "Japan" },
+  { code: "+82", name: "South Korea", flag: "🇰🇷", country: "South Korea" },
+  { code: "+55", name: "Brazil", flag: "🇧🇷", country: "Brazil" },
+  { code: "+52", name: "Mexico", flag: "🇲🇽", country: "Mexico" },
+  { code: "+27", name: "South Africa", flag: "🇿🇦", country: "South Africa" },
+  { code: "+234", name: "Nigeria", flag: "🇳🇬", country: "Nigeria" },
+  { code: "+20", name: "Egypt", flag: "🇪🇬", country: "Egypt" },
+  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦", country: "Saudi Arabia" },
+  { code: "+90", name: "Turkey", flag: "🇹🇷", country: "Turkey" },
+  { code: "+7", name: "Russia", flag: "🇷🇺", country: "Russia" },
+  { code: "+86", name: "China", flag: "🇨🇳", country: "China" },
+  { code: "+62", name: "Indonesia", flag: "🇮🇩", country: "Indonesia" },
+  { code: "+63", name: "Philippines", flag: "🇵🇭", country: "Philippines" },
+  { code: "+92", name: "Pakistan", flag: "🇵🇰", country: "Pakistan" },
+  { code: "+880", name: "Bangladesh", flag: "🇧🇩", country: "Bangladesh" },
+  { code: "+94", name: "Sri Lanka", flag: "🇱🇰", country: "Sri Lanka" },
+  { code: "+977", name: "Nepal", flag: "🇳🇵", country: "Nepal" },
+];
 
 const TOOLS = {
   content: {
@@ -17,12 +56,7 @@ const TOOLS = {
     chipBg: "rgba(167,139,250,0.05)",
     chipBorder: "rgba(167,139,250,0.18)",
     greeting: "Hey! I generate high-conversion content for your startup — reel scripts, hook ideas, CTA lines, thumbnail concepts. What's your brand about?",
-    chips: [
-      "Write me a reel hook for a SaaS product",
-      "Write 5 CTA lines for a landing page",
-      "Write a 30-second reel script for a D2C brand",
-      "Give me 3 thumbnail concepts for my startup",
-    ],
+    chips: ["Write me a reel hook for a SaaS product", "Write 5 CTA lines for a landing page", "Write a 30-second reel script for a D2C brand", "Give me 3 thumbnail concepts for my startup"],
     mode: "content",
     limit: 10,
   },
@@ -41,12 +75,7 @@ const TOOLS = {
     chipBg: "rgba(244,114,182,0.05)",
     chipBorder: "rgba(244,114,182,0.18)",
     greeting: "Paste your messy, broken, or unoptimized code and I'll give it back clean, readable, and production-ready. What are we fixing today?",
-    chips: [
-      "Fix the bugs in my JavaScript",
-      "Clean up and optimize this React component",
-      "Review my code architecture and suggest improvements",
-      "Make this code faster and more performant",
-    ],
+    chips: ["Fix the bugs in my JavaScript", "Clean up and optimize this React component", "Review my code architecture and suggest improvements", "Make this code faster and more performant"],
     mode: "code",
     limit: 10,
   },
@@ -65,12 +94,7 @@ const TOOLS = {
     chipBg: "rgba(34,211,238,0.04)",
     chipBorder: "rgba(34,211,238,0.16)",
     greeting: "Hi! I'm Niquo. I'll show you exactly how an AI sales assistant would work for YOUR business. To get started — what's your company name and what do you sell?",
-    chips: [
-      "I run an e-commerce brand selling fashion",
-      "I have a real estate agency in Bangalore",
-      "I run a SaaS product for HR teams",
-      "I own a restaurant chain",
-    ],
+    chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
     mode: "niquo",
     limit: 50,
   },
@@ -78,10 +102,6 @@ const TOOLS = {
 
 function isValidEmail(email) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-}
-
-function isValidPhone(phone) {
-  return /^[6-9]\d{9}$/.test(phone.replace(/\s/g, ""));
 }
 
 export default function ToolsPage() {
@@ -92,14 +112,19 @@ export default function ToolsPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailInput, setEmailInput] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [phoneInput, setPhoneInput] = useState("");
+  const [otpInput, setOtpInput] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [otpError, setOtpError] = useState("");
   const [showGate, setShowGate] = useState(true);
-  const [gateSuccess, setGateSuccess] = useState(false);
-  const [submittingEmail, setSubmittingEmail] = useState(false);
+  const [gateStep, setGateStep] = useState("details");
+  const [submitting, setSubmitting] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const ONE_HOUR = 60 * 60 * 1000;
@@ -108,7 +133,6 @@ export default function ToolsPage() {
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
-
     if (saved && savedTime && (now - parseInt(savedTime)) < ONE_HOUR) {
       setEmail(saved);
       setShowGate(false);
@@ -128,42 +152,84 @@ export default function ToolsPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
+
   const tool = TOOLS[currentTool];
   const currentUses = uses[currentTool];
   const currentLimit = tool.limit;
+  const fullPhone = `${selectedCountry.code}${phoneInput}`;
 
-  const handleEmailSubmit = async () => {
+  const handleSendOTP = async () => {
     setEmailError("");
     setPhoneError("");
     let valid = true;
     if (!emailInput) { setEmailError("Please enter your email address"); valid = false; }
     else if (!isValidEmail(emailInput)) { setEmailError("Please enter a valid email address"); valid = false; }
     if (!phoneInput) { setPhoneError("Please enter your phone number"); valid = false; }
-    else if (!isValidPhone(phoneInput)) { setPhoneError("Please enter a valid 10-digit Indian mobile number"); valid = false; }
+    else if (phoneInput.length < 6) { setPhoneError("Please enter a valid phone number"); valid = false; }
     if (!valid) return;
-    setSubmittingEmail(true);
+    setSubmitting(true);
     try {
-      const res = await fetch("/api/leads", {
+      const res = await fetch("/api/otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailInput, phone: phoneInput, tool: tool.name }),
+        body: JSON.stringify({ action: "send", phone: fullPhone }),
       });
       const data = await res.json();
-      console.log("Leads API response:", data);
-      sessionStorage.setItem("unico_tools_email", emailInput);
-      sessionStorage.setItem("unico_tools_time", Date.now().toString());
-      setEmail(emailInput);
-      setGateSuccess(true);
-    } catch (err) {
-      console.error("Leads error:", err);
-      setEmailError("Something went wrong. Please try again.");
+      if (data.success) {
+        setGateStep("otp");
+        setResendTimer(60);
+      } else {
+        setPhoneError(data.error || "Failed to send OTP. Please try again.");
+      }
+    } catch {
+      setPhoneError("Something went wrong. Please try again.");
     }
-    setSubmittingEmail(false);
+    setSubmitting(false);
+  };
+
+  const handleVerifyOTP = async () => {
+    setOtpError("");
+    if (!otpInput || otpInput.length !== 6) { setOtpError("Please enter the 6-digit OTP"); return; }
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify", phone: fullPhone, otp: otpInput }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: emailInput,
+            phone: fullPhone,
+            tool: tool.name,
+            country: selectedCountry.country,
+          }),
+        });
+        sessionStorage.setItem("unico_tools_email", emailInput);
+        sessionStorage.setItem("unico_tools_time", Date.now().toString());
+        setEmail(emailInput);
+        setGateStep("success");
+      } else {
+        setOtpError(data.error || "Incorrect OTP. Please try again.");
+      }
+    } catch {
+      setOtpError("Something went wrong. Please try again.");
+    }
+    setSubmitting(false);
   };
 
   const closeGate = () => {
     setShowGate(false);
-    setGateSuccess(false);
     setTimeout(() => textareaRef.current?.focus(), 100);
   };
 
@@ -256,15 +322,12 @@ export default function ToolsPage() {
         .t-hint { text-align:center; font-size:11px; color:#2a2a2a; margin-top:10px; letter-spacing:0.03em; }
         .t-gate { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.2s ease; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .t-gate-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:420px; text-align:center; box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 40px 100px rgba(0,0,0,0.8); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .t-gate-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:440px; text-align:center; box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 40px 100px rgba(0,0,0,0.8); animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1); }
         @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .t-gate-icon { width:60px; height:60px; border-radius:16px; background:rgba(167,139,250,0.10); border:1px solid rgba(167,139,250,0.18); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 22px; }
         .t-gate-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.02em; margin-bottom:10px; }
         .t-gate-sub { font-size:14px; color:#555; line-height:1.6; margin-bottom:24px; font-weight:300; }
         .t-gate-sub strong { color:#a78bfa; font-weight:500; }
-        .t-gate-perks { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; text-align:left; }
-        .t-gate-perk { display:flex; align-items:center; gap:10px; font-size:13px; color:#777; }
-        .t-gate-perk-dot { width:6px; height:6px; border-radius:50%; background:#a78bfa; flex-shrink:0; opacity:0.7; }
         .t-gate-input { width:100%; background:#111; border:1px solid #242424; border-radius:10px; padding:13px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:#ccc; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
         .t-gate-input::placeholder { color:#333; }
         .t-gate-input:focus { border-color:#a78bfa; }
@@ -272,12 +335,20 @@ export default function ToolsPage() {
         .t-gate-error { font-size:12px; color:#f87171; margin-bottom:8px; text-align:left; }
         .t-gate-btn { width:100%; background:linear-gradient(135deg,#a78bfa 0%,#8b5cf6 100%); border:none; border-radius:10px; padding:13px 20px; font-family:'Syne',sans-serif; font-size:14px; font-weight:600; color:#fff; cursor:pointer; letter-spacing:0.01em; transition:opacity 0.15s,transform 0.1s; margin-top:4px; }
         .t-gate-btn:hover { opacity:0.88; transform:translateY(-1px); }
+        .t-gate-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
         .t-gate-fine { font-size:11px; color:#2e2e2e; margin-top:14px; letter-spacing:0.03em; }
+        .t-phone-row { display:flex; gap:8px; margin-bottom:8px; }
+        .t-country-btn { background:#111; border:1px solid #242424; border-radius:10px; padding:13px 12px; color:#ccc; cursor:pointer; font-size:14px; white-space:nowrap; display:flex; align-items:center; gap:6px; transition:border-color 0.2s; flex-shrink:0; }
+        .t-country-btn:hover { border-color:#a78bfa; }
+        .t-country-dropdown { position:absolute; top:100%; left:0; right:0; background:#111; border:1px solid #333; border-radius:10px; max-height:200px; overflow-y:auto; z-index:200; margin-top:4px; }
+        .t-country-option { padding:10px 14px; cursor:pointer; font-size:13px; color:#ccc; display:flex; align-items:center; gap:8px; transition:background 0.15s; }
+        .t-country-option:hover { background:#1a1a1a; color:#fff; }
+        .t-otp-input { width:100%; background:#111; border:1px solid #242424; border-radius:10px; padding:16px; font-family:'Syne',sans-serif; font-size:24px; color:#fff; outline:none; transition:border-color 0.2s; margin-bottom:8px; text-align:center; letter-spacing:8px; }
+        .t-otp-input:focus { border-color:#a78bfa; }
+        .t-otp-input.error { border-color:#f87171; }
+        .t-resend { background:none; border:none; color:#555; cursor:pointer; font-size:13px; margin-top:8px; transition:color 0.2s; }
+        .t-resend:hover { color:#a78bfa; }
         .t-success-icon { width:56px; height:56px; border-radius:50%; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 18px; }
-        .t-success-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:#fff; margin-bottom:8px; }
-        .t-success-sub { font-size:14px; color:#555; margin-bottom:24px; }
-        .t-continue-btn { background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.22); border-radius:10px; padding:11px 24px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:#a78bfa; cursor:pointer; transition:background 0.15s; }
-        .t-continue-btn:hover { background:rgba(167,139,250,0.16); }
         .t-upgrade { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
         .t-upgrade-modal { background:#0f0f0f; border:1px solid #222; border-radius:20px; padding:40px 36px; width:100%; max-width:420px; text-align:center; }
         .t-demo-banner { background:rgba(34,211,238,0.05); border:1px solid rgba(34,211,238,0.15); border-radius:12px; padding:16px 20px; margin-bottom:16px; text-align:center; }
@@ -333,8 +404,7 @@ export default function ToolsPage() {
                 <div className="t-bubble">{tool.greeting}</div>
                 <div className="t-chips">
                   {tool.chips.map((chip) => (
-                    <span key={chip} className="t-chip"
-                      onClick={() => { if (!showGate) sendMessage(chip); }}
+                    <span key={chip} className="t-chip" onClick={() => { if (!showGate) sendMessage(chip); }}
                       style={{ color: tool.color, background: tool.chipBg, borderColor: tool.chipBorder }}>
                       ↗ {chip}
                     </span>
@@ -394,39 +464,87 @@ export default function ToolsPage() {
       {showGate && (
         <div className="t-gate">
           <div className="t-gate-modal">
-            {!gateSuccess ? (
+            {gateStep === "details" && (
               <>
                 <div className="t-gate-icon">{tool.icon}</div>
                 <h2 className="t-gate-title">Get Free Access</h2>
-                <p className="t-gate-sub">Enter your details to unlock <strong>{tool.name}</strong> and all other AI tools — completely free.</p>
-                <div className="t-gate-perks">
-                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />Access all 3 AI tools instantly</div>
-                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />New tools added every month</div>
-                  <div className="t-gate-perk"><div className="t-gate-perk-dot" />Early access to Unico product drops</div>
-                </div>
-                <input type="email" id="gate-email" className={`t-gate-input ${emailError ? "error" : ""}`}
+                <p className="t-gate-sub">Enter your details to unlock <strong>{tool.name}</strong> — completely free.</p>
+                <input type="email" className={`t-gate-input ${emailError ? "error" : ""}`}
                   placeholder="your@email.com" value={emailInput}
                   onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
                   autoComplete="email" autoFocus />
                 {emailError && <p className="t-gate-error">⚠️ {emailError}</p>}
-                <input type="tel" id="gate-phone" className={`t-gate-input ${phoneError ? "error" : ""}`}
-                  placeholder="10-digit mobile number" value={phoneInput}
-                  onChange={(e) => { setPhoneInput(e.target.value); setPhoneError(""); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
-                  autoComplete="tel" />
+                <div style={{ position: "relative" }}>
+                  <div className="t-phone-row">
+                    <button className="t-country-btn" onClick={() => setShowCountryDropdown(!showCountryDropdown)}>
+                      {selectedCountry.flag} {selectedCountry.code} ▾
+                    </button>
+                    <input type="tel" className={`t-gate-input ${phoneError ? "error" : ""}`}
+                      style={{ margin: 0, flex: 1 }}
+                      placeholder="Phone number" value={phoneInput}
+                      onChange={(e) => { setPhoneInput(e.target.value.replace(/\D/g, "")); setPhoneError(""); }}
+                      autoComplete="tel" />
+                  </div>
+                  {showCountryDropdown && (
+                    <div className="t-country-dropdown">
+                      {COUNTRIES.map((c) => (
+                        <div key={c.code} className="t-country-option"
+                          onClick={() => { setSelectedCountry(c); setShowCountryDropdown(false); }}>
+                          {c.flag} {c.name} ({c.code})
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {phoneError && <p className="t-gate-error">⚠️ {phoneError}</p>}
-                <button className="t-gate-btn" onClick={handleEmailSubmit} disabled={submittingEmail}>
-                  {submittingEmail ? "Getting access..." : "→ Unlock Free Access"}
+                <button className="t-gate-btn" onClick={handleSendOTP} disabled={submitting}>
+                  {submitting ? "Sending OTP..." : "→ Send Verification Code"}
                 </button>
-                <p className="t-gate-fine">No spam. No credit card. Just free tools.</p>
+                <p className="t-gate-fine">We'll send a 6-digit OTP to verify your number.</p>
               </>
-            ) : (
+            )}
+
+            {gateStep === "otp" && (
+              <>
+                <div className="t-gate-icon">📱</div>
+                <h2 className="t-gate-title">Verify Your Number</h2>
+                <p className="t-gate-sub">We sent a 6-digit code to <strong>{fullPhone}</strong></p>
+                <input type="number" className={`t-otp-input ${otpError ? "error" : ""}`}
+                  placeholder="000000" value={otpInput} maxLength={6}
+                  onChange={(e) => { setOtpInput(e.target.value.slice(0, 6)); setOtpError(""); }}
+                  autoFocus />
+                {otpError && <p className="t-gate-error">⚠️ {otpError}</p>}
+                <button className="t-gate-btn" onClick={handleVerifyOTP} disabled={submitting}>
+                  {submitting ? "Verifying..." : "→ Verify & Get Access"}
+                </button>
+                <div style={{ marginTop: 12 }}>
+                  {resendTimer > 0 ? (
+                    <p style={{ color: "#555", fontSize: 13 }}>Resend OTP in {resendTimer}s</p>
+                  ) : (
+                    <button className="t-resend" onClick={() => { setGateStep("details"); setOtpInput(""); }}>
+                      ← Change number or resend
+                    </button>
+                  )}
+                </div>
+                <button style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 12, marginTop: 8 }}
+                  onClick={() => setGateStep("details")}>
+                  ← Go back
+                </button>
+              </>
+            )}
+
+            {gateStep === "success" && (
               <>
                 <div className="t-success-icon">✓</div>
-                <div className="t-success-title">You're in!</div>
-                <p className="t-success-sub">Welcome to Unico Tools. Let's get to work!</p>
-                <button className="t-continue-btn" onClick={closeGate}>Start using {tool.shortName} →</button>
+                <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
+                  You're verified! 🎉
+                </h2>
+                <p style={{ color: "#555", fontSize: 14, marginBottom: 24 }}>
+                  Welcome to Unico Tools. Let's get to work!
+                </p>
+                <button className="t-gate-btn" onClick={closeGate}>
+                  Start using {tool.shortName} →
+                </button>
               </>
             )}
           </div>
@@ -457,3 +575,58 @@ export default function ToolsPage() {
     </>
   );
 }
+```
+
+---
+
+Also update `src/app/api/leads/route.js` to accept the `country` field:
+
+```javascript
+export async function POST(request) {
+  try {
+    const { email, phone, tool, returning, country } = await request.json();
+
+    if (!email || !tool) {
+      return Response.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
+    const checkRes = await fetch(
+      `${process.env.SHEETDB_API_URL}/search?Email=${encodeURIComponent(email)}`,
+      { headers: { "Accept": "application/json" } }
+    );
+    const existing = await checkRes.json();
+    const isReturning = returning || (Array.isArray(existing) && existing.length > 0);
+
+    const rowData = {
+      Email: email,
+      Phone: isReturning ? (existing[0]?.Phone || "Returning") : (phone || "Not provided"),
+      Tool: tool,
+      Date: date,
+      Status: isReturning ? "Return Visit" : "New Lead",
+      "Demo Completed": "No",
+      Country: isReturning ? (existing[0]?.Country || "Unknown") : (country || "Unknown"),
+    };
+
+    console.log("Saving:", JSON.stringify(rowData));
+
+    const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ data: [rowData] }),
+    });
+
+    const result = await sheetRes.json();
+    console.log("SheetDB:", JSON.stringify(result));
+
+    return Response.json({ success: true, isReturning });
+
+  } catch (error) {
+    console.error("Error:", error.message);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}
+```
+
+Commit both files and tell me when done! 🚀
