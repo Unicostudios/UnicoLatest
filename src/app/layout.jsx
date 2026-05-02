@@ -5,9 +5,9 @@ import ToasterProvider from "./components/ToasterProvider";
 import ChatWidget from "./components/ChatWidget";
 
 export const metadata = {
-  title: "Best Digital Marketing Agency in India | Unico Studios",
+  title: "India's First AI-Powered Growth Agency | Unico Studios",
   description:
-    "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+    "Unico Studios is India's first AI-powered growth agency. Free AI tools for founders — content engine, AI sales demo, website revenue audit and more. Based in Bangalore.",
 };
 
 export default function RootLayout({ children }) {
@@ -48,9 +48,9 @@ export default function RootLayout({ children }) {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Unico Studios",
-            url: "http://unicostudios.in/",
-            logo: "http://unicostudios.in/assets/unicologo-white.png",
-            description: "Unico Studios is the leading software development company in Bangalore offering custom software, web, and mobile app solutions.",
+            url: "https://unicostudios.in/",
+            logo: "https://unicostudios.in/assets/unicologo-white.png",
+            description: "India's first AI-powered growth agency. Free AI tools for founders and brands — content engine, AI sales demo, website revenue audit.",
             contactPoint: {
               "@type": "ContactPoint",
               telephone: "+91-8147057109",
@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
             },
             sameAs: [
               "https://www.linkedin.com/company/unicostudios",
-              "https://twitter.com/unicostudios",
+              "https://www.instagram.com/unico.studioss",
             ],
           })}
         </Script>
