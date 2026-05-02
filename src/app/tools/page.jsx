@@ -105,6 +105,7 @@ export default function ToolsPage() {
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [phoneInput, setPhoneInput] = useState("");
   const [otpInput, setOtpInput] = useState("");
+  const [otpToken, setOtpToken] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [otpError, setOtpError] = useState("");
@@ -172,6 +173,7 @@ export default function ToolsPage() {
       });
       const data = await res.json();
       if (data.success) {
+        setOtpToken(data.token);
         setGateStep("otp");
         setResendTimer(60);
       } else {
@@ -191,7 +193,7 @@ export default function ToolsPage() {
       const res = await fetch("/api/otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "verify", phone: fullPhone, otp: otpInput }),
+        body: JSON.stringify({ action: "verify", phone: fullPhone, otp: otpInput, token: otpToken }),
       });
       const data = await res.json();
       if (data.success) {
@@ -493,7 +495,6 @@ export default function ToolsPage() {
                 <p className="t-gate-fine">We'll send a 6-digit OTP to verify your number.</p>
               </>
             )}
-
             {gateStep === "otp" && (
               <>
                 <div className="t-gate-icon">📱</div>
@@ -511,30 +512,25 @@ export default function ToolsPage() {
                   {resendTimer > 0 ? (
                     <p style={{ color: "#555", fontSize: 13 }}>Resend OTP in {resendTimer}s</p>
                   ) : (
-                    <button className="t-resend" onClick={() => { setGateStep("details"); setOtpInput(""); }}>
+                    <button className="t-resend" onClick={() => { setGateStep("details"); setOtpInput(""); setOtpToken(""); }}>
                       ← Change number or resend
                     </button>
                   )}
                 </div>
                 <button style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 12, marginTop: 8 }}
-                  onClick={() => setGateStep("details")}>
+                  onClick={() => { setGateStep("details"); setOtpInput(""); setOtpToken(""); }}>
                   ← Go back
                 </button>
               </>
             )}
-
             {gateStep === "success" && (
               <>
                 <div className="t-success-icon">✓</div>
                 <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
                   You're verified! 🎉
                 </h2>
-                <p style={{ color: "#555", fontSize: 14, marginBottom: 24 }}>
-                  Welcome to Unico Tools. Let's get to work!
-                </p>
-                <button className="t-gate-btn" onClick={closeGate}>
-                  Start using {tool.shortName} →
-                </button>
+                <p style={{ color: "#555", fontSize: 14, marginBottom: 24 }}>Welcome to Unico Tools. Let's get to work!</p>
+                <button className="t-gate-btn" onClick={closeGate}>Start using {tool.shortName} →</button>
               </>
             )}
           </div>
