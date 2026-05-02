@@ -323,13 +323,13 @@ export default function ToolsPage() {
         .tp-hero { text-align:center; margin-bottom:24px; }
         .tp-badge { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; letter-spacing:0.04em; color:#a78bfa; background:rgba(167,139,250,0.08); border:1px solid rgba(167,139,250,0.18); border-radius:100px; padding:5px 14px; margin-bottom:20px; }
         .tp-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:#a78bfa; animation:blink 2s ease infinite; }
-        .tp-h1 { font-family:'Syne',sans-serif; font-size:clamp(36px,6vw,68px); font-weight:800; letter-spacing:-0.04em; line-height:1.02; color:#fff; margin-bottom:16px; }
-        .tp-h1 span { background:linear-gradient(135deg,#a78bfa 0%,#f472b6 50%,#22d3ee 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .tp-h1 { font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,58px); font-weight:700; letter-spacing:-0.02em; line-height:1.08; color:#fff; margin-bottom:16px; }
+        .tp-h1 span { background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .tp-sub { font-size:17px; color:#555; font-weight:300; max-width:520px; margin:0 auto 32px; line-height:1.6; }
 
         .tp-stats { display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:56px; }
         .tp-stat { text-align:center; }
-        .tp-stat-num { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:#fff; letter-spacing:-0.03em; }
+        .tp-stat-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:700; color:#fff; letter-spacing:-0.01em; }
         .tp-stat-label { font-size:12px; color:#444; margin-top:2px; }
         .tp-stat-divider { width:1px; height:32px; background:#1e1e1e; }
 
