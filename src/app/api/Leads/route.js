@@ -1,9 +1,13 @@
 export async function POST(request) {
   try {
-    const { email, phone, tool, returning } = await request.json();
+    const body = await request.json();
+    const { email, phone, tool, returning } = body;
+
+    console.log("LEADS API HIT:", email, phone, tool);
+    console.log("SHEETDB URL:", process.env.SHEETDB_API_URL);
 
     if (!email || !tool) {
-      return Response.json({ error: "Email and tool are required" }, { status: 400 });
+      return Response.json({ error: "Missing fields" }, { status: 400 });
     }
 
     const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
@@ -17,7 +21,7 @@ export async function POST(request) {
       "Demo Completed": "No",
     };
 
-    console.log("Posting to SheetDB:", JSON.stringify(rowData));
+    console.log("Sending to SheetDB:", JSON.stringify(rowData));
 
     const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
       method: "POST",
@@ -28,13 +32,13 @@ export async function POST(request) {
       body: JSON.stringify({ data: [rowData] }),
     });
 
-    const sheetData = await sheetRes.json();
-    console.log("SheetDB response:", JSON.stringify(sheetData));
+    const text = await sheetRes.text();
+    console.log("SheetDB raw response:", text);
 
     return Response.json({ success: true });
 
   } catch (error) {
-    console.error("Leads API error:", error.message);
+    console.error("LEADS ERROR:", error.message, error.stack);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
