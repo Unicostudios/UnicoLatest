@@ -1,10 +1,6 @@
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { email, phone, tool, returning } = body;
-
-    console.log("LEADS API HIT:", email, phone, tool);
-    console.log("SHEETDB URL:", process.env.SHEETDB_API_URL);
+    const { email, phone, tool, returning } = await request.json();
 
     if (!email || !tool) {
       return Response.json({ error: "Missing fields" }, { status: 400 });
@@ -12,16 +8,26 @@ export async function POST(request) {
 
     const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
+    // Check if email already exists in sheet
+    const checkRes = await fetch(
+      `${process.env.SHEETDB_API_URL}/search?Email=${encodeURIComponent(email)}`,
+      {
+        headers: { "Accept": "application/json" },
+      }
+    );
+    const existing = await checkRes.json();
+    const isReturning = returning || (Array.isArray(existing) && existing.length > 0);
+
     const rowData = {
       Email: email,
-      Phone: returning ? "Returning" : (phone || "Not provided"),
+      Phone: isReturning ? (existing[0]?.Phone || "Returning") : (phone || "Not provided"),
       Tool: tool,
       Date: date,
-      Status: returning ? "Return Visit" : "New Lead",
+      Status: isReturning ? "Return Visit" : "New Lead",
       "Demo Completed": "No",
     };
 
-    console.log("Sending to SheetDB:", JSON.stringify(rowData));
+    console.log("Saving:", JSON.stringify(rowData));
 
     const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
       method: "POST",
@@ -32,13 +38,13 @@ export async function POST(request) {
       body: JSON.stringify({ data: [rowData] }),
     });
 
-    const text = await sheetRes.text();
-    console.log("SheetDB raw response:", text);
+    const result = await sheetRes.json();
+    console.log("SheetDB:", JSON.stringify(result));
 
-    return Response.json({ success: true });
+    return Response.json({ success: true, isReturning });
 
   } catch (error) {
-    console.error("LEADS ERROR:", error.message, error.stack);
+    console.error("Error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
