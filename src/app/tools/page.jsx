@@ -391,7 +391,7 @@ export default function ToolsPage() {
           <div className="tp-grid">
             {Object.values(TOOLS).map((t) => (
               <div key={t.id} className="tp-card" onClick={() => openTool(t.id)}
-                style={{ "--tool-color": t.color } as React.CSSProperties}
+                style={{ "--tool-color": t.color }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = t.color + "44"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1e1e1e"; }}>
                 {t.tag && (
