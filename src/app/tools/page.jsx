@@ -1,6 +1,3 @@
-Here is the complete `src/app/tools/page.jsx`:
-
-```jsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 
@@ -460,6 +457,3 @@ export default function ToolsPage() {
     </>
   );
 }
-```
-
-Commit and tell me when done! 🚀
