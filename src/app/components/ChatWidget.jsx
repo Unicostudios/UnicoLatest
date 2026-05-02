@@ -11,21 +11,20 @@ export default function ChatWidget() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  if (!pathname) return null;
-  if (pathname === "/tools" || pathname.startsWith("/tools/")) return null;
-
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, loading]);
 
   useEffect(() => {
     if (open && messages.length === 0) {
       setMessages([{
         role: "assistant",
-        content: "Hi! I'm Aria, your AI assistant from Unico Studios 👋 I help businesses grow with AI-powered marketing. What brings you here today?",
+        content: "Most businesses waste ₹50,000–₹2,00,000 every month on marketing that doesn't work. Want to find out in 2 minutes if yours is one of them? 👀",
       }]);
     }
-    if (open) setTimeout(() => inputRef.current?.focus(), 100);
+    if (open) setTimeout(() => { if (inputRef.current) inputRef.current.focus(); }, 100);
   }, [open]);
 
   const sendMessage = async () => {
@@ -39,11 +38,7 @@ export default function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: msg,
-          history: messages,
-          mode: "aria",
-        }),
+        body: JSON.stringify({ message: msg, history: messages, mode: "aria" }),
       });
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
@@ -57,9 +52,11 @@ export default function ChatWidget() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   };
 
+  if (!pathname) return null;
+  if (pathname === "/tools" || pathname.startsWith("/tools/")) return null;
+
   return (
     <>
-      {/* Chat bubble button */}
       <div onClick={() => setOpen(!open)} style={{
         position: "fixed", bottom: "24px", right: "24px",
         width: "56px", height: "56px", borderRadius: "50%",
@@ -72,7 +69,6 @@ export default function ChatWidget() {
         {open ? "✕" : "💬"}
       </div>
 
-      {/* Chat window */}
       {open && (
         <div style={{
           position: "fixed", bottom: "90px", right: "24px",
@@ -84,7 +80,6 @@ export default function ChatWidget() {
           boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
           fontFamily: "'DM Sans', sans-serif",
         }}>
-          {/* Header */}
           <div style={{
             padding: "16px 18px", background: "#141414",
             borderBottom: "1px solid #222", display: "flex",
@@ -106,16 +101,13 @@ export default function ChatWidget() {
             <div style={{ marginLeft: "auto", color: "#555", fontSize: "12px" }}>Unico Studios AI</div>
           </div>
 
-          {/* Messages */}
           <div style={{
             flex: 1, overflowY: "auto", padding: "16px",
             display: "flex", flexDirection: "column", gap: "12px",
             scrollbarWidth: "thin", scrollbarColor: "#222 transparent",
           }}>
             {messages.map((msg, i) => (
-              <div key={i} style={{
-                display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-              }}>
+              <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
                 <div style={{
                   maxWidth: "80%", padding: "10px 13px",
                   borderRadius: msg.role === "user" ? "12px 4px 12px 12px" : "4px 12px 12px 12px",
@@ -142,12 +134,12 @@ export default function ChatWidget() {
                   background: "#1a1a1a", border: "1px solid #2a2a2a",
                   display: "flex", gap: "4px", alignItems: "center",
                 }}>
-                  {[0, 1, 2].map((i) => (
+                  {[0,1,2].map((i) => (
                     <span key={i} style={{
                       width: "5px", height: "5px", borderRadius: "50%",
                       background: "#555", display: "inline-block",
                       animation: "bounce 1.2s ease infinite",
-                      animationDelay: `${i * 0.2}s`,
+                      animationDelay: i * 0.2 + "s",
                     }} />
                   ))}
                 </div>
@@ -156,7 +148,6 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div style={{
             padding: "12px 14px", borderTop: "1px solid #222",
             background: "#080808", display: "flex", gap: "8px", alignItems: "flex-end",
