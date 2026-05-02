@@ -466,10 +466,17 @@ export default function ToolsPage() {
                     <div className="tp-bubble" style={msg.role === "user" ? { background: tool.userBg, borderColor: tool.borderActive, color: "#ddd", borderRadius: "12px 4px 12px 12px" } : {}}>
                       {msg.content.split(/(https?:\/\/[^\s]+)/g).map((part, j) =>
                         part.match(/^https?:\/\//) ? (
-                          <a key={j} href={part} target="_blank" rel="noopener noreferrer"
-                            style={{ color: tool.color, textDecoration: "underline", display: "block", marginTop: 4, fontWeight: 600 }}>
-                            👉 Click here to book your call
-                          </a>
+                          part.includes("calendly") ? (
+                            <a key={j} href={part} target="_blank" rel="noopener noreferrer"
+                              style={{ color: tool.color, textDecoration: "underline", display: "block", marginTop: 4, fontWeight: 600 }}>
+                              👉 Click here to book your call
+                             </a>
+                          ) : (
+                            <a key={j} href={part} target="_blank" rel="noopener noreferrer"
+                              style={{ color: tool.color, textDecoration: "underline" }}>
+                              {part}
+                             </a>
+                         )
                         ) : <span key={j}>{part}</span>
                       )}
                     </div>
