@@ -614,8 +614,17 @@ export default function ToolsPage() {
                   )}
                 </div>
                 {phoneError && <p className="tp-gate-err">⚠️ {phoneError}</p>}
-                <button className="tp-gate-btn" onClick={handleSubmit} disabled={submitting}>
-                  {submitting ? "Getting access..." : "→ Get Free Access Now"}
+                <button
+                  className="tp-gate-btn"
+                  onClick={function(e) {
+                    if (typeof window !== 'undefined' && window.fbq) {
+                      window.fbq('trackCustom', 'ButtonClick', { button_name: 'get_free_access' });
+                    }
+                    handleSubmit(e);
+                  }}
+                  disabled={submitting}
+                >
+                  {submitting ? "Getting access..." : "Get Free Access Now"}
                 </button>
                 <p className="tp-gate-fine">🔒 No spam. No credit card. Unsubscribe anytime.</p>
               </div>
