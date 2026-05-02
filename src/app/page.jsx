@@ -3,21 +3,21 @@ import Home from "./Home";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Best Digital Marketing Agency in India | Unico Studios",
+  title: "India's First AI-Powered Growth Agency | Unico Studios",
   description:
-    "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+    "Unico Studios — AI-powered digital marketing agency in Bangalore. Free AI tools for founders: content engine, AI sales demo, website audit and more. Book a free strategy call.",
   keywords:
-    "digital marketing agency India, SEO services India, paid ads management, social media marketing India, website development services",
+    "AI marketing agency India, AI sales assistant India, free AI tools for startups, Niquo AI sales, website revenue audit, digital marketing Bangalore, Unico Studios",
   openGraph: {
-    title: "Best Digital Marketing Agency in India | Unico Studios",
+    title: "India's First AI-Powered Growth Agency | Unico Studios",
     description:
-      "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+      "Free AI tools that grow your business — content engine, AI sales demo, website audit. Built by Unico Studios, Bangalore.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
         width: 800,
         height: 600,
-        alt: "Unico Studios",
+        alt: "Unico Studios AI",
       },
     ],
     type: "website",
@@ -36,14 +36,14 @@ export default function Page() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: "https://unicostudios.in",
-              },
+            "@type": "Organization",
+            name: "Unico Studios",
+            url: "https://unicostudios.in",
+            description: "India's first AI-powered growth agency. Free AI tools for founders and brands.",
+            foundingLocation: "Bangalore, India",
+            sameAs: [
+              "https://www.instagram.com/unico.studioss",
+              "https://www.linkedin.com/company/unicostudios",
             ],
           }),
         }}
