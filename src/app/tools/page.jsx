@@ -210,10 +210,13 @@ export default function ToolsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailInput, phone: selectedCountry.code + phoneInput, tool: "Tools Page", country: selectedCountry.country }),
       });
-      sessionStorage.setItem("unico_tools_email", emailInput);
-      sessionStorage.setItem("unico_tools_time", Date.now().toString());
-      setEmail(emailInput);
-      setGateSuccess(true);
+       sessionStorage.setItem("unico_tools_email", emailInput);
+        sessionStorage.setItem("unico_tools_time", Date.now().toString());
+        setEmail(emailInput);
+        setGateSuccess(true);
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "Lead", { currency: "INR", value: 0 });
+        }
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
     }
