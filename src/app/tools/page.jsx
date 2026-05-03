@@ -178,7 +178,6 @@ export default function ToolsPage() {
   const tool = currentTool ? TOOLS[currentTool] : null;
   const currentUses = currentTool ? uses[currentTool] : 0;
   const currentLimit = tool ? tool.limit : 10;
-  const usagePercent = Math.round((currentUses / currentLimit) * 100);
 
   function openTool(toolId) {
     setCurrentTool(toolId);
@@ -210,13 +209,13 @@ export default function ToolsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailInput, phone: selectedCountry.code + phoneInput, tool: "Tools Page", country: selectedCountry.country }),
       });
-       sessionStorage.setItem("unico_tools_email", emailInput);
-        sessionStorage.setItem("unico_tools_time", Date.now().toString());
-        setEmail(emailInput);
-        setGateSuccess(true);
-        if (typeof window !== "undefined" && window.fbq) {
-          window.fbq("track", "Lead", { currency: "INR", value: 0 });
-        }
+      sessionStorage.setItem("unico_tools_email", emailInput);
+      sessionStorage.setItem("unico_tools_time", Date.now().toString());
+      setEmail(emailInput);
+      setGateSuccess(true);
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq("track", "Lead", { currency: "INR", value: 0 });
+      }
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
     }
@@ -311,9 +310,7 @@ export default function ToolsPage() {
         .tp-chat-desc{font-size:11px;color:#444;margin-top:1px;}
         .tp-chat-live{display:flex;align-items:center;gap:5px;font-size:11px;color:#333;}
         .tp-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:tpblink 2s ease infinite;}
-        .tp-prog{height:2px;background:#1a1a1a;}
-        .tp-prog-fill{height:100%;transition:width 0.5s ease;}
-        .tp-msgs{flex:1;min-height:300px;max-height:calc(100vh - 290px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;}
+        .tp-msgs{flex:1;min-height:300px;max-height:calc(100vh - 260px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;}
         .tp-msg{display:flex;gap:8px;animation:tpfadeup 0.25s ease both;}
         .tp-msg.user{flex-direction:row-reverse;}
         .tp-msg.user .tp-msg-body{align-items:flex-end;}
@@ -472,11 +469,6 @@ export default function ToolsPage() {
               </div>
               <div className="tp-chat-live"><div className="tp-dot" />Live</div>
             </div>
-            {email && (
-              <div className="tp-prog">
-                <div className="tp-prog-fill" style={{ width: usagePercent + "%", background: usagePercent > 80 ? "#ef4444" : tool.color, opacity: 0.7 }} />
-              </div>
-            )}
             <div className="tp-msgs">
               {demoCompleted && currentTool === "niquo" && (
                 <div className="tp-banner" style={{ background:"rgba(34,211,238,0.05)", border:"1px solid rgba(34,211,238,0.2)" }}>
@@ -564,7 +556,7 @@ export default function ToolsPage() {
                   </svg>
                 </button>
               </div>
-              <p className="tp-hint">{email ? (currentLimit - currentUses) + " of " + currentLimit + " free uses remaining" : "Free · No credit card · No spam ever"}</p>
+              <p className="tp-hint">Free · No credit card · No spam ever</p>
             </div>
           </div>
         </div>
@@ -635,8 +627,7 @@ export default function ToolsPage() {
               <div>
                 <div className="tp-ok-ico">✓</div>
                 <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:21, fontWeight:800, color:"#fff", marginBottom:8 }}>Welcome to Unico Tools! 🎉</h2>
-                <p style={{ color:"#555", fontSize:14, marginBottom:8, lineHeight:1.6 }}>You now have access to 4 AI tools that most businesses pay ₹15,000/month for.</p>
-                <p style={{ color:"#333", fontSize:12, marginBottom:24 }}>Check your email — we sent you a quick guide on how to get max value.</p>
+                <p style={{ color:"#555", fontSize:14, marginBottom:24, lineHeight:1.6 }}>You now have access to 4 AI tools that most businesses pay ₹15,000/month for. Start with Niquo — it's the fan favourite.</p>
                 <button className="tp-gate-btn" onClick={closeGate}>Explore the Tools →</button>
               </div>
             )}
