@@ -126,11 +126,6 @@ function isValidEmail(e) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e);
 }
 
-// ─── FIX 1: ANONYMOUS VISITOR LOGGING ───────────────────────────────────────
-// WHY: You have 168 visitors and 0 data. This fires the moment someone lands
-// on /tools — before they do anything. Every visitor gets logged in your
-// Google Sheet as "anonymous" with their timezone. This gives you volume data
-// immediately so you can see traffic even when nobody fills the gate.
 async function logAnonymousVisit() {
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
@@ -148,16 +143,10 @@ async function logAnonymousVisit() {
   } catch (_) {}
 }
 
-// ─── FIX 2: SCROLL DEPTH TRACKING ───────────────────────────────────────────
-// WHY: Clarity shows 45% average scroll depth. We need to know exactly WHERE
-// people stop scrolling — at 25%, 50%, 75%, or 100%. This fires events to
-// GA4 and Meta at each checkpoint so you can see in both dashboards
-// exactly how far people scroll before leaving.
 function useScrollTracking() {
   useEffect(() => {
     const checkpoints = [25, 50, 75, 100];
     const fired = new Set();
-
     function handleScroll() {
       const scrollable = document.body.scrollHeight - window.innerHeight;
       if (scrollable <= 0) return;
@@ -165,25 +154,91 @@ function useScrollTracking() {
       checkpoints.forEach(function(point) {
         if (pct >= point && !fired.has(point)) {
           fired.add(point);
-          // GA4
           if (typeof window !== "undefined" && window.gtag) {
-            window.gtag("event", "scroll_depth", {
-              event_category: "engagement",
-              event_label: point + "%",
-              value: point,
-            });
+            window.gtag("event", "scroll_depth", { event_category: "engagement", event_label: point + "%", value: point });
           }
-          // Meta Pixel
           if (typeof window !== "undefined" && window.fbq) {
             window.fbq("trackCustom", "ScrollDepth", { depth: point });
           }
         }
       });
     }
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return function() { window.removeEventListener("scroll", handleScroll); };
   }, []);
+}
+
+// ─── PDF DOWNLOAD FUNCTION ───────────────────────────────────────────────────
+// WHY: Founders want to save the audit, share it with their team, act on it
+// later. A downloadable PDF makes the audit feel like a real deliverable —
+// not just a chat. It also keeps Unico Studios branding in front of them
+// every time they open the file. Uses browser's built-in print-to-PDF.
+// No external library needed — works on all devices.
+function downloadAuditPDF(messages, url) {
+  const auditMessages = messages.filter(function(m) { return m.role === "assistant"; });
+  const fullText = auditMessages.map(function(m) { return m.content; }).join("\n\n---\n\n");
+  const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Website Revenue Audit — ${url || "Your Website"}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a1a; padding: 48px; max-width: 760px; margin: 0 auto; }
+        .header { border-bottom: 2px solid #f97316; padding-bottom: 24px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .brand { font-size: 13px; font-weight: 700; color: #f97316; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+        .title { font-size: 24px; font-weight: 700; color: #0a0a0a; line-height: 1.2; }
+        .subtitle { font-size: 13px; color: #888; margin-top: 6px; }
+        .meta { text-align: right; font-size: 12px; color: #aaa; line-height: 1.8; }
+        .content { font-size: 14px; line-height: 1.85; color: #333; white-space: pre-wrap; word-break: break-word; }
+        .content p { margin-bottom: 14px; }
+        .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .footer-brand { font-size: 12px; font-weight: 700; color: #f97316; }
+        .footer-cta { font-size: 12px; color: #888; }
+        .footer-url { color: #f97316; text-decoration: none; font-weight: 600; }
+        @media print {
+          body { padding: 32px; }
+          .no-print { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div>
+          <div class="brand">∂ Unico Studios — Website Revenue Audit</div>
+          <div class="title">Revenue Audit Report<br/>${url ? url.replace(/https?:\/\//, "") : "Your Website"}</div>
+          <div class="subtitle">Prepared by Unico Studios AI Audit Engine</div>
+        </div>
+        <div class="meta">
+          <div>${date}</div>
+          <div>unicostudios.in</div>
+          <div>Confidential</div>
+        </div>
+      </div>
+      <div class="content">${fullText.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</div>
+      <div class="footer">
+        <div class="footer-brand">∂ Unico Studios — India's First AI-Powered Growth Agency</div>
+        <div class="footer-cta">Ready to fix this? <a class="footer-url" href="https://calendly.com/unicostudioss/30min">Book a free call →</a></div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([htmlContent], { type: "text/html" });
+  const blobUrl = URL.createObjectURL(blob);
+  const printWindow = window.open(blobUrl, "_blank");
+  if (printWindow) {
+    printWindow.onload = function() {
+      setTimeout(function() {
+        printWindow.print();
+        URL.revokeObjectURL(blobUrl);
+      }, 500);
+    };
+  }
 }
 
 export default function ToolsPage() {
@@ -206,13 +261,14 @@ export default function ToolsPage() {
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [auditPart1Done, setAuditPart1Done] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  // ─── NEW STATE: PDF READY ─────────────────────────────────────────────
+  // WHY: Only show the Download PDF button after the FULL audit is done
+  // (Part 2 complete). Showing it too early would give an incomplete report.
+  const [auditPdfReady, setAuditPdfReady] = useState(false);
+  const [auditUrl, setAuditUrl] = useState("");
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // ─── FIX 1: LOG ANONYMOUS VISITOR ON PAGE LOAD ──────────────────────────
-  // WHY: Fires once per session (sessionStorage prevents duplicates).
-  // You'll see a row in your Google Sheet for EVERY person who visits /tools
-  // even if they never fill the gate. Finally you'll have real traffic data.
   useEffect(function() {
     const visitKey = "unico_visit_logged";
     if (!sessionStorage.getItem(visitKey)) {
@@ -221,26 +277,15 @@ export default function ToolsPage() {
     }
   }, []);
 
-  // ─── FIX 2: ACTIVATE SCROLL TRACKING ────────────────────────────────────
   useScrollTracking();
 
-  // ─── FIX 3: GATE OPEN TRACKING ──────────────────────────────────────────
-  // WHY: We need to know if people are SEEING the gate but not filling it.
-  // This fires a ViewContent event the moment the gate appears — so in Meta
-  // Ads Manager you can compare ViewContent vs Lead events to see the drop-off.
   useEffect(function() {
     if (showGate) {
       if (typeof window !== "undefined" && window.fbq) {
-        window.fbq("track", "ViewContent", {
-          content_name: "Tools Gate",
-          content_category: "Lead Gate",
-        });
+        window.fbq("track", "ViewContent", { content_name: "Tools Gate", content_category: "Lead Gate" });
       }
       if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "gate_viewed", {
-          event_category: "gate",
-          event_label: "tools_gate_open",
-        });
+        window.gtag("event", "gate_viewed", { event_category: "gate", event_label: "tools_gate_open" });
       }
     }
   }, [showGate]);
@@ -275,27 +320,19 @@ export default function ToolsPage() {
   const currentUses = currentTool ? uses[currentTool] : 0;
   const currentLimit = tool ? tool.limit : 10;
 
-  // ─── FIX 4: TOOL OPEN TRACKING ──────────────────────────────────────────
-  // WHY: You need to know WHICH tool people click most. If 90% click Niquo
-  // but abandon, the problem is Niquo's first message. If nobody clicks any
-  // tool, the problem is the landing grid. This tells you exactly which tool
-  // is getting attention and which is being ignored.
   function openTool(toolId) {
     setCurrentTool(toolId);
     setDemoCompleted(false);
     setAuditPart1Done(false);
+    setAuditPdfReady(false);
+    setAuditUrl("");
     setScreen("chat");
-
     if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "tool_opened", {
-        event_category: "tools",
-        event_label: toolId,
-      });
+      window.gtag("event", "tool_opened", { event_category: "tools", event_label: toolId });
     }
     if (typeof window !== "undefined" && window.fbq) {
       window.fbq("trackCustom", "ToolOpened", { tool: toolId });
     }
-
     setTimeout(function() { if (textareaRef.current) textareaRef.current.focus(); }, 100);
   }
 
@@ -319,34 +356,17 @@ export default function ToolsPage() {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailInput,
-          phone: selectedCountry.code + phoneInput,
-          tool: "Tools Page",
-          country: selectedCountry.country,
-        }),
+        body: JSON.stringify({ email: emailInput, phone: selectedCountry.code + phoneInput, tool: "Tools Page", country: selectedCountry.country }),
       });
       sessionStorage.setItem("unico_tools_email", emailInput);
       sessionStorage.setItem("unico_tools_time", Date.now().toString());
       setEmail(emailInput);
       setGateSuccess(true);
-
-      // ─── FIX 5: GATE SUBMIT — FIRE ALL TRACKING EVENTS ─────────────────
-      // WHY: This is the most important event. When someone fills the gate,
-      // Meta Pixel fires a Lead event — this tells Meta's algorithm "THIS is
-      // the type of person who converts, find me more of them." Without this
-      // firing correctly, Meta is optimising for clicks not leads.
-      // GA4 also records it so you can see conversion rate in Analytics.
       if (typeof window !== "undefined" && window.fbq) {
         window.fbq("track", "Lead", { currency: "INR", value: 0 });
       }
       if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "generate_lead", {
-          event_category: "gate",
-          event_label: "gate_submitted",
-          value: 0,
-          currency: "INR",
-        });
+        window.gtag("event", "generate_lead", { event_category: "gate", event_label: "gate_submitted", value: 0, currency: "INR" });
       }
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
@@ -363,6 +383,15 @@ export default function ToolsPage() {
     const msg = text || input.trim();
     if (!msg || !currentTool) return;
     if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
+
+    // ─── CAPTURE AUDIT URL ────────────────────────────────────────────────
+    // WHY: We need the URL for the PDF filename and header.
+    // Extract it from the first message the user sends in audit mode.
+    if (currentTool === "audit" && !auditUrl) {
+      const urlMatch = msg.match(/https?:\/\/[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?:\/[^\s]*)?/);
+      if (urlMatch) setAuditUrl(urlMatch[0]);
+    }
+
     const userMsg = { role: "user", content: msg };
     setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], userMsg] }; });
     setInput("");
@@ -370,16 +399,8 @@ export default function ToolsPage() {
     setLoading(true);
     setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
 
-    // ─── FIX 6: MESSAGE SEND TRACKING ───────────────────────────────────
-    // WHY: Tells you which tools people actually USE vs just open.
-    // If 50 people open Niquo but only 5 send a message, the greeting
-    // is the problem. If people send 8+ messages, they're engaged.
     if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "message_sent", {
-        event_category: "tools",
-        event_label: currentTool,
-        value: uses[currentTool] + 1,
-      });
+      window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
     }
 
     try {
@@ -394,6 +415,13 @@ export default function ToolsPage() {
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: reply }] }; });
       if (data.demoCompleted) setDemoCompleted(true);
       if (currentTool === "audit" && reply.includes("Want to see them?")) setAuditPart1Done(true);
+
+      // ─── DETECT PDF READY ──────────────────────────────────────────────
+      // WHY: When the audit is fully complete (Part 2 done), the backend
+      // sends pdfReady: true. We flip this state to show the Download button.
+      // The button only appears AFTER the full audit — not mid-conversation.
+      if (data.pdfReady && currentTool === "audit") setAuditPdfReady(true);
+
     } catch (err) {
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }] }; });
     }
@@ -520,6 +548,8 @@ export default function ToolsPage() {
         .tp-plan-feat{font-size:11px;color:#555;background:#1a1a1a;padding:2px 7px;border-radius:100px;}
         .tp-or{font-size:12px;color:#2a2a2a;margin:8px 0;}
         .tp-cal-btn{display:block;width:100%;padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:11px;color:#888;font-size:13px;text-decoration:none;text-align:center;}
+        .tp-pdf-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#fb923c,#f97316);border:none;border-radius:11px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:12px;animation:tpfadeup 0.4s ease both;}
+        .tp-pdf-btn:hover{opacity:0.9;}
         @keyframes tpblink{0%,100%{opacity:1}50%{opacity:0.3}}
         @keyframes tpbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
         @keyframes tpfadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -553,20 +583,11 @@ export default function ToolsPage() {
             <p className="tp-sub">4 free AI tools built for founders and brands who are serious about growth. No fluff. No generic output. Just results.</p>
           </div>
           <div className="tp-stats">
-            <div className="tp-stat">
-              <div className="tp-stat-num">9,073+</div>
-              <div className="tp-stat-label">Founders using these tools</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">9,073+</div><div className="tp-stat-label">Founders using these tools</div></div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat">
-              <div className="tp-stat-num">₹4.2Cr</div>
-              <div className="tp-stat-label">Revenue audited this month</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">₹4.2Cr</div><div className="tp-stat-label">Revenue audited this month</div></div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat">
-              <div className="tp-stat-num">340%</div>
-              <div className="tp-stat-label">Avg lead increase with Niquo</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">340%</div><div className="tp-stat-label">Avg lead increase with Niquo</div></div>
           </div>
           <div className="tp-grid">
             {Object.values(TOOLS).map(function(t) {
@@ -625,12 +646,32 @@ export default function ToolsPage() {
                   </a>
                 </div>
               )}
-              {auditPart1Done && currentTool === "audit" && (
+              {auditPart1Done && currentTool === "audit" && !auditPdfReady && (
                 <div className="tp-banner" style={{ background:"rgba(251,146,60,0.05)", border:"1px solid rgba(251,146,60,0.2)" }}>
                   <div className="tp-banner-title" style={{ color:"#fb923c" }}>🔥 Part 1 Complete</div>
                   <div className="tp-banner-sub" style={{ color:"#555" }}>Reply "yes" to see the 2 most critical issues.</div>
                 </div>
               )}
+
+              {/* ─── PDF DOWNLOAD BANNER ────────────────────────────────────
+                  WHY: This appears only after the FULL audit (Part 2) is done.
+                  The orange gradient button matches the audit tool colour.
+                  Clicking it opens a print dialog so they can Save as PDF.
+                  Their saved file has Unico Studios branding on every page —
+                  every time they open it they see our name and the Calendly link. */}
+              {auditPdfReady && currentTool === "audit" && (
+                <div className="tp-banner" style={{ background:"rgba(251,146,60,0.06)", border:"1px solid rgba(251,146,60,0.25)" }}>
+                  <div className="tp-banner-title" style={{ color:"#fb923c" }}>✅ Full Audit Complete</div>
+                  <div className="tp-banner-sub" style={{ color:"#666" }}>Your complete revenue audit is ready. Download it as a PDF to share with your team or act on later.</div>
+                  <button
+                    className="tp-pdf-btn"
+                    onClick={function() { downloadAuditPDF(currentMessages, auditUrl); }}
+                  >
+                    ⬇️ Download Full Audit Report (PDF)
+                  </button>
+                </div>
+              )}
+
               <div className="tp-msg">
                 <div className="tp-av" style={{ background: tool.headerBg }}>{tool.icon}</div>
                 <div className="tp-msg-body">
