@@ -377,6 +377,8 @@ export default function ToolsPage() {
         .tp-back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:#555;background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;}
         .tp-back-btn:hover{color:#e8e8e8;}
         .tp-nav-cta{font-size:12px;font-weight:600;color:#080808;background:#a78bfa;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;}
+
+        /* ── DESKTOP LANDING (unchanged) ── */
         .tp-landing{max-width:1000px;margin:0 auto;padding:56px 24px 80px;font-family:'DM Sans',sans-serif;}
         .tp-hero{text-align:center;margin-bottom:24px;}
         .tp-badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;letter-spacing:0.04em;color:#a78bfa;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.18);border-radius:100px;padding:5px 14px;margin-bottom:20px;}
@@ -405,6 +407,12 @@ export default function ToolsPage() {
         .tp-sp-text strong{color:#777;}
         .tp-sp-avs{display:flex;}
         .tp-sp-av{width:28px;height:28px;border-radius:50%;border:2px solid #080808;margin-left:-7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+
+        /* ── MOBILE HERO — shown only on mobile, replaces full hero ── */
+        /* On mobile the order is: compact hook → tool cards → stats → social proof */
+        /* This puts a tappable tool card in the first 2 seconds of viewing */
+        .tp-mobile-hook{display:none;}
+
         .tp-chat{max-width:720px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;min-height:calc(100vh - 65px);font-family:'DM Sans',sans-serif;}
         .tp-chat-win{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;flex:1;box-shadow:0 40px 100px rgba(0,0,0,0.7);}
         .tp-chat-hdr{padding:14px 18px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:12px;background:#111;}
@@ -484,7 +492,87 @@ export default function ToolsPage() {
         @keyframes tpGateBlur{from{background:rgba(0,0,0,0);backdrop-filter:blur(0px)}to{background:rgba(0,0,0,0.84);backdrop-filter:blur(22px)}}
         @keyframes tpModalIn{from{opacity:0;transform:scale(0.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
         @keyframes tpItemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        @media(max-width:640px){.tp-grid{grid-template-columns:1fr;}.tp-landing{padding:32px 16px 56px;}.tp-gate-modal{padding:28px 20px;}.tp-chat{padding:10px 10px 28px;}.tp-stats{gap:18px;}.tp-sp{flex-direction:column;text-align:center;}}
+
+        /* ── MOBILE OVERRIDES ─────────────────────────────────────────────
+           On mobile (<640px):
+           - Hide the full hero (badge + h1 + sub + stats)
+           - Show a compact 2-line hook above the cards instead
+           - Tool cards go single column and appear immediately
+           - Stats appear BELOW the cards so they don't push cards down
+           This means the first thing a Reels visitor sees is a tool card
+           they can tap — not text they need to read first.           */
+        @media(max-width:640px){
+          .tp-hero{display:none;}
+          .tp-stats{display:none;}
+          .tp-mobile-hook{
+            display:block;
+            padding:20px 16px 14px;
+            text-align:center;
+          }
+          .tp-mobile-hook-title{
+            font-family:'Syne',sans-serif;
+            font-size:22px;
+            font-weight:700;
+            color:#fff;
+            letter-spacing:-0.02em;
+            line-height:1.15;
+            margin-bottom:6px;
+          }
+          .tp-mobile-hook-title span{
+            background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+          }
+          .tp-mobile-hook-sub{
+            font-size:13px;
+            color:#444;
+            font-family:'DM Sans',sans-serif;
+            font-weight:300;
+          }
+          .tp-landing{padding:0 0 48px;}
+          .tp-grid{
+            grid-template-columns:1fr;
+            gap:10px;
+            padding:0 16px;
+            margin-bottom:20px;
+          }
+          .tp-card{
+            padding:18px 16px;
+            border-radius:16px;
+            /* Bigger tap target on mobile */
+            min-height:80px;
+          }
+          .tp-card-icon{
+            width:36px;
+            height:36px;
+            font-size:17px;
+            margin-bottom:10px;
+          }
+          .tp-card-name{font-size:14px;}
+          .tp-card-desc{font-size:12px;margin-bottom:12px;}
+          /* Stats appear below cards on mobile as supporting context */
+          .tp-mobile-stats{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:20px;
+            padding:16px;
+            margin-bottom:16px;
+          }
+          .tp-mobile-stat{text-align:center;}
+          .tp-mobile-stat-num{
+            font-family:'Syne',sans-serif;
+            font-size:16px;
+            font-weight:700;
+            color:#fff;
+          }
+          .tp-mobile-stat-label{font-size:10px;color:#444;margin-top:1px;}
+          .tp-mobile-stat-divider{width:1px;height:22px;background:#1e1e1e;}
+          .tp-sp{flex-direction:column;text-align:center;margin:0 16px;}
+          .tp-gate-modal{padding:28px 20px;}
+          .tp-chat{padding:10px 10px 28px;}
+        }
       `}</style>
 
       <nav className="tp-nav">
@@ -507,11 +595,15 @@ export default function ToolsPage() {
 
       {screen === "landing" && (
         <div className="tp-landing">
+
+          {/* ── DESKTOP HERO (hidden on mobile) ── */}
           <div className="tp-hero">
             <div className="tp-badge">Free AI Tools by Unico Studios</div>
             <h1 className="tp-h1">AI Tools That<br /><span>Actually Work</span></h1>
             <p className="tp-sub">4 free AI tools built for founders and brands who are serious about growth. No fluff. No generic output. Just results.</p>
           </div>
+
+          {/* ── DESKTOP STATS (hidden on mobile) ── */}
           <div className="tp-stats">
             <div className="tp-stat"><div className="tp-stat-num">9,073+</div><div className="tp-stat-label">Founders using these tools</div></div>
             <div className="tp-stat-divider" />
@@ -519,6 +611,16 @@ export default function ToolsPage() {
             <div className="tp-stat-divider" />
             <div className="tp-stat"><div className="tp-stat-num">340%</div><div className="tp-stat-label">Avg lead increase with Niquo</div></div>
           </div>
+
+          {/* ── MOBILE HOOK (shown only on mobile, above cards) ──
+               2 lines max. First line: what it is. Second line: why tap now.
+               No badge, no long sub — just enough to give context before the cards. */}
+          <div className="tp-mobile-hook">
+            <div className="tp-mobile-hook-title">4 Free AI Tools<br />for <span>Indian Founders</span></div>
+            <div className="tp-mobile-hook-sub">Tap any tool — no signup needed to start</div>
+          </div>
+
+          {/* ── TOOL CARDS (same on both, but single column on mobile) ── */}
           <div className="tp-grid">
             {Object.values(TOOLS).map(function(t) {
               return (
@@ -538,6 +640,25 @@ export default function ToolsPage() {
               );
             })}
           </div>
+
+          {/* ── MOBILE STATS (shown only on mobile, below cards as trust signal) ── */}
+          <div className="tp-mobile-stats">
+            <div className="tp-mobile-stat">
+              <div className="tp-mobile-stat-num">9,073+</div>
+              <div className="tp-mobile-stat-label">Founders</div>
+            </div>
+            <div className="tp-mobile-stat-divider" />
+            <div className="tp-mobile-stat">
+              <div className="tp-mobile-stat-num">₹4.2Cr</div>
+              <div className="tp-mobile-stat-label">Audited</div>
+            </div>
+            <div className="tp-mobile-stat-divider" />
+            <div className="tp-mobile-stat">
+              <div className="tp-mobile-stat-num">Free</div>
+              <div className="tp-mobile-stat-label">No card needed</div>
+            </div>
+          </div>
+
           <div className="tp-sp">
             <div className="tp-sp-avs">
               {["S","R","A","P","M"].map(function(l, i) {
