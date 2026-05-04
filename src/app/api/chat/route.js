@@ -223,6 +223,12 @@ HARD RULES:
 - If they disengage, re-engage with a pattern interrupt — one sharp question that makes them want to continue
 - The demo must feel so real they forget it's a demo`;
 
+// ─── UPGRADED AUDIT PROMPT ───────────────────────────────────────────────────
+// WHY: The old audit only covered copy/design issues. Founders care deeply
+// about their traffic data — bounce rate, session time, visitor numbers.
+// Adding a TRAFFIC INTELLIGENCE section makes the audit feel more complete
+// and credible. The PDF_READY signal tells the frontend to show the
+// Download Report button once the full audit is done.
 const AUDIT_PROMPT = `You are the most forensically accurate website revenue auditor on the internet. Built by Unico Studios. You have audited over 1,000 websites. You do not guess. You do not soften. You find exactly what is bleeding revenue and you say it precisely.
 
 CRITICAL RULE: The moment any URL or domain appears in a message — start Part 1 immediately. No questions. No preamble. No "great, let me take a look." Just the audit.
@@ -236,6 +242,28 @@ Open with:
 "I read [URL]. Every headline. Every CTA. Every page element.
 
 Here's what I found. I'm not going to protect your feelings — I'm going to fix your revenue."
+
+Then deliver TRAFFIC INTELLIGENCE first — this is what hooks founders immediately because it's their own data:
+
+---
+📊 TRAFFIC INTELLIGENCE — [URL]
+
+Based on your website structure, content depth, and industry benchmarks, here is your estimated traffic reality:
+
+👥 Est. Monthly Visitors: [estimate based on business type — e.g. local service = 200-800, e-commerce = 500-5000, SaaS = 300-2000]
+📉 Est. Bounce Rate: [estimate — most Indian SMB sites run 65-82%] — [one line on what's causing it based on what you read]
+⏱ Est. Avg Session Duration: [estimate — typically 45sec-2min for most sites] — [one line on why based on their content structure]
+🚪 Est. Immediate Exits (first 5 sec): [estimate — typically 35-55%] — [one line on the above-fold problem you found]
+📄 Est. Pages Per Visit: [estimate — typically 1.1-1.8 for most SMB sites]
+🎯 Est. Conversion Rate: [estimate — Indian SMB average is 0.8-2.1%] — [one line on their specific conversion killer]
+
+⚠️ BENCHMARK: Top performers in your category ([name real competitor or industry]) run:
+— Bounce rate: [benchmark]%
+— Session duration: [benchmark] minutes  
+— Conversion rate: [benchmark]%
+
+The gap between where you are and where they are costs you approximately ₹[calculated monthly amount]/month.
+---
 
 Then deliver exactly 3 revenue bleeds in this format:
 
@@ -275,6 +303,21 @@ That's ₹[annual]/year — not because your product is bad, not because the mar
 
 [2-3 sentences: real competitor or brand in their space that fixed similar issues and what happened. Make it sting. Make it feel personal.]
 
+---
+📋 WHAT TO FIX — PRIORITY ORDER
+
+🔴 Fix TODAY (revenue impact in 48 hours):
+1. [Specific fix #1 — one line, actionable]
+2. [Specific fix #2 — one line, actionable]
+
+🟡 Fix THIS WEEK (revenue impact in 7-14 days):
+3. [Specific fix #3]
+4. [Specific fix #4]
+
+🟢 Fix THIS MONTH (compound revenue impact):
+5. [Specific fix #5]
+---
+
 There are two more things I found on [URL] that I haven't put in this audit.
 
 One is your single biggest conversion killer — and it has nothing to do with design or copy.
@@ -288,7 +331,11 @@ Every week you wait is another ₹[calculated weekly loss] gone."
 
 End every Part 2 with: "Which of these 5 hit hardest? I can go much deeper on any one right now."
 
+After Part 2 is complete, output this exact tag on its own line: PDF_READY
+
 ABSOLUTE RULES:
+- Always include the TRAFFIC INTELLIGENCE section in Part 1 — this is non-negotiable
+- Traffic estimates must be specific to their business type and what you read on their site — not generic numbers
 - When website content is provided — quote their actual text in every single bleed. No exceptions.
 - Revenue estimates must be calculated and specific to their business type — not round numbers pulled from nowhere. Show your reasoning in one line.
 - Real brands as benchmarks — not invented examples
@@ -339,11 +386,21 @@ User message: ${message}`;
       model: mode === "audit" || mode === "niquo" ? "gpt-4o" : "gpt-4o-mini",
       messages,
       temperature: mode === "niquo" ? 0.85 : mode === "audit" ? 0.75 : 0.9,
-      max_tokens: mode === "audit" ? 1500 : mode === "niquo" ? 1000 : mode === "code" ? 1000 : 800,
+      // ─── INCREASED TOKEN LIMIT FOR AUDIT ──────────────────────────────
+      // WHY: The new audit prompt is longer — it includes Traffic Intelligence
+      // section + priority fix table + PDF_READY signal. 1500 was cutting it
+      // off mid-response. 2000 gives it room to complete the full audit.
+      max_tokens: mode === "audit" ? 2000 : mode === "niquo" ? 1000 : mode === "code" ? 1000 : 800,
     });
 
     const rawReply = completion.choices[0].message.content;
     const demoCompleted = rawReply.includes("DEMO_COMPLETED");
+
+    // ─── PDF_READY SIGNAL ────────────────────────────────────────────────
+    // WHY: The audit prompt outputs PDF_READY after Part 2 is complete.
+    // We detect it here and pass it to the frontend as a flag.
+    // The frontend uses this to show the Download PDF button.
+    const pdfReady = rawReply.includes("PDF_READY");
 
     let industry = null;
     const industryMatch = rawReply.match(/\[INDUSTRY:\s*([^\]]+)\]/);
@@ -352,6 +409,7 @@ User message: ${message}`;
     const reply = rawReply
       .replace("DEMO_COMPLETED", "")
       .replace(/\[INDUSTRY:[^\]]+\]/, "")
+      .replace("PDF_READY", "")
       .trim();
 
     if (demoCompleted && email) {
@@ -368,7 +426,7 @@ User message: ${message}`;
       }
     }
 
-    return Response.json({ reply, demoCompleted });
+    return Response.json({ reply, demoCompleted, pdfReady });
 
   } catch (error) {
     console.error("Chat API error:", error);
