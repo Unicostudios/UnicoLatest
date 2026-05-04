@@ -106,9 +106,6 @@ function isValidEmail(e) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e);
 }
 
-// ── ANONYMOUS VISITOR LOG ────────────────────────────────────────────────────
-// Uses localStorage (not sessionStorage) so it persists across tabs.
-// Only fires once per hour per browser — stops duplicate rows.
 async function logAnonymousVisit() {
   try {
     const key = "unico_anon_logged";
@@ -125,44 +122,23 @@ async function logAnonymousVisit() {
   } catch (_) {}
 }
 
-// ── TOOL CLICK LOG (anonymous) ───────────────────────────────────────────────
-// Fires when someone clicks a tool card but hasn't filled the gate yet.
-// This tells you: did they just land and bounce, or did they actually
-// engage with a specific tool? Critical for understanding drop-off.
-// Status = "Tool Click" so you can filter it separately in the sheet.
 async function logToolClick(toolId) {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
     await fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: "anonymous_visitor",
-        phone: "",
-        tool: "Clicked: " + toolId,
-        country: tz,
-        status: "Tool Click",
-      }),
+      body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Clicked: " + toolId, country: tz, status: "Tool Click" }),
     });
   } catch (_) {}
 }
 
-// ── RECURRING VISIT LOG ──────────────────────────────────────────────────────
-// When a known user (already submitted gate) comes back, log which tool
-// they returned to. If the same email hits Niquo 3 times, that's your
-// hottest lead — call them personally. Shows up as "Return: niquo" in Tool column.
 async function logRecurringVisit(email, toolId) {
   try {
     await fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        phone: "Returning",
-        tool: "Return: " + toolId,
-        returning: true,
-        status: "Return Visit",
-      }),
+      body: JSON.stringify({ email: email, phone: "Returning", tool: "Return: " + toolId, returning: true, status: "Return Visit" }),
     });
   } catch (_) {}
 }
@@ -217,7 +193,7 @@ export default function ToolsPage() {
   const [email, setEmail] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [showGate, setShowGate] = useState(false); // starts hidden — gate is delayed
+  const [showGate, setShowGate] = useState(false);
   const [gateSuccess, setGateSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -228,19 +204,14 @@ export default function ToolsPage() {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // ── ON PAGE LOAD ─────────────────────────────────────────────────────────
   useEffect(function() {
-    // Log anonymous visit (localStorage-deduplicated)
     logAnonymousVisit();
-
-    // Check if already a known user from a previous session
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
     const ONE_HOUR = 60 * 60 * 1000;
     if (saved && savedTime && now - parseInt(savedTime) < ONE_HOUR) {
       setEmail(saved);
-      setShowGate(false);
     } else {
       sessionStorage.removeItem("unico_tools_email");
       sessionStorage.removeItem("unico_tools_time");
@@ -267,18 +238,7 @@ export default function ToolsPage() {
     setAuditPdfReady(false);
     setAuditUrl("");
     setScreen("chat");
-
-    // ── TOOL CLICK TRACKING ─────────────────────────────────────────────
-    // For anonymous users: log which tool they clicked so you know
-    // who engaged vs who just bounced from the landing page.
-    // For known users: log which tool they returned to — recurring
-    // visits to the same tool = hot lead signal.
-    if (!email) {
-      logToolClick(toolId);
-    } else {
-      logRecurringVisit(email, toolId);
-    }
-
+    if (!email) { logToolClick(toolId); } else { logRecurringVisit(email, toolId); }
     if (typeof window !== "undefined" && window.gtag) {
       window.gtag("event", "tool_opened", { event_category: "tools", event_label: toolId });
     }
@@ -334,16 +294,9 @@ export default function ToolsPage() {
   async function sendMessage(text) {
     const msg = text || input.trim();
     if (!msg || !currentTool) return;
-
-    // ── DELAYED GATE LOGIC ──────────────────────────────────────────────
-    // After gateAfter exchanges (5 for most tools, 2 for audit),
-    // if the user hasn't given their email yet, show the gate.
-    // Count only AI replies (assistant messages) as "exchanges" —
-    // this means they've received real value before being asked.
     const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
     if (!email && exchangesSoFar >= gateAfter) {
       setShowGate(true);
-      // Fire ViewContent pixel so Meta knows gate was shown
       if (typeof window !== "undefined" && window.fbq) {
         window.fbq("track", "ViewContent", { content_name: "Delayed Gate", content_category: currentTool });
       }
@@ -352,25 +305,20 @@ export default function ToolsPage() {
       }
       return;
     }
-
     if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
-
     if (currentTool === "audit" && !auditUrl) {
       const urlMatch = msg.match(/https?:\/\/[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?:\/[^\s]*)?/);
       if (urlMatch) setAuditUrl(urlMatch[0]);
     }
-
     const userMsg = { role: "user", content: msg };
     setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], userMsg] }; });
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
     setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
-
     if (typeof window !== "undefined" && window.gtag) {
       window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
     }
-
     try {
       const history = [...messages[currentTool], userMsg];
       const res = await fetch("/api/chat", {
@@ -394,34 +342,28 @@ export default function ToolsPage() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   }
 
-  // ── PROGRESS BAR for gate countdown ──────────────────────────────────────
-  // Shows subtly in the chat header: "2 free messages left"
-  // This creates urgency without being aggressive.
-  // Only shows when user is anonymous and getting close to the gate.
   function gateCountdown() {
     if (email || !currentTool || !tool) return null;
     const exchanges = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
     const remaining = gateAfter - exchanges;
-    if (remaining > gateAfter - 1 || remaining <= 0) return null; // hide until 1 away
+    if (remaining > gateAfter - 1 || remaining <= 0) return null;
     return remaining === 1 ? "1 free message left" : remaining + " free messages left";
   }
 
-  const currentMessages = currentTool ? messages[currentTool] : [];
-  const countdown = gateCountdown();
-
-  // ── GATE COPY based on tool ───────────────────────────────────────────────
-  // Context-aware gate copy. Audit users get "continue to Part 2",
-  // others get "keep this conversation going". Feels natural not forced.
   function gateTitle() {
     if (currentTool === "audit") return "You've seen Part 1. Want the rest?";
     if (currentTool === "niquo") return "Niquo is just getting warmed up.";
     return "You're getting somewhere good.";
   }
+
   function gateSub() {
     if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — the two most critical issues on your site.";
     if (currentTool === "niquo") return "Enter your email to keep the demo going and get your <strong>full personalised close.</strong>";
     return "Enter your email to keep this conversation going — and get your full report when we're done.";
   }
+
+  const currentMessages = currentTool ? messages[currentTool] : [];
+  const countdown = gateCountdown();
 
   return (
     <div>
@@ -499,21 +441,24 @@ export default function ToolsPage() {
         .tp-textarea::placeholder{color:#252525;}
         .tp-send{width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
         .tp-hint{text-align:center;font-size:10px;color:#222;margin-top:8px;}
-        .tp-gate{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
-        .tp-gate-modal{background:#0d0d0d;border:1px solid #222;border-radius:24px;padding:36px 32px;width:100%;max-width:420px;text-align:center;animation:tpslideup 0.3s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto;}
-        .tp-gate-ico{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.1));border:1px solid rgba(167,139,250,0.2);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px;}
-        .tp-gate-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-0.02em;line-height:1.2;}
-        .tp-gate-sub{font-size:14px;color:#555;line-height:1.6;margin-bottom:20px;}
-        .tp-gate-sub strong{color:#a78bfa;}
-        .tp-gate-inp{width:100%;background:#111;border:1px solid #222;border-radius:10px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:#ccc;outline:none;transition:border-color 0.2s;margin-bottom:8px;}
-        .tp-gate-inp::placeholder{color:#2a2a2a;}
-        .tp-gate-inp:focus{border-color:#a78bfa;}
-        .tp-gate-inp.err{border-color:#f87171;}
+        .tp-gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:tpGateBgIn 0.4s ease both;}
+        .tp-gate::before{content:'';position:absolute;inset:0;animation:tpGateBlur 0.55s cubic-bezier(0.16,1,0.3,1) both;pointer-events:none;}
+        .tp-gate-modal{position:relative;background:rgba(16,16,18,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:28px;padding:40px 36px;width:100%;max-width:400px;text-align:center;max-height:92vh;overflow-y:auto;box-shadow:0 48px 100px rgba(0,0,0,0.75),0 0 0 0.5px rgba(255,255,255,0.03) inset;animation:tpModalIn 0.6s cubic-bezier(0.16,1,0.3,1) both;transform-origin:center 60%;}
+        .tp-gate-ico{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.08));border:1px solid rgba(167,139,250,0.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both;}
+        .tp-gate-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#efefef;margin-bottom:10px;letter-spacing:-0.01em;line-height:1.35;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
+        .tp-gate-sub{font-size:13px;color:#484848;line-height:1.65;margin-bottom:24px;font-weight:400;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.19s both;}
+        .tp-gate-sub strong{color:#8b70d8;}
+        .tp-gate-inp{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:#ccc;outline:none;transition:border-color 0.25s,background 0.25s;margin-bottom:10px;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.23s both;}
+        .tp-gate-inp::placeholder{color:#2e2e2e;}
+        .tp-gate-inp:focus{border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.03);}
+        .tp-gate-inp.err{border-color:rgba(248,113,113,0.45);}
         .tp-gate-err{font-size:12px;color:#f87171;margin-bottom:8px;text-align:left;}
-        .tp-gate-btn{width:100%;background:linear-gradient(135deg,#a78bfa,#8b5cf6);border:none;border-radius:11px;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px;}
-        .tp-gate-btn:disabled{opacity:0.5;cursor:not-allowed;}
-        .tp-gate-fine{font-size:11px;color:#252525;margin-top:10px;}
-        .tp-ok-ico{width:52px;height:52px;border-radius:50%;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;}
+        .tp-gate-btn{width:100%;background:linear-gradient(135deg,#a78bfa,#8b5cf6);border:none;border-radius:12px;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;margin-top:2px;letter-spacing:0.01em;transition:opacity 0.2s,transform 0.15s;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.27s both;}
+        .tp-gate-btn:hover{opacity:0.87;transform:translateY(-1px);}
+        .tp-gate-btn:active{transform:translateY(0);}
+        .tp-gate-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+        .tp-gate-fine{font-size:11px;color:#1e1e1e;margin-top:12px;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.31s both;}
+        .tp-ok-ico{width:48px;height:48px;border-radius:50%;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 16px;}
         .tp-upgrade{position:fixed;inset:0;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
         .tp-upgrade-modal{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:22px;padding:30px 26px;width:100%;max-width:460px;text-align:center;max-height:92vh;overflow-y:auto;}
         .tp-upgrade-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;}
@@ -535,8 +480,11 @@ export default function ToolsPage() {
         @keyframes tpblink{0%,100%{opacity:1}50%{opacity:0.3}}
         @keyframes tpbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
         @keyframes tpfadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes tpslideup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-        @media(max-width:640px){.tp-grid{grid-template-columns:1fr;}.tp-landing{padding:32px 16px 56px;}.tp-gate-modal{padding:24px 18px;}.tp-chat{padding:10px 10px 28px;}.tp-stats{gap:18px;}.tp-sp{flex-direction:column;text-align:center;}}
+        @keyframes tpGateBgIn{from{opacity:0}to{opacity:1}}
+        @keyframes tpGateBlur{from{background:rgba(0,0,0,0);backdrop-filter:blur(0px)}to{background:rgba(0,0,0,0.84);backdrop-filter:blur(22px)}}
+        @keyframes tpModalIn{from{opacity:0;transform:scale(0.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes tpItemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:640px){.tp-grid{grid-template-columns:1fr;}.tp-landing{padding:32px 16px 56px;}.tp-gate-modal{padding:28px 20px;}.tp-chat{padding:10px 10px 28px;}.tp-stats{gap:18px;}.tp-sp{flex-direction:column;text-align:center;}}
       `}</style>
 
       <nav className="tp-nav">
@@ -754,8 +702,8 @@ export default function ToolsPage() {
             ) : (
               <div>
                 <div className="tp-ok-ico">✓</div>
-                <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:21, fontWeight:800, color:"#fff", marginBottom:8 }}>You're in. Let's keep going. 🎉</h2>
-                <p style={{ color:"#555", fontSize:14, marginBottom:24, lineHeight:1.6 }}>Your conversation is saved. Pick up exactly where you left off.</p>
+                <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:19, fontWeight:700, color:"#efefef", marginBottom:8, letterSpacing:"-0.01em" }}>You're in. Let's keep going.</h2>
+                <p style={{ color:"#484848", fontSize:13, marginBottom:24, lineHeight:1.65 }}>Your conversation is saved. Pick up exactly where you left off.</p>
                 <button className="tp-gate-btn" onClick={closeGate}>Continue the conversation →</button>
               </div>
             )}
