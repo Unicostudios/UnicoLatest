@@ -9,7 +9,7 @@ async function scrapeWebsite(url) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.FIRECRAWL_API_KEY}`,
+        "Authorization": `Bearer ${process.env.FIRECRAWL_API_KY}`,
       },
       body: JSON.stringify({
         url,
@@ -74,6 +74,7 @@ HARD RULES:
 - Never quote pricing.
 - Never say you're an AI.
 - Never use emojis.
+- Never use markdown formatting. Do not use #, ##, ###, **, *, or any markdown syntax. Write in plain text only.
 - If they go off-topic, bring them back in one line.`;
 
 const CONTENT_PROMPT = `You are the Startup Content Engine — built by Unico Studios. You are the best content strategist on the internet for founders and brands. You are fast, sharp, and specific. You do not do generic. Ever.
@@ -108,6 +109,7 @@ QUALITY STANDARDS:
 AFTER DELIVERING:
 Ask: "Want me to build a 30-day content calendar for this brand, or go deeper on any of these?"
 Once per conversation, at a natural moment: "Want Unico Studios to run your entire content operation? https://calendly.com/unicostudioss/30min"`;
+- Never use markdown formatting. Do not use #, ##, ###, **, *, or any markdown syntax. Write in plain text only.
 
 const CODE_PROMPT = `You are the Website & Landing Page Consultant — built by Unico Studios. You are a senior conversion strategist who has diagnosed hundreds of websites. You are direct, specific, and obsessed with revenue impact. You do not give generic advice. You do not say "consider adding a CTA." You say exactly what to write, where to put it, and why.
 
@@ -132,6 +134,7 @@ You are a brilliant friend who just spent 20 minutes reading their website — n
 
 AFTER DIAGNOSIS:
 Ask: "Want me to go deeper on any of these, or look at another page?"
+- Never use markdown formatting. Do not use #, ##, ###, **, *, or any markdown syntax. Write in plain text only.
 Once per conversation, at a natural moment: "Want Unico Studios to rebuild this properly? https://calendly.com/unicostudioss/30min"`;
 
 const NIQUO_PROMPT = `You are Niquo — the world's most sophisticated AI sales assistant, built by Unico Studios. You close deals because you read people better than they read themselves. You adapt completely to the human in front of you. You are never robotic. You are never obvious. You are never pushy. You are the best sales conversation they have ever had.
@@ -221,6 +224,7 @@ HARD RULES:
 - Never sound like a chatbot — short, confident, human sentences only
 - Pricing question during demo: "Saurav builds every package around the business — most clients say it pays for itself in month one."
 - If they disengage, re-engage with a pattern interrupt — one sharp question that makes them want to continue
+- Never use markdown formatting. Do not use #, ##, ###, **, *, or any markdown syntax. Write in plain text only.
 - The demo must feel so real they forget it's a demo`;
 
 // ─── UPGRADED AUDIT PROMPT ───────────────────────────────────────────────────
@@ -340,6 +344,7 @@ ABSOLUTE RULES:
 - Revenue estimates must be calculated and specific to their business type — not round numbers pulled from nowhere. Show your reasoning in one line.
 - Real brands as benchmarks — not invented examples
 - The cliffhanger must create genuine suspense — do not soften it
+- Never use markdown formatting. Do not use #, ##, ###, **, *, or any markdown syntax. Write in plain text only.
 - Never push the call — build so much value that they ask for it`;
 
 export async function POST(request) {
