@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BsArrowUpRightCircle } from "react-icons/bs";
+import { SiWhatsapp } from "react-icons/si";
 
 export const DarkGridHero = ({ h, p, btn, href, target, theme }) => {
   return (
     <section
       className={`relative overflow-hidden bg-zinc-950 ${
         theme ? "rounded-t-[50px] sm:rounded-t-[70px] md:rounded-t-[80px]" : ""
-      } `}
+      }`}
     >
       <Content h={h} p={p} btn={btn} href={href} target={target} />
       <Beams />
@@ -44,134 +45,110 @@ const Content = ({ h, p, btn, href, target }) => {
         initial={{ opacity: 0, y: 25 }}
         transition={{ duration: 1.25, delay: 0.4, ease: "easeInOut" }}
         viewport={{ once: true, amount: 0.5 }}
-        className="flex flex-col items-center gap-6 sm:flex-row"
+        className="flex flex-col items-center gap-4 sm:flex-row"
       >
+        {/* Primary CTA — Book a Call */}
         <a href={href} target={target}>
           <button className="flex items-center gap-3 text-sm xxs2:text-base bg-[#5F14E0] pl-3 pr-2 py-1 rounded-full w-fit cursor-pointer text-white">
             {btn}
             <BsArrowUpRightCircle className="rotate-45 text-lg xxs2:text-xl" />
           </button>
         </a>
+
+        {/* Secondary CTA — WhatsApp */}
+        <a
+          href="https://wa.me/918147057109?text=Hi%20Saurav%2C%20I%20want%20to%20know%20more%20about%20Unico%20Studios"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 7,
+            borderRadius: 100,
+            border: "1px solid rgba(37,211,102,0.35)",
+            padding: "6px 18px",
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#25D366",
+            background: "rgba(37,211,102,0.05)",
+            textDecoration: "none",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "rgba(37,211,102,0.1)";
+            e.currentTarget.style.borderColor = "rgba(37,211,102,0.6)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "rgba(37,211,102,0.05)";
+            e.currentTarget.style.borderColor = "rgba(37,211,102,0.35)";
+          }}
+        >
+          <SiWhatsapp size={14} />
+          WhatsApp Us
+        </a>
       </motion.div>
+
+      {/* Social proof line under CTAs */}
+      <motion.p
+        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 10 }}
+        transition={{ duration: 1, delay: 0.7, ease: "easeInOut" }}
+        viewport={{ once: true, amount: 0.5 }}
+        style={{
+          marginTop: 20,
+          fontSize: 12,
+          color: "rgba(255,255,255,0.2)",
+          textAlign: "center",
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 300,
+        }}
+      >
+        No pitch. No pressure. Walk away with a real growth plan.
+      </motion.p>
     </div>
   );
 };
 
 const Beams = () => {
   const { width } = useWindowSize();
-
   const numColumns = width ? Math.floor(width / GRID_BOX_SIZE) : 0;
 
   const placements = [
-    {
-      top: GRID_BOX_SIZE * 0,
-      left: Math.floor(numColumns * 0.05) * GRID_BOX_SIZE,
-      transition: {
-        duration: 3.5,
-        repeatDelay: 5,
-        delay: 2,
-      },
-    },
-    {
-      top: GRID_BOX_SIZE * 12,
-      left: Math.floor(numColumns * 0.15) * GRID_BOX_SIZE,
-      transition: {
-        duration: 3.5,
-        repeatDelay: 10,
-        delay: 4,
-      },
-    },
-    {
-      top: GRID_BOX_SIZE * 3,
-      left: Math.floor(numColumns * 0.25) * GRID_BOX_SIZE,
-    },
-    {
-      top: GRID_BOX_SIZE * 9,
-      left: Math.floor(numColumns * 0.75) * GRID_BOX_SIZE,
-      transition: {
-        duration: 2,
-        repeatDelay: 7.5,
-        delay: 3.5,
-      },
-    },
-    {
-      top: 0,
-      left: Math.floor(numColumns * 0.7) * GRID_BOX_SIZE,
-      transition: {
-        duration: 3,
-        repeatDelay: 2,
-        delay: 1,
-      },
-    },
-    {
-      top: GRID_BOX_SIZE * 2,
-      left: Math.floor(numColumns * 1) * GRID_BOX_SIZE - GRID_BOX_SIZE,
-      transition: {
-        duration: 5,
-        repeatDelay: 5,
-        delay: 5,
-      },
-    },
+    { top: GRID_BOX_SIZE * 0, left: Math.floor(numColumns * 0.05) * GRID_BOX_SIZE, transition: { duration: 3.5, repeatDelay: 5, delay: 2 } },
+    { top: GRID_BOX_SIZE * 12, left: Math.floor(numColumns * 0.15) * GRID_BOX_SIZE, transition: { duration: 3.5, repeatDelay: 10, delay: 4 } },
+    { top: GRID_BOX_SIZE * 3, left: Math.floor(numColumns * 0.25) * GRID_BOX_SIZE },
+    { top: GRID_BOX_SIZE * 9, left: Math.floor(numColumns * 0.75) * GRID_BOX_SIZE, transition: { duration: 2, repeatDelay: 7.5, delay: 3.5 } },
+    { top: 0, left: Math.floor(numColumns * 0.7) * GRID_BOX_SIZE, transition: { duration: 3, repeatDelay: 2, delay: 1 } },
+    { top: GRID_BOX_SIZE * 2, left: Math.floor(numColumns * 1) * GRID_BOX_SIZE - GRID_BOX_SIZE, transition: { duration: 5, repeatDelay: 5, delay: 5 } },
   ];
 
   return (
     <>
       {placements.map((p, i) => (
-        <Beam
-          key={i}
-          top={p.top}
-          left={p.left - BEAM_WIDTH_OFFSET}
-          transition={p.transition || {}}
-        />
+        <Beam key={i} top={p.top} left={p.left - BEAM_WIDTH_OFFSET} transition={p.transition || {}} />
       ))}
     </>
   );
 };
 
 const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
-  });
-
+  const [windowSize, setWindowSize] = useState({ width: undefined, height: undefined });
   useEffect(() => {
-    const handleResize = () =>
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-
+    const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     window.addEventListener("resize", handleResize);
-
     handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   return windowSize;
 };
 
 const Beam = ({ top, left, transition = {} }) => {
   return (
     <motion.div
-      initial={{
-        y: 0,
-        opacity: 0,
-      }}
-      animate={{
-        opacity: [0, 1, 0],
-        y: 32 * 8,
-      }}
-      transition={{
-        ease: "easeInOut",
-        duration: 3,
-        repeat: Infinity,
-        repeatDelay: 1.5,
-        ...transition,
-      }}
-      style={{
-        top,
-        left,
-      }}
+      initial={{ y: 0, opacity: 0 }}
+      animate={{ opacity: [0, 1, 0], y: 32 * 8 }}
+      transition={{ ease: "easeInOut", duration: 3, repeat: Infinity, repeatDelay: 1.5, ...transition }}
+      style={{ top, left }}
       className="absolute z-10 h-[64px] w-[1px] bg-gradient-to-b from-blue-500/0 to-blue-500"
     />
   );
@@ -180,16 +157,9 @@ const Beam = ({ top, left, transition = {} }) => {
 const GradientGrid = () => {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={{
-        duration: 2.5,
-        ease: "easeInOut",
-      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 2.5, ease: "easeInOut" }}
       className="absolute inset-0 z-0"
     >
       <div
