@@ -23,6 +23,7 @@ const TOOLS = {
     limit: 10,
     tag: "Most Popular",
     users: "2,847",
+    gateAfter: 5,
   },
   code: {
     id: "code",
@@ -45,6 +46,7 @@ const TOOLS = {
     limit: 10,
     tag: "For Founders",
     users: "1,923",
+    gateAfter: 5,
   },
   niquo: {
     id: "niquo",
@@ -67,6 +69,7 @@ const TOOLS = {
     limit: 50,
     tag: "🔥 Fan Favourite",
     users: "3,412",
+    gateAfter: 5,
   },
   audit: {
     id: "audit",
@@ -89,6 +92,7 @@ const TOOLS = {
     limit: 3,
     tag: "New ✨",
     users: "891",
+    gateAfter: 2,
   },
 };
 
@@ -98,46 +102,66 @@ const PLANS = [
   { name: "Agency", price: "₹2,999", period: "/month", color: "#fb923c", features: ["Unlimited everything", "5 team members", "Custom AI training", "Dedicated manager", "Monthly strategy call"] },
 ];
 
-const COUNTRIES = [
-  { code: "+91", name: "India", flag: "🇮🇳", country: "India" },
-  { code: "+1", name: "USA/Canada", flag: "🇺🇸", country: "United States" },
-  { code: "+44", name: "UK", flag: "🇬🇧", country: "United Kingdom" },
-  { code: "+61", name: "Australia", flag: "🇦🇺", country: "Australia" },
-  { code: "+971", name: "UAE", flag: "🇦🇪", country: "UAE" },
-  { code: "+65", name: "Singapore", flag: "🇸🇬", country: "Singapore" },
-  { code: "+60", name: "Malaysia", flag: "🇲🇾", country: "Malaysia" },
-  { code: "+49", name: "Germany", flag: "🇩🇪", country: "Germany" },
-  { code: "+33", name: "France", flag: "🇫🇷", country: "France" },
-  { code: "+81", name: "Japan", flag: "🇯🇵", country: "Japan" },
-  { code: "+55", name: "Brazil", flag: "🇧🇷", country: "Brazil" },
-  { code: "+52", name: "Mexico", flag: "🇲🇽", country: "Mexico" },
-  { code: "+27", name: "South Africa", flag: "🇿🇦", country: "South Africa" },
-  { code: "+234", name: "Nigeria", flag: "🇳🇬", country: "Nigeria" },
-  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦", country: "Saudi Arabia" },
-  { code: "+62", name: "Indonesia", flag: "🇮🇩", country: "Indonesia" },
-  { code: "+63", name: "Philippines", flag: "🇵🇭", country: "Philippines" },
-  { code: "+92", name: "Pakistan", flag: "🇵🇰", country: "Pakistan" },
-  { code: "+880", name: "Bangladesh", flag: "🇧🇩", country: "Bangladesh" },
-  { code: "+94", name: "Sri Lanka", flag: "🇱🇰", country: "Sri Lanka" },
-  { code: "+977", name: "Nepal", flag: "🇳🇵", country: "Nepal" },
-];
-
 function isValidEmail(e) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e);
 }
 
+// ── ANONYMOUS VISITOR LOG ────────────────────────────────────────────────────
+// Uses localStorage (not sessionStorage) so it persists across tabs.
+// Only fires once per hour per browser — stops duplicate rows.
 async function logAnonymousVisit() {
   try {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+    const key = "unico_anon_logged";
+    const last = localStorage.getItem(key);
+    const now = Date.now();
+    if (last && now - parseInt(last) < 60 * 60 * 1000) return;
+    localStorage.setItem(key, now.toString());
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+    await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Page Visit", country: tz, status: "Visitor" }),
+    });
+  } catch (_) {}
+}
+
+// ── TOOL CLICK LOG (anonymous) ───────────────────────────────────────────────
+// Fires when someone clicks a tool card but hasn't filled the gate yet.
+// This tells you: did they just land and bounce, or did they actually
+// engage with a specific tool? Critical for understanding drop-off.
+// Status = "Tool Click" so you can filter it separately in the sheet.
+async function logToolClick(toolId) {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
     await fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: "anonymous_visitor",
         phone: "",
-        tool: "Page Visit",
-        country: timezone,
-        status: "Visitor",
+        tool: "Clicked: " + toolId,
+        country: tz,
+        status: "Tool Click",
+      }),
+    });
+  } catch (_) {}
+}
+
+// ── RECURRING VISIT LOG ──────────────────────────────────────────────────────
+// When a known user (already submitted gate) comes back, log which tool
+// they returned to. If the same email hits Niquo 3 times, that's your
+// hottest lead — call them personally. Shows up as "Return: niquo" in Tool column.
+async function logRecurringVisit(email, toolId) {
+  try {
+    await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        phone: "Returning",
+        tool: "Return: " + toolId,
+        returning: true,
+        status: "Return Visit",
       }),
     });
   } catch (_) {}
@@ -168,75 +192,17 @@ function useScrollTracking() {
   }, []);
 }
 
-// ─── PDF DOWNLOAD FUNCTION ───────────────────────────────────────────────────
-// WHY: Founders want to save the audit, share it with their team, act on it
-// later. A downloadable PDF makes the audit feel like a real deliverable —
-// not just a chat. It also keeps Unico Studios branding in front of them
-// every time they open the file. Uses browser's built-in print-to-PDF.
-// No external library needed — works on all devices.
 function downloadAuditPDF(messages, url) {
   const auditMessages = messages.filter(function(m) { return m.role === "assistant"; });
   const fullText = auditMessages.map(function(m) { return m.content; }).join("\n\n---\n\n");
   const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>Website Revenue Audit — ${url || "Your Website"}</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a1a; padding: 48px; max-width: 760px; margin: 0 auto; }
-        .header { border-bottom: 2px solid #f97316; padding-bottom: 24px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .brand { font-size: 13px; font-weight: 700; color: #f97316; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-        .title { font-size: 24px; font-weight: 700; color: #0a0a0a; line-height: 1.2; }
-        .subtitle { font-size: 13px; color: #888; margin-top: 6px; }
-        .meta { text-align: right; font-size: 12px; color: #aaa; line-height: 1.8; }
-        .content { font-size: 14px; line-height: 1.85; color: #333; white-space: pre-wrap; word-break: break-word; }
-        .content p { margin-bottom: 14px; }
-        .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .footer-brand { font-size: 12px; font-weight: 700; color: #f97316; }
-        .footer-cta { font-size: 12px; color: #888; }
-        .footer-url { color: #f97316; text-decoration: none; font-weight: 600; }
-        @media print {
-          body { padding: 32px; }
-          .no-print { display: none; }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <div>
-          <div class="brand">∂ Unico Studios — Website Revenue Audit</div>
-          <div class="title">Revenue Audit Report<br/>${url ? url.replace(/https?:\/\//, "") : "Your Website"}</div>
-          <div class="subtitle">Prepared by Unico Studios AI Audit Engine</div>
-        </div>
-        <div class="meta">
-          <div>${date}</div>
-          <div>unicostudios.in</div>
-          <div>Confidential</div>
-        </div>
-      </div>
-      <div class="content">${fullText.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</div>
-      <div class="footer">
-        <div class="footer-brand">∂ Unico Studios — India's First AI-Powered Growth Agency</div>
-        <div class="footer-cta">Ready to fix this? <a class="footer-url" href="https://calendly.com/unicostudioss/30min">Book a free call →</a></div>
-      </div>
-    </body>
-    </html>
-  `;
-
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Website Revenue Audit — ${url || "Your Website"}</title><style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;background:#fff;color:#1a1a1a;padding:48px;max-width:760px;margin:0 auto;}.header{border-bottom:2px solid #f97316;padding-bottom:24px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-start;}.brand{font-size:13px;font-weight:700;color:#f97316;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}.title{font-size:24px;font-weight:700;color:#0a0a0a;line-height:1.2;}.subtitle{font-size:13px;color:#888;margin-top:6px;}.meta{text-align:right;font-size:12px;color:#aaa;line-height:1.8;}.content{font-size:14px;line-height:1.85;color:#333;white-space:pre-wrap;word-break:break-word;}.footer{margin-top:48px;padding-top:20px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}.footer-brand{font-size:12px;font-weight:700;color:#f97316;}.footer-cta{font-size:12px;color:#888;}.footer-url{color:#f97316;text-decoration:none;font-weight:600;}@media print{body{padding:32px;}}</style></head><body><div class="header"><div><div class="brand">∂ Unico Studios — Website Revenue Audit</div><div class="title">Revenue Audit Report<br/>${url ? url.replace(/https?:\/\//, "") : "Your Website"}</div><div class="subtitle">Prepared by Unico Studios AI Audit Engine</div></div><div class="meta"><div>${date}</div><div>unicostudios.in</div><div>Confidential</div></div></div><div class="content">${fullText.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</div><div class="footer"><div class="footer-brand">∂ Unico Studios — India's First AI-Powered Growth Agency</div><div class="footer-cta">Ready to fix this? <a class="footer-url" href="https://calendly.com/unicostudioss/30min">Book a free call →</a></div></div></body></html>`;
   const blob = new Blob([htmlContent], { type: "text/html" });
   const blobUrl = URL.createObjectURL(blob);
   const printWindow = window.open(blobUrl, "_blank");
   if (printWindow) {
     printWindow.onload = function() {
-      setTimeout(function() {
-        printWindow.print();
-        URL.revokeObjectURL(blobUrl);
-      }, 500);
+      setTimeout(function() { printWindow.print(); URL.revokeObjectURL(blobUrl); }, 500);
     };
   }
 }
@@ -250,47 +216,24 @@ export default function ToolsPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
-  const [phoneInput, setPhoneInput] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [showGate, setShowGate] = useState(true);
+  const [showGate, setShowGate] = useState(false); // starts hidden — gate is delayed
   const [gateSuccess, setGateSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [auditPart1Done, setAuditPart1Done] = useState(false);
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  // ─── NEW STATE: PDF READY ─────────────────────────────────────────────
-  // WHY: Only show the Download PDF button after the FULL audit is done
-  // (Part 2 complete). Showing it too early would give an incomplete report.
   const [auditPdfReady, setAuditPdfReady] = useState(false);
   const [auditUrl, setAuditUrl] = useState("");
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
+  // ── ON PAGE LOAD ─────────────────────────────────────────────────────────
   useEffect(function() {
-    const visitKey = "unico_visit_logged";
-    if (!sessionStorage.getItem(visitKey)) {
-      sessionStorage.setItem(visitKey, "true");
-      logAnonymousVisit();
-    }
-  }, []);
+    // Log anonymous visit (localStorage-deduplicated)
+    logAnonymousVisit();
 
-  useScrollTracking();
-
-  useEffect(function() {
-    if (showGate) {
-      if (typeof window !== "undefined" && window.fbq) {
-        window.fbq("track", "ViewContent", { content_name: "Tools Gate", content_category: "Lead Gate" });
-      }
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "gate_viewed", { event_category: "gate", event_label: "tools_gate_open" });
-      }
-    }
-  }, [showGate]);
-
-  useEffect(function() {
+    // Check if already a known user from a previous session
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
@@ -298,17 +241,13 @@ export default function ToolsPage() {
     if (saved && savedTime && now - parseInt(savedTime) < ONE_HOUR) {
       setEmail(saved);
       setShowGate(false);
-      fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: saved, phone: "Returning", tool: "Tools Page", returning: true }),
-      }).catch(function() {});
     } else {
       sessionStorage.removeItem("unico_tools_email");
       sessionStorage.removeItem("unico_tools_time");
-      setShowGate(true);
     }
   }, []);
+
+  useScrollTracking();
 
   useEffect(function() {
     if (messagesEndRef.current) {
@@ -319,6 +258,7 @@ export default function ToolsPage() {
   const tool = currentTool ? TOOLS[currentTool] : null;
   const currentUses = currentTool ? uses[currentTool] : 0;
   const currentLimit = tool ? tool.limit : 10;
+  const gateAfter = tool ? tool.gateAfter : 5;
 
   function openTool(toolId) {
     setCurrentTool(toolId);
@@ -327,6 +267,18 @@ export default function ToolsPage() {
     setAuditPdfReady(false);
     setAuditUrl("");
     setScreen("chat");
+
+    // ── TOOL CLICK TRACKING ─────────────────────────────────────────────
+    // For anonymous users: log which tool they clicked so you know
+    // who engaged vs who just bounced from the landing page.
+    // For known users: log which tool they returned to — recurring
+    // visits to the same tool = hot lead signal.
+    if (!email) {
+      logToolClick(toolId);
+    } else {
+      logRecurringVisit(email, toolId);
+    }
+
     if (typeof window !== "undefined" && window.gtag) {
       window.gtag("event", "tool_opened", { event_category: "tools", event_label: toolId });
     }
@@ -344,19 +296,19 @@ export default function ToolsPage() {
 
   async function handleSubmit() {
     setEmailError("");
-    setPhoneError("");
-    let valid = true;
-    if (!emailInput) { setEmailError("Please enter your email address"); valid = false; }
-    else if (!isValidEmail(emailInput)) { setEmailError("Please enter a valid email address"); valid = false; }
-    if (!phoneInput) { setPhoneError("Please enter your phone number"); valid = false; }
-    else if (phoneInput.length < 6) { setPhoneError("Please enter a valid phone number"); valid = false; }
-    if (!valid) return;
+    if (!emailInput) { setEmailError("Please enter your email address"); return; }
+    if (!isValidEmail(emailInput)) { setEmailError("Please enter a valid email address"); return; }
     setSubmitting(true);
     try {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailInput, phone: selectedCountry.code + phoneInput, tool: "Tools Page", country: selectedCountry.country }),
+        body: JSON.stringify({
+          email: emailInput,
+          phone: "",
+          tool: currentTool ? "Gate: " + currentTool : "Tools Page",
+          country: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
+        }),
       });
       sessionStorage.setItem("unico_tools_email", emailInput);
       sessionStorage.setItem("unico_tools_time", Date.now().toString());
@@ -366,7 +318,7 @@ export default function ToolsPage() {
         window.fbq("track", "Lead", { currency: "INR", value: 0 });
       }
       if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "generate_lead", { event_category: "gate", event_label: "gate_submitted", value: 0, currency: "INR" });
+        window.gtag("event", "generate_lead", { event_category: "gate", event_label: currentTool || "tools", value: 0, currency: "INR" });
       }
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
@@ -382,11 +334,27 @@ export default function ToolsPage() {
   async function sendMessage(text) {
     const msg = text || input.trim();
     if (!msg || !currentTool) return;
+
+    // ── DELAYED GATE LOGIC ──────────────────────────────────────────────
+    // After gateAfter exchanges (5 for most tools, 2 for audit),
+    // if the user hasn't given their email yet, show the gate.
+    // Count only AI replies (assistant messages) as "exchanges" —
+    // this means they've received real value before being asked.
+    const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
+    if (!email && exchangesSoFar >= gateAfter) {
+      setShowGate(true);
+      // Fire ViewContent pixel so Meta knows gate was shown
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq("track", "ViewContent", { content_name: "Delayed Gate", content_category: currentTool });
+      }
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "gate_viewed", { event_category: "gate", event_label: currentTool });
+      }
+      return;
+    }
+
     if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
 
-    // ─── CAPTURE AUDIT URL ────────────────────────────────────────────────
-    // WHY: We need the URL for the PDF filename and header.
-    // Extract it from the first message the user sends in audit mode.
     if (currentTool === "audit" && !auditUrl) {
       const urlMatch = msg.match(/https?:\/\/[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?:\/[^\s]*)?/);
       if (urlMatch) setAuditUrl(urlMatch[0]);
@@ -415,13 +383,7 @@ export default function ToolsPage() {
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: reply }] }; });
       if (data.demoCompleted) setDemoCompleted(true);
       if (currentTool === "audit" && reply.includes("Want to see them?")) setAuditPart1Done(true);
-
-      // ─── DETECT PDF READY ──────────────────────────────────────────────
-      // WHY: When the audit is fully complete (Part 2 done), the backend
-      // sends pdfReady: true. We flip this state to show the Download button.
-      // The button only appears AFTER the full audit — not mid-conversation.
       if (data.pdfReady && currentTool === "audit") setAuditPdfReady(true);
-
     } catch (err) {
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }] }; });
     }
@@ -429,10 +391,37 @@ export default function ToolsPage() {
   }
 
   function handleKeyDown(e) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (!showGate) sendMessage(); }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  // ── PROGRESS BAR for gate countdown ──────────────────────────────────────
+  // Shows subtly in the chat header: "2 free messages left"
+  // This creates urgency without being aggressive.
+  // Only shows when user is anonymous and getting close to the gate.
+  function gateCountdown() {
+    if (email || !currentTool || !tool) return null;
+    const exchanges = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
+    const remaining = gateAfter - exchanges;
+    if (remaining > gateAfter - 1 || remaining <= 0) return null; // hide until 1 away
+    return remaining === 1 ? "1 free message left" : remaining + " free messages left";
   }
 
   const currentMessages = currentTool ? messages[currentTool] : [];
+  const countdown = gateCountdown();
+
+  // ── GATE COPY based on tool ───────────────────────────────────────────────
+  // Context-aware gate copy. Audit users get "continue to Part 2",
+  // others get "keep this conversation going". Feels natural not forced.
+  function gateTitle() {
+    if (currentTool === "audit") return "You've seen Part 1. Want the rest?";
+    if (currentTool === "niquo") return "Niquo is just getting warmed up.";
+    return "You're getting somewhere good.";
+  }
+  function gateSub() {
+    if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — the two most critical issues on your site.";
+    if (currentTool === "niquo") return "Enter your email to keep the demo going and get your <strong>full personalised close.</strong>";
+    return "Enter your email to keep this conversation going — and get your full report when we're done.";
+  }
 
   return (
     <div>
@@ -482,6 +471,7 @@ export default function ToolsPage() {
         .tp-chat-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#fff;}
         .tp-chat-desc{font-size:11px;color:#444;margin-top:1px;}
         .tp-chat-live{display:flex;align-items:center;gap:5px;font-size:11px;color:#333;}
+        .tp-countdown{font-size:10px;color:#fb923c;font-weight:600;letter-spacing:0.04em;animation:tpblink 2s ease infinite;}
         .tp-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:tpblink 2s ease infinite;}
         .tp-msgs{flex:1;min-height:300px;max-height:calc(100vh - 260px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;}
         .tp-msg{display:flex;gap:8px;animation:tpfadeup 0.25s ease both;}
@@ -509,25 +499,17 @@ export default function ToolsPage() {
         .tp-textarea::placeholder{color:#252525;}
         .tp-send{width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
         .tp-hint{text-align:center;font-size:10px;color:#222;margin-top:8px;}
-        .tp-gate{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
-        .tp-gate-modal{background:#0d0d0d;border:1px solid #222;border-radius:24px;padding:36px 32px;width:100%;max-width:440px;text-align:center;animation:tpslideup 0.3s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto;}
+        .tp-gate{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
+        .tp-gate-modal{background:#0d0d0d;border:1px solid #222;border-radius:24px;padding:36px 32px;width:100%;max-width:420px;text-align:center;animation:tpslideup 0.3s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto;}
         .tp-gate-ico{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.1));border:1px solid rgba(167,139,250,0.2);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px;}
-        .tp-gate-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-0.02em;}
-        .tp-gate-sub{font-size:14px;color:#555;line-height:1.6;margin-bottom:6px;}
+        .tp-gate-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-0.02em;line-height:1.2;}
+        .tp-gate-sub{font-size:14px;color:#555;line-height:1.6;margin-bottom:20px;}
         .tp-gate-sub strong{color:#a78bfa;}
-        .tp-gate-val{font-size:12px;color:#333;margin-bottom:20px;}
-        .tp-gate-perks{display:flex;flex-direction:column;gap:7px;margin-bottom:20px;text-align:left;background:#111;border-radius:10px;padding:14px;}
-        .tp-gate-perk{display:flex;align-items:center;gap:9px;font-size:12px;color:#555;}
-        .tp-gate-inp{width:100%;background:#111;border:1px solid #222;border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:#ccc;outline:none;transition:border-color 0.2s;margin-bottom:8px;}
+        .tp-gate-inp{width:100%;background:#111;border:1px solid #222;border-radius:10px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:#ccc;outline:none;transition:border-color 0.2s;margin-bottom:8px;}
         .tp-gate-inp::placeholder{color:#2a2a2a;}
         .tp-gate-inp:focus{border-color:#a78bfa;}
         .tp-gate-inp.err{border-color:#f87171;}
         .tp-gate-err{font-size:12px;color:#f87171;margin-bottom:8px;text-align:left;}
-        .tp-phone-row{display:flex;gap:8px;margin-bottom:8px;}
-        .tp-country-btn{background:#111;border:1px solid #222;border-radius:10px;padding:12px 10px;color:#ccc;cursor:pointer;font-size:13px;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0;}
-        .tp-country-dd{position:absolute;top:100%;left:0;right:0;background:#161616;border:1px solid #2a2a2a;border-radius:10px;max-height:180px;overflow-y:auto;z-index:200;margin-top:4px;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
-        .tp-country-opt{padding:10px 14px;cursor:pointer;font-size:13px;color:#aaa;display:flex;align-items:center;gap:8px;}
-        .tp-country-opt:hover{background:#1e1e1e;color:#fff;}
         .tp-gate-btn{width:100%;background:linear-gradient(135deg,#a78bfa,#8b5cf6);border:none;border-radius:11px;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px;}
         .tp-gate-btn:disabled{opacity:0.5;cursor:not-allowed;}
         .tp-gate-fine{font-size:11px;color:#252525;margin-top:10px;}
@@ -633,7 +615,11 @@ export default function ToolsPage() {
                 <div className="tp-chat-name">{tool.name}</div>
                 <div className="tp-chat-desc">{tool.users} founders have used this</div>
               </div>
-              <div className="tp-chat-live"><div className="tp-dot" />Live</div>
+              {countdown ? (
+                <div className="tp-countdown">⚡ {countdown}</div>
+              ) : (
+                <div className="tp-chat-live"><div className="tp-dot" />Live</div>
+              )}
             </div>
             <div className="tp-msgs">
               {demoCompleted && currentTool === "niquo" && (
@@ -652,26 +638,15 @@ export default function ToolsPage() {
                   <div className="tp-banner-sub" style={{ color:"#555" }}>Reply "yes" to see the 2 most critical issues.</div>
                 </div>
               )}
-
-              {/* ─── PDF DOWNLOAD BANNER ────────────────────────────────────
-                  WHY: This appears only after the FULL audit (Part 2) is done.
-                  The orange gradient button matches the audit tool colour.
-                  Clicking it opens a print dialog so they can Save as PDF.
-                  Their saved file has Unico Studios branding on every page —
-                  every time they open it they see our name and the Calendly link. */}
               {auditPdfReady && currentTool === "audit" && (
                 <div className="tp-banner" style={{ background:"rgba(251,146,60,0.06)", border:"1px solid rgba(251,146,60,0.25)" }}>
                   <div className="tp-banner-title" style={{ color:"#fb923c" }}>✅ Full Audit Complete</div>
                   <div className="tp-banner-sub" style={{ color:"#666" }}>Your complete revenue audit is ready. Download it as a PDF to share with your team or act on later.</div>
-                  <button
-                    className="tp-pdf-btn"
-                    onClick={function() { downloadAuditPDF(currentMessages, auditUrl); }}
-                  >
+                  <button className="tp-pdf-btn" onClick={function() { downloadAuditPDF(currentMessages, auditUrl); }}>
                     ⬇️ Download Full Audit Report (PDF)
                   </button>
                 </div>
               )}
-
               <div className="tp-msg">
                 <div className="tp-av" style={{ background: tool.headerBg }}>{tool.icon}</div>
                 <div className="tp-msg-body">
@@ -681,7 +656,7 @@ export default function ToolsPage() {
                     {tool.chips.map(function(chip) {
                       return (
                         <span key={chip} className="tp-chip"
-                          onClick={function() { if (!showGate) sendMessage(chip); }}
+                          onClick={function() { sendMessage(chip); }}
                           style={{ color: tool.color, background: tool.chipBg, borderColor: tool.chipBorder }}>
                           ↗ {chip}
                         </span>
@@ -753,68 +728,35 @@ export default function ToolsPage() {
           <div className="tp-gate-modal">
             {!gateSuccess ? (
               <div>
-                <div className="tp-gate-ico">🚀</div>
-                <h2 className="tp-gate-title">Unlock Free Access</h2>
-                <p className="tp-gate-sub">Get instant access to <strong>all 4 AI tools</strong> — completely free.</p>
-                <p className="tp-gate-val">Worth ₹15,000/month if you hired humans to do this.</p>
-                <div className="tp-gate-perks">
-                  <div className="tp-gate-perk"><span>✍️</span> Startup Content Engine — viral hooks and scripts</div>
-                  <div className="tp-gate-perk"><span>🌐</span> Website Consultant — diagnose conversion issues</div>
-                  <div className="tp-gate-perk"><span>⚡</span> Niquo — live AI sales demo for your business</div>
-                  <div className="tp-gate-perk"><span>🔍</span> Revenue Audit — find your website money leaks</div>
-                </div>
+                <div className="tp-gate-ico">{currentTool === "audit" ? "🔍" : currentTool === "niquo" ? "⚡" : "🚀"}</div>
+                <h2 className="tp-gate-title">{gateTitle()}</h2>
+                <p className="tp-gate-sub" dangerouslySetInnerHTML={{ __html: gateSub() }} />
                 <input type="email" className={"tp-gate-inp" + (emailError ? " err" : "")}
                   placeholder="your@email.com" value={emailInput}
                   onChange={function(e) { setEmailInput(e.target.value); setEmailError(""); }}
                   onKeyDown={function(e) { if (e.key === "Enter") handleSubmit(); }}
                   autoComplete="email" autoFocus />
                 {emailError && <p className="tp-gate-err">⚠️ {emailError}</p>}
-                <div style={{ position: "relative" }}>
-                  <div className="tp-phone-row">
-                    <button className="tp-country-btn" onClick={function() { setShowCountryDropdown(!showCountryDropdown); }}>
-                      {selectedCountry.flag} {selectedCountry.code} ▾
-                    </button>
-                    <input type="tel" className={"tp-gate-inp" + (phoneError ? " err" : "")}
-                      style={{ margin: 0, flex: 1 }}
-                      placeholder="Phone number" value={phoneInput}
-                      onChange={function(e) { setPhoneInput(e.target.value.replace(/\D/g, "")); setPhoneError(""); }}
-                      onKeyDown={function(e) { if (e.key === "Enter") handleSubmit(); }}
-                      autoComplete="tel" />
-                  </div>
-                  {showCountryDropdown && (
-                    <div className="tp-country-dd">
-                      {COUNTRIES.map(function(c) {
-                        return (
-                          <div key={c.code} className="tp-country-opt"
-                            onClick={function() { setSelectedCountry(c); setShowCountryDropdown(false); }}>
-                            {c.flag} {c.name} ({c.code})
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-                {phoneError && <p className="tp-gate-err">⚠️ {phoneError}</p>}
                 <button
                   className="tp-gate-btn"
-                  onClick={function(e) {
+                  onClick={function() {
                     if (typeof window !== "undefined" && window.fbq) {
-                      window.fbq("trackCustom", "ButtonClick", { button_name: "get_free_access" });
+                      window.fbq("trackCustom", "ButtonClick", { button_name: "gate_continue" });
                     }
-                    handleSubmit(e);
+                    handleSubmit();
                   }}
                   disabled={submitting}
                 >
-                  {submitting ? "Getting access..." : "Get Free Access Now"}
+                  {submitting ? "One moment..." : "Continue →"}
                 </button>
                 <p className="tp-gate-fine">🔒 No spam. No credit card. Unsubscribe anytime.</p>
               </div>
             ) : (
               <div>
                 <div className="tp-ok-ico">✓</div>
-                <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:21, fontWeight:800, color:"#fff", marginBottom:8 }}>Welcome to Unico Tools! 🎉</h2>
-                <p style={{ color:"#555", fontSize:14, marginBottom:24, lineHeight:1.6 }}>You now have access to 4 AI tools that most businesses pay ₹15,000/month for. Start with Niquo — it's the fan favourite.</p>
-                <button className="tp-gate-btn" onClick={closeGate}>Explore the Tools →</button>
+                <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:21, fontWeight:800, color:"#fff", marginBottom:8 }}>You're in. Let's keep going. 🎉</h2>
+                <p style={{ color:"#555", fontSize:14, marginBottom:24, lineHeight:1.6 }}>Your conversation is saved. Pick up exactly where you left off.</p>
+                <button className="tp-gate-btn" onClick={closeGate}>Continue the conversation →</button>
               </div>
             )}
           </div>
