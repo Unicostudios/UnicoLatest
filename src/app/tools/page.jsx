@@ -126,6 +126,66 @@ function isValidEmail(e) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e);
 }
 
+// ─── FIX 1: ANONYMOUS VISITOR LOGGING ───────────────────────────────────────
+// WHY: You have 168 visitors and 0 data. This fires the moment someone lands
+// on /tools — before they do anything. Every visitor gets logged in your
+// Google Sheet as "anonymous" with their timezone. This gives you volume data
+// immediately so you can see traffic even when nobody fills the gate.
+async function logAnonymousVisit() {
+  try {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+    await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "anonymous_visitor",
+        phone: "",
+        tool: "Page Visit",
+        country: timezone,
+        status: "Visitor",
+      }),
+    });
+  } catch (_) {}
+}
+
+// ─── FIX 2: SCROLL DEPTH TRACKING ───────────────────────────────────────────
+// WHY: Clarity shows 45% average scroll depth. We need to know exactly WHERE
+// people stop scrolling — at 25%, 50%, 75%, or 100%. This fires events to
+// GA4 and Meta at each checkpoint so you can see in both dashboards
+// exactly how far people scroll before leaving.
+function useScrollTracking() {
+  useEffect(() => {
+    const checkpoints = [25, 50, 75, 100];
+    const fired = new Set();
+
+    function handleScroll() {
+      const scrollable = document.body.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const pct = Math.round((window.scrollY / scrollable) * 100);
+      checkpoints.forEach(function(point) {
+        if (pct >= point && !fired.has(point)) {
+          fired.add(point);
+          // GA4
+          if (typeof window !== "undefined" && window.gtag) {
+            window.gtag("event", "scroll_depth", {
+              event_category: "engagement",
+              event_label: point + "%",
+              value: point,
+            });
+          }
+          // Meta Pixel
+          if (typeof window !== "undefined" && window.fbq) {
+            window.fbq("trackCustom", "ScrollDepth", { depth: point });
+          }
+        }
+      });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return function() { window.removeEventListener("scroll", handleScroll); };
+  }, []);
+}
+
 export default function ToolsPage() {
   const [screen, setScreen] = useState("landing");
   const [currentTool, setCurrentTool] = useState(null);
@@ -149,7 +209,43 @@ export default function ToolsPage() {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  useEffect(() => {
+  // ─── FIX 1: LOG ANONYMOUS VISITOR ON PAGE LOAD ──────────────────────────
+  // WHY: Fires once per session (sessionStorage prevents duplicates).
+  // You'll see a row in your Google Sheet for EVERY person who visits /tools
+  // even if they never fill the gate. Finally you'll have real traffic data.
+  useEffect(function() {
+    const visitKey = "unico_visit_logged";
+    if (!sessionStorage.getItem(visitKey)) {
+      sessionStorage.setItem(visitKey, "true");
+      logAnonymousVisit();
+    }
+  }, []);
+
+  // ─── FIX 2: ACTIVATE SCROLL TRACKING ────────────────────────────────────
+  useScrollTracking();
+
+  // ─── FIX 3: GATE OPEN TRACKING ──────────────────────────────────────────
+  // WHY: We need to know if people are SEEING the gate but not filling it.
+  // This fires a ViewContent event the moment the gate appears — so in Meta
+  // Ads Manager you can compare ViewContent vs Lead events to see the drop-off.
+  useEffect(function() {
+    if (showGate) {
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq("track", "ViewContent", {
+          content_name: "Tools Gate",
+          content_category: "Lead Gate",
+        });
+      }
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "gate_viewed", {
+          event_category: "gate",
+          event_label: "tools_gate_open",
+        });
+      }
+    }
+  }, [showGate]);
+
+  useEffect(function() {
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
@@ -161,7 +257,7 @@ export default function ToolsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: saved, phone: "Returning", tool: "Tools Page", returning: true }),
-      }).catch(() => {});
+      }).catch(function() {});
     } else {
       sessionStorage.removeItem("unico_tools_email");
       sessionStorage.removeItem("unico_tools_time");
@@ -169,7 +265,7 @@ export default function ToolsPage() {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(function() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -179,11 +275,27 @@ export default function ToolsPage() {
   const currentUses = currentTool ? uses[currentTool] : 0;
   const currentLimit = tool ? tool.limit : 10;
 
+  // ─── FIX 4: TOOL OPEN TRACKING ──────────────────────────────────────────
+  // WHY: You need to know WHICH tool people click most. If 90% click Niquo
+  // but abandon, the problem is Niquo's first message. If nobody clicks any
+  // tool, the problem is the landing grid. This tells you exactly which tool
+  // is getting attention and which is being ignored.
   function openTool(toolId) {
     setCurrentTool(toolId);
     setDemoCompleted(false);
     setAuditPart1Done(false);
     setScreen("chat");
+
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "tool_opened", {
+        event_category: "tools",
+        event_label: toolId,
+      });
+    }
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("trackCustom", "ToolOpened", { tool: toolId });
+    }
+
     setTimeout(function() { if (textareaRef.current) textareaRef.current.focus(); }, 100);
   }
 
@@ -207,14 +319,34 @@ export default function ToolsPage() {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailInput, phone: selectedCountry.code + phoneInput, tool: "Tools Page", country: selectedCountry.country }),
+        body: JSON.stringify({
+          email: emailInput,
+          phone: selectedCountry.code + phoneInput,
+          tool: "Tools Page",
+          country: selectedCountry.country,
+        }),
       });
       sessionStorage.setItem("unico_tools_email", emailInput);
       sessionStorage.setItem("unico_tools_time", Date.now().toString());
       setEmail(emailInput);
       setGateSuccess(true);
+
+      // ─── FIX 5: GATE SUBMIT — FIRE ALL TRACKING EVENTS ─────────────────
+      // WHY: This is the most important event. When someone fills the gate,
+      // Meta Pixel fires a Lead event — this tells Meta's algorithm "THIS is
+      // the type of person who converts, find me more of them." Without this
+      // firing correctly, Meta is optimising for clicks not leads.
+      // GA4 also records it so you can see conversion rate in Analytics.
       if (typeof window !== "undefined" && window.fbq) {
         window.fbq("track", "Lead", { currency: "INR", value: 0 });
+      }
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "generate_lead", {
+          event_category: "gate",
+          event_label: "gate_submitted",
+          value: 0,
+          currency: "INR",
+        });
       }
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
@@ -237,6 +369,19 @@ export default function ToolsPage() {
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
     setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
+
+    // ─── FIX 6: MESSAGE SEND TRACKING ───────────────────────────────────
+    // WHY: Tells you which tools people actually USE vs just open.
+    // If 50 people open Niquo but only 5 send a message, the greeting
+    // is the problem. If people send 8+ messages, they're engaged.
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "message_sent", {
+        event_category: "tools",
+        event_label: currentTool,
+        value: uses[currentTool] + 1,
+      });
+    }
+
     try {
       const history = [...messages[currentTool], userMsg];
       const res = await fetch("/api/chat", {
@@ -612,8 +757,8 @@ export default function ToolsPage() {
                 <button
                   className="tp-gate-btn"
                   onClick={function(e) {
-                    if (typeof window !== 'undefined' && window.fbq) {
-                      window.fbq('trackCustom', 'ButtonClick', { button_name: 'get_free_access' });
+                    if (typeof window !== "undefined" && window.fbq) {
+                      window.fbq("trackCustom", "ButtonClick", { button_name: "get_free_access" });
                     }
                     handleSubmit(e);
                   }}
