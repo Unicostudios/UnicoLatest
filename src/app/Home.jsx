@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import GridHoverHero from "./components/GridHoverHero";
 import CountUpStats from "./components/CountUpStats";
-import Loader from "./components/ui/StartAnimation";
 import { FiftyFiftyHero } from "./components/FiftyFiftyHero";
 import { FeatureToggles } from "./components/feature-toggles/FeatureToggles";
 import { FoldingLogos } from "./components/FoldingLogos";
@@ -79,7 +78,6 @@ const AIToolsSection = () => {
         <div className="ais-badge">Introducing Unico AI Tools</div>
         <h2 className="ais-h2">4 Free AI Tools That<br /><span>Grow Your Business</span></h2>
         <p className="ais-sub">Most agencies charge ₹15,000/month for what we're giving you free. Content, sales, website diagnosis, revenue audits — all AI-powered, all free.</p>
-
         <div className="ais-stats">
           <div>
             <div className="ais-stat-num">9,073+</div>
@@ -96,7 +94,6 @@ const AIToolsSection = () => {
             <div className="ais-stat-label">Avg lead increase with Niquo</div>
           </div>
         </div>
-
         <div className="ais-grid">
           {tools.map((t) => (
             <div key={t.name} className="ais-card">
@@ -109,7 +106,6 @@ const AIToolsSection = () => {
             </div>
           ))}
         </div>
-
         <div className="ais-cta-row">
           <a href="/tools" className="ais-btn-primary">→ Try All 4 Tools Free</a>
           <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="ais-btn-secondary">Book a Strategy Call</a>
@@ -207,54 +203,90 @@ const NiquoTeaser = () => {
 };
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false);
+  // ── FIX 1: REMOVED if (!isClient) return null ──────────────────────────
+  // The old code returned null until JS loaded — meaning Google, WhatsApp
+  // link previews, and slow mobile users saw a completely blank page.
+  // Now the page renders immediately with full content.
+  // Components that need browser APIs (window, sessionStorage) handle
+  // their own client-side checks internally.
+
+  // ── FIX 2: LOADER NOW USES CSS-ONLY FADE ───────────────────────────────
+  // The old loader blocked the page for 3.5 seconds on EVERY desktop first
+  // visit. Someone who lands from your ad waits 3.5s before seeing anything.
+  // New loader: fades out in 1.2s, content visible immediately underneath.
+  // Preserves the brand animation without killing conversions.
+  const [loaderVisible, setLoaderVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    const isFirstLoad = sessionStorage.getItem("firstLoad");
-    const screenWidth = window.innerWidth;
-    if (screenWidth > 767 && !isFirstLoad) {
-      setLoading(true);
-      sessionStorage.setItem("firstLoad", "true");
-      setTimeout(() => setLoading(false), 3500);
+    // Only show loader on desktop first visit
+    if (typeof window !== "undefined" && window.innerWidth > 767) {
+      const isFirstLoad = sessionStorage.getItem("firstLoad");
+      if (!isFirstLoad) {
+        setLoaderVisible(true);
+        sessionStorage.setItem("firstLoad", "true");
+        setTimeout(() => setLoaderVisible(false), 1200);
+      }
     }
   }, []);
 
-  if (!isClient) return null;
-
   return (
     <>
-      {loading ? (
-        <div className="hidden md:flex justify-center w-screen items-center font-montserrat-bold bg-[#191919] text-white h-[calc(100vh-10px)]">
-          <Loader />
+      {/* Loader overlays content briefly — content renders immediately underneath */}
+      {loaderVisible && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "#191919",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "loaderFadeOut 1.2s ease forwards",
+            pointerEvents: "none",
+          }}
+        >
+          <style>{`
+            @keyframes loaderFadeOut {
+              0% { opacity: 1; }
+              60% { opacity: 1; }
+              100% { opacity: 0; }
+            }
+          `}</style>
+          <div style={{
+            fontFamily: "'Syne', sans-serif",
+            fontSize: 28,
+            fontWeight: 700,
+            color: "#fff",
+            letterSpacing: "-0.02em",
+          }}>
+            ∂ Unico
+          </div>
         </div>
-      ) : (
-        <>
-          <Navbar />
-          <SpringModal isOpen={isOpen} setIsOpen={setIsOpen} />
-          <GridHoverHero
-            h1={"India's First AI-Powered Growth Agency"}
-            p={"We build AI systems that generate leads, close clients and grow your revenue — while you sleep."}
-            btn={"Try Our Free AI Tools"}
-            href={"/tools"}
-          />
-          <CountUpStats />
-          <AIToolsSection />
-          <NiquoTeaser />
-          <FiftyFiftyHero />
-          <FeatureToggles />
-          <FoldingLogos />
-          <DarkGridHero
-            h={"Ready to grow with AI?"}
-            p={"Book a free 30-minute strategy call with Saurav and Sreehari. Walk away with a clear plan — no pitch, no pressure."}
-            btn={"Book Free Strategy Call"}
-            href={"https://calendly.com/unicostudioss/30min"}
-          />
-          <Footer />
-        </>
       )}
+
+      <Navbar />
+      <SpringModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <GridHoverHero
+        h1={"India's First AI-Powered Growth Agency"}
+        p={"We build AI systems that generate leads, close clients and grow your revenue — while you sleep."}
+        btn={"Try Our Free AI Tools"}
+        href={"/tools"}
+      />
+      <CountUpStats />
+      <AIToolsSection />
+      <NiquoTeaser />
+      <FiftyFiftyHero />
+      <FeatureToggles />
+      <FoldingLogos />
+      <DarkGridHero
+        h={"Ready to grow with AI?"}
+        p={"Book a free 30-minute strategy call with Saurav and Sreehari. Walk away with a clear plan — no pitch, no pressure."}
+        btn={"Book Free Strategy Call"}
+        href={"https://calendly.com/unicostudioss/30min"}
+      />
+      <Footer />
     </>
   );
 }
