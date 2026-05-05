@@ -38,10 +38,34 @@ const SpringModal = ({ isOpen, setIsOpen }) => {
 
 const AIToolsSection = () => {
   const tools = [
-    { icon: "✍️", name: "Startup Content Engine", desc: "Generate viral hooks, reel scripts and CTAs for your brand in seconds.", color: "#a78bfa", tag: "Most Popular" },
-    { icon: "⚡", name: "Niquo — AI Sales Demo", desc: "See a live demo of an AI sales assistant built for YOUR specific business.", color: "#22d3ee", tag: "🔥 Fan Favourite" },
-    { icon: "🔍", name: "Website Revenue Audit", desc: "Find exactly how much revenue your website is bleeding — with real ₹ numbers.", color: "#fb923c", tag: "New ✨" },
-    { icon: "🌐", name: "Website Consultant", desc: "Fix your website or landing page in plain English — no tech skills needed.", color: "#f472b6", tag: "For Founders" },
+    {
+      icon: "⚡",
+      name: "Niquo — AI Sales Demo",
+      desc: "Watch an AI become your best salesperson — live, personalised to your business, handling real objections in real time. No script. No bot.",
+      color: "#22d3ee",
+      tag: "🔥 Star Product",
+    },
+    {
+      icon: "🔍",
+      name: "Website Revenue Audit",
+      desc: "We read your actual website — every headline, every CTA — then tell you exactly where money is bleeding with real ₹ numbers and a PDF report.",
+      color: "#fb923c",
+      tag: "Most Unique ✦",
+    },
+    {
+      icon: "✍️",
+      name: "Startup Content Engine",
+      desc: "Generate viral hooks, reel scripts and CTAs built specifically for YOUR brand — not a generic template that could belong to any business.",
+      color: "#a78bfa",
+      tag: "Popular",
+    },
+    {
+      icon: "🌐",
+      name: "Website & Landing Page Consultant",
+      desc: "We read your actual website and give you a plain-English diagnosis of exactly what's broken — with specific fixes, not generic advice.",
+      color: "#f472b6",
+      tag: "For Founders",
+    },
   ];
 
   return (
@@ -71,29 +95,33 @@ const AIToolsSection = () => {
         .ais-btn-primary:hover { opacity:0.88; }
         .ais-btn-secondary { font-family:'Syne',sans-serif; font-size:13px; font-weight:500; color:#444; background:none; border:1px solid #1e1e1e; border-radius:9px; padding:11px 24px; cursor:pointer; transition:all 0.15s; text-decoration:none; display:inline-block; }
         .ais-btn-secondary:hover { border-color:#333; color:#666; }
+        .ais-trust { font-size:13px; color:#333; margin-top:20px; font-weight:300; line-height:1.6; }
+        .ais-trust strong { color:#555; }
         @keyframes aisblink { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @media(max-width:600px) { .ais-grid{grid-template-columns:1fr;} .ais-stats{gap:16px;} }
       `}</style>
       <div className="ais-inner">
-        <div className="ais-badge">Introducing Unico AI Tools</div>
-        <h2 className="ais-h2">4 Free AI Tools That<br /><span>Grow Your Business</span></h2>
-        <p className="ais-sub">Most agencies charge ₹15,000/month for what we're giving you free. Content, sales, website diagnosis, revenue audits — all AI-powered, all free.</p>
+        <div className="ais-badge">Unico AI Tools</div>
+        <h2 className="ais-h2">AI That Actually<br /><span>Sells For You</span></h2>
+        <p className="ais-sub">Not generic AI. Not another chatbot. Tools that read your actual business and work like your sharpest employee — completely free.</p>
+
         <div className="ais-stats">
           <div>
-            <div className="ais-stat-num">9,073+</div>
-            <div className="ais-stat-label">Founders using these tools</div>
+            <div className="ais-stat-num">Real Estate</div>
+            <div className="ais-stat-label">D2C · SaaS · Restaurants · Agencies</div>
           </div>
           <div className="ais-stat-div" />
           <div>
-            <div className="ais-stat-num">₹4.2Cr</div>
-            <div className="ais-stat-label">Revenue audited this month</div>
+            <div className="ais-stat-num">₹0</div>
+            <div className="ais-stat-label">Cost to start — completely free</div>
           </div>
           <div className="ais-stat-div" />
           <div>
-            <div className="ais-stat-num">340%</div>
-            <div className="ais-stat-label">Avg lead increase with Niquo</div>
+            <div className="ais-stat-num">60 sec</div>
+            <div className="ais-stat-label">To see Niquo close your first lead</div>
           </div>
         </div>
+
         <div className="ais-grid">
           {tools.map((t) => (
             <div key={t.name} className="ais-card">
@@ -106,10 +134,15 @@ const AIToolsSection = () => {
             </div>
           ))}
         </div>
+
         <div className="ais-cta-row">
           <a href="/tools" className="ais-btn-primary">→ Try All 4 Tools Free</a>
           <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="ais-btn-secondary">Book a Strategy Call</a>
         </div>
+
+        <p className="ais-trust">
+          Used by founders in <strong>real estate, D2C, SaaS, restaurants and agencies</strong> across India, UAE and Singapore.
+        </p>
       </div>
     </section>
   );
@@ -203,23 +236,10 @@ const NiquoTeaser = () => {
 };
 
 export default function Home() {
-  // ── FIX 1: REMOVED if (!isClient) return null ──────────────────────────
-  // The old code returned null until JS loaded — meaning Google, WhatsApp
-  // link previews, and slow mobile users saw a completely blank page.
-  // Now the page renders immediately with full content.
-  // Components that need browser APIs (window, sessionStorage) handle
-  // their own client-side checks internally.
-
-  // ── FIX 2: LOADER NOW USES CSS-ONLY FADE ───────────────────────────────
-  // The old loader blocked the page for 3.5 seconds on EVERY desktop first
-  // visit. Someone who lands from your ad waits 3.5s before seeing anything.
-  // New loader: fades out in 1.2s, content visible immediately underneath.
-  // Preserves the brand animation without killing conversions.
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Only show loader on desktop first visit
     if (typeof window !== "undefined" && window.innerWidth > 767) {
       const isFirstLoad = sessionStorage.getItem("firstLoad");
       if (!isFirstLoad) {
@@ -232,7 +252,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Loader overlays content briefly — content renders immediately underneath */}
       {loaderVisible && (
         <div
           style={{
