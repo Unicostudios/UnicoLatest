@@ -2,30 +2,80 @@
 import { useState, useRef, useEffect } from "react";
 
 function renderText(text) {
-      return text.split('\n').map(function(line, li) {
-              var isHeading = /^#{1,6}\s+/.test(line);
-              var cleanLine = line.replace(/^#{1,6}\s+/, '');
-              var parts = cleanLine.split(/(\*\*[^*]+\*\*)/g);
-              return (
-                        <span key={li} style={{ display: 'block', fontWeight: isHeading ? '700' : 'inherit', fontSize: isHeading ? '14px' : 'inherit', marginTop: isHeading ? '8px' : '0' }}>
-                            {parts.map(function(p, pi) {
-                                      if (/^\*\*[^*]+\*\*$/.test(p)) {
-                                                      return <strong key={pi}>{p.slice(2, -2)}</strong>;
-                                      }
-                                      return p;
-                        })}
-                        </span>
-                      );
-});
+  return text.split('\n').map(function(line, li) {
+    var isHeading = /^#{1,6}\s+/.test(line);
+    var cleanLine = line.replace(/^#{1,6}\s+/, '');
+    var parts = cleanLine.split(/(\*\*[^*]+\*\*)/g);
+    return (
+      <span key={li} style={{ display: 'block', fontWeight: isHeading ? '700' : 'inherit', fontSize: isHeading ? '14px' : 'inherit', marginTop: isHeading ? '8px' : '0' }}>
+        {parts.map(function(p, pi) {
+          if (/^\*\*[^*]+\*\*$/.test(p)) {
+            return <strong key={pi}>{p.slice(2, -2)}</strong>;
+          }
+          return p;
+        })}
+      </span>
+    );
+  });
 }
 
+// ── FIX 1: CARD ORDER ────────────────────────────────────────────────────────
+// Niquo first (star product), Audit second (unique differentiator),
+// Content third, Website Consultant fourth.
+// Your two strongest tools lead. First impression = what matters most.
 const TOOLS = {
+  niquo: {
+    id: "niquo",
+    name: "Niquo — AI Sales Demo",
+    shortName: "Niquo",
+    desc: "See how AI closes clients for your specific business",
+    longDesc: "Watch an AI become YOUR best salesperson — live, personalised to your business, handling real objections in real time. No script. No bot. Pure sales intelligence.",
+    icon: "⚡",
+    color: "#22d3ee",
+    bgActive: "rgba(34,211,238,0.07)",
+    borderActive: "rgba(34,211,238,0.20)",
+    borderFaint: "rgba(34,211,238,0.13)",
+    headerBg: "rgba(34,211,238,0.09)",
+    userBg: "rgba(34,211,238,0.05)",
+    chipBg: "rgba(34,211,238,0.04)",
+    chipBorder: "rgba(34,211,238,0.16)",
+    greeting: "Hi. I'm Niquo.\n\nIn the next 5 minutes I'll show you exactly how an AI sales assistant works for YOUR business — live and personalised.\n\nTell me: what's your business, who's your customer, and what's the #1 reason deals fall through?",
+    chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
+    mode: "niquo",
+    limit: 50,
+    tag: "🔥 Star Product",
+    users: "Used across real estate, D2C, SaaS & restaurants",
+    gateAfter: 5,
+  },
+  audit: {
+    id: "audit",
+    name: "Website Revenue Audit",
+    shortName: "Revenue Audit",
+    desc: "Find out exactly how much revenue your website is losing",
+    longDesc: "We actually READ your website — every headline, every CTA, every page — then tell you exactly where money is bleeding. With real ₹ numbers, competitor benchmarks and a downloadable PDF report.",
+    icon: "🔍",
+    color: "#fb923c",
+    bgActive: "rgba(251,146,60,0.08)",
+    borderActive: "rgba(251,146,60,0.22)",
+    borderFaint: "rgba(251,146,60,0.15)",
+    headerBg: "rgba(251,146,60,0.10)",
+    userBg: "rgba(251,146,60,0.06)",
+    chipBg: "rgba(251,146,60,0.05)",
+    chipBorder: "rgba(251,146,60,0.18)",
+    greeting: "I've audited 1000+ websites. The average business bleeds ₹40,000–₹80,000 every month from 5 specific issues — and most owners have no idea.\n\nDrop your website URL and I'll show you exactly where your money is going.",
+    chips: ["Audit unicostudios.in", "Audit my competitor's website", "Find my conversion killers", "How much revenue am I losing?"],
+    mode: "audit",
+    limit: 3,
+    tag: "Most Unique ✦",
+    users: "Audits websites across 12+ industries",
+    gateAfter: 2,
+  },
   content: {
     id: "content",
     name: "Startup Content Engine",
     shortName: "Content Engine",
     desc: "Hooks, scripts, reels & CTAs — all done for you",
-    longDesc: "Generate viral reel scripts, powerful hooks, high-converting CTAs and thumbnail concepts for your brand in seconds.",
+    longDesc: "Generate viral reel scripts, powerful hooks, high-converting CTAs and thumbnail concepts built specifically for YOUR brand — not a generic template.",
     icon: "✍️",
     color: "#a78bfa",
     bgActive: "rgba(167,139,250,0.08)",
@@ -39,8 +89,8 @@ const TOOLS = {
     chips: ["I run a D2C skincare brand", "I have a SaaS product for HR teams", "I run a real estate agency", "I own a fashion brand on Instagram"],
     mode: "content",
     limit: 10,
-    tag: "Most Popular",
-    users: "2,847",
+    tag: "Popular",
+    users: "Built for Indian founders & brands",
     gateAfter: 5,
   },
   code: {
@@ -48,7 +98,7 @@ const TOOLS = {
     name: "Website & Landing Page Consultant",
     shortName: "Page Consultant",
     desc: "Fix your website or landing page — no tech skills needed",
-    longDesc: "Not converting visitors? Get a plain-English diagnosis of exactly what's wrong with your website and how to fix it — from a senior digital strategist.",
+    longDesc: "Not converting visitors? We read your actual website and give you a plain-English diagnosis of exactly what's broken — with specific fixes, not generic advice.",
     icon: "🌐",
     color: "#f472b6",
     bgActive: "rgba(244,114,182,0.08)",
@@ -63,54 +113,8 @@ const TOOLS = {
     mode: "code",
     limit: 10,
     tag: "For Founders",
-    users: "1,923",
+    users: "Reads your actual website live",
     gateAfter: 5,
-  },
-  niquo: {
-    id: "niquo",
-    name: "Niquo — AI Sales Demo",
-    shortName: "Niquo",
-    desc: "See how AI closes clients for your specific business",
-    longDesc: "Experience a live demo of an AI sales assistant built specifically for YOUR business. See how it handles objections and closes deals 24/7.",
-    icon: "⚡",
-    color: "#22d3ee",
-    bgActive: "rgba(34,211,238,0.07)",
-    borderActive: "rgba(34,211,238,0.20)",
-    borderFaint: "rgba(34,211,238,0.13)",
-    headerBg: "rgba(34,211,238,0.09)",
-    userBg: "rgba(34,211,238,0.05)",
-    chipBg: "rgba(34,211,238,0.04)",
-    chipBorder: "rgba(34,211,238,0.16)",
-    greeting: "Hi. I'm Niquo.\n\nIn the next 5 minutes I'll show you exactly how an AI sales assistant works for YOUR business — live and personalised.\n\nTell me: what's your business, who's your customer, and what's the #1 reason deals fall through?",
-    chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
-    mode: "niquo",
-    limit: 50,
-    tag: "🔥 Fan Favourite",
-    users: "3,412",
-    gateAfter: 5,
-  },
-  audit: {
-    id: "audit",
-    name: "Website Revenue Audit",
-    shortName: "Revenue Audit",
-    desc: "Find out exactly how much revenue your website is losing",
-    longDesc: "Get a brutal, no-sugarcoat audit of your website. Find out exactly where revenue is bleeding — with real ₹ numbers, real fixes and real competitor benchmarks.",
-    icon: "🔍",
-    color: "#fb923c",
-    bgActive: "rgba(251,146,60,0.08)",
-    borderActive: "rgba(251,146,60,0.22)",
-    borderFaint: "rgba(251,146,60,0.15)",
-    headerBg: "rgba(251,146,60,0.10)",
-    userBg: "rgba(251,146,60,0.06)",
-    chipBg: "rgba(251,146,60,0.05)",
-    chipBorder: "rgba(251,146,60,0.18)",
-    greeting: "I've audited 1000+ websites. The average business bleeds ₹40,000–₹80,000 every month from 5 specific issues — and most owners have no idea.\n\nDrop your website URL and I'll show you exactly where your money is going.",
-    chips: ["Audit unicostudios.in", "Audit my competitor's website", "Find my conversion killers", "How much revenue am I losing?"],
-    mode: "audit",
-    limit: 3,
-    tag: "New ✨",
-    users: "891",
-    gateAfter: 2,
   },
 };
 
@@ -368,16 +372,19 @@ export default function ToolsPage() {
     return remaining === 1 ? "1 free message left" : remaining + " free messages left";
   }
 
+  // ── FIX 4: GATE COPY — specific and compelling per tool ──────────────────
   function gateTitle() {
-    if (currentTool === "audit") return "You've seen Part 1. Want the rest?";
-    if (currentTool === "niquo") return "Niquo is just getting warmed up.";
-    return "You're getting somewhere good.";
+    if (currentTool === "audit") return "Your revenue bleed report is half done.";
+    if (currentTool === "niquo") return "Niquo just read your buyer. The close is next.";
+    if (currentTool === "content") return "Your brand hooks are ready. Want the full pack?";
+    return "You're getting somewhere real.";
   }
 
   function gateSub() {
-    if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — the two most critical issues on your site.";
-    if (currentTool === "niquo") return "Enter your email to keep the demo going and get your <strong>full personalised close.</strong>";
-    return "Enter your email to keep this conversation going — and get your full report when we're done.";
+    if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — including the one that's costing you the most high-intent buyers.";
+    if (currentTool === "niquo") return "Enter your email to see Niquo deliver the <strong>full personalised close</strong> for your exact buyer type.";
+    if (currentTool === "content") return "Enter your email to get your <strong>complete content pack</strong> — scripts, CTAs, thumbnail concepts and a 30-day calendar.";
+    return "Enter your email to keep this going and get everything we've built so far sent to you.";
   }
 
   const currentMessages = currentTool ? messages[currentTool] : [];
@@ -395,8 +402,6 @@ export default function ToolsPage() {
         .tp-back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:#555;background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;}
         .tp-back-btn:hover{color:#e8e8e8;}
         .tp-nav-cta{font-size:12px;font-weight:600;color:#080808;background:#a78bfa;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;}
-
-        /* ── DESKTOP LANDING (unchanged) ── */
         .tp-landing{max-width:1000px;margin:0 auto;padding:56px 24px 80px;font-family:'DM Sans',sans-serif;}
         .tp-hero{text-align:center;margin-bottom:24px;}
         .tp-badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;letter-spacing:0.04em;color:#a78bfa;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.18);border-radius:100px;padding:5px 14px;margin-bottom:20px;}
@@ -404,11 +409,28 @@ export default function ToolsPage() {
         .tp-h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:-0.02em;line-height:1.08;color:#fff;margin-bottom:16px;}
         .tp-h1 span{background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
         .tp-sub{font-size:16px;color:#555;font-weight:300;max-width:480px;margin:0 auto 32px;line-height:1.6;}
+
+        /* ── FIX 2: REAL STATS — credible, specific, not inflated ── */
         .tp-stats{display:flex;align-items:center;justify-content:center;gap:32px;margin-bottom:48px;}
         .tp-stat{text-align:center;}
         .tp-stat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.01em;}
         .tp-stat-label{font-size:11px;color:#444;margin-top:2px;}
         .tp-stat-divider{width:1px;height:28px;background:#1e1e1e;}
+
+        /* ── FIX 3: NIQUO PREVIEW STRIP ── */
+        .tp-preview{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:16px;padding:20px;margin-bottom:28px;position:relative;overflow:hidden;}
+        .tp-preview::before{content:'LIVE PREVIEW';position:absolute;top:12px;right:14px;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#22d3ee;opacity:0.6;}
+        .tp-preview-label{font-size:11px;color:#333;margin-bottom:12px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;}
+        .tp-preview-convo{display:flex;flex-direction:column;gap:8px;}
+        .tp-preview-msg{display:flex;gap:8px;align-items:flex-start;}
+        .tp-preview-msg.user{flex-direction:row-reverse;}
+        .tp-preview-av{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+        .tp-preview-bubble{font-size:12px;line-height:1.55;padding:8px 11px;border-radius:3px 10px 10px 10px;max-width:80%;color:#888;}
+        .tp-preview-msg.user .tp-preview-bubble{border-radius:10px 3px 10px 10px;}
+        .tp-preview-cta{margin-top:14px;display:flex;align-items:center;justify-content:space-between;}
+        .tp-preview-cta-text{font-size:12px;color:#333;font-family:'DM Sans',sans-serif;}
+        .tp-preview-cta-btn{font-size:12px;font-weight:700;color:#22d3ee;font-family:'Syne',sans-serif;background:none;border:none;cursor:pointer;padding:0;}
+
         .tp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
         .tp-card{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:18px;padding:22px 20px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
         .tp-card:hover{transform:translateY(-3px);}
@@ -425,12 +447,7 @@ export default function ToolsPage() {
         .tp-sp-text strong{color:#777;}
         .tp-sp-avs{display:flex;}
         .tp-sp-av{width:28px;height:28px;border-radius:50%;border:2px solid #080808;margin-left:-7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-
-        /* ── MOBILE HERO — shown only on mobile, replaces full hero ── */
-        /* On mobile the order is: compact hook → tool cards → stats → social proof */
-        /* This puts a tappable tool card in the first 2 seconds of viewing */
         .tp-mobile-hook{display:none;}
-
         .tp-chat{max-width:720px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;min-height:calc(100vh - 65px);font-family:'DM Sans',sans-serif;}
         .tp-chat-win{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;flex:1;box-shadow:0 40px 100px rgba(0,0,0,0.7);}
         .tp-chat-hdr{padding:14px 18px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:12px;background:#111;}
@@ -510,81 +527,23 @@ export default function ToolsPage() {
         @keyframes tpGateBlur{from{background:rgba(0,0,0,0);backdrop-filter:blur(0px)}to{background:rgba(0,0,0,0.84);backdrop-filter:blur(22px)}}
         @keyframes tpModalIn{from{opacity:0;transform:scale(0.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
         @keyframes tpItemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-        /* ── MOBILE OVERRIDES ─────────────────────────────────────────────
-           On mobile (<640px):
-           - Hide the full hero (badge + h1 + sub + stats)
-           - Show a compact 2-line hook above the cards instead
-           - Tool cards go single column and appear immediately
-           - Stats appear BELOW the cards so they don't push cards down
-           This means the first thing a Reels visitor sees is a tool card
-           they can tap — not text they need to read first.           */
         @media(max-width:640px){
           .tp-hero{display:none;}
           .tp-stats{display:none;}
-          .tp-mobile-hook{
-            display:block;
-            padding:20px 16px 14px;
-            text-align:center;
-          }
-          .tp-mobile-hook-title{
-            font-family:'Syne',sans-serif;
-            font-size:22px;
-            font-weight:700;
-            color:#fff;
-            letter-spacing:-0.02em;
-            line-height:1.15;
-            margin-bottom:6px;
-          }
-          .tp-mobile-hook-title span{
-            background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            background-clip:text;
-          }
-          .tp-mobile-hook-sub{
-            font-size:13px;
-            color:#444;
-            font-family:'DM Sans',sans-serif;
-            font-weight:300;
-          }
+          .tp-preview{display:none;}
+          .tp-mobile-hook{display:block;padding:20px 16px 14px;text-align:center;}
+          .tp-mobile-hook-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1.15;margin-bottom:6px;}
+          .tp-mobile-hook-title span{background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+          .tp-mobile-hook-sub{font-size:13px;color:#444;font-family:'DM Sans',sans-serif;font-weight:300;}
           .tp-landing{padding:0 0 48px;}
-          .tp-grid{
-            grid-template-columns:1fr;
-            gap:10px;
-            padding:0 16px;
-            margin-bottom:20px;
-          }
-          .tp-card{
-            padding:18px 16px;
-            border-radius:16px;
-            /* Bigger tap target on mobile */
-            min-height:80px;
-          }
-          .tp-card-icon{
-            width:36px;
-            height:36px;
-            font-size:17px;
-            margin-bottom:10px;
-          }
+          .tp-grid{grid-template-columns:1fr;gap:10px;padding:0 16px;margin-bottom:20px;}
+          .tp-card{padding:18px 16px;border-radius:16px;min-height:80px;}
+          .tp-card-icon{width:36px;height:36px;font-size:17px;margin-bottom:10px;}
           .tp-card-name{font-size:14px;}
           .tp-card-desc{font-size:12px;margin-bottom:12px;}
-          /* Stats appear below cards on mobile as supporting context */
-          .tp-mobile-stats{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:20px;
-            padding:16px;
-            margin-bottom:16px;
-          }
+          .tp-mobile-stats{display:flex;align-items:center;justify-content:center;gap:20px;padding:16px;margin-bottom:16px;}
           .tp-mobile-stat{text-align:center;}
-          .tp-mobile-stat-num{
-            font-family:'Syne',sans-serif;
-            font-size:16px;
-            font-weight:700;
-            color:#fff;
-          }
+          .tp-mobile-stat-num{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;}
           .tp-mobile-stat-label{font-size:10px;color:#444;margin-top:1px;}
           .tp-mobile-stat-divider{width:1px;height:22px;background:#1e1e1e;}
           .tp-sp{flex-direction:column;text-align:center;margin:0 16px;}
@@ -614,31 +573,82 @@ export default function ToolsPage() {
       {screen === "landing" && (
         <div className="tp-landing">
 
-          {/* ── DESKTOP HERO (hidden on mobile) ── */}
+          {/* DESKTOP HERO */}
           <div className="tp-hero">
             <div className="tp-badge">Free AI Tools by Unico Studios</div>
-            <h1 className="tp-h1">AI Tools That<br /><span>Actually Work</span></h1>
-            <p className="tp-sub">4 free AI tools built for founders and brands who are serious about growth. No fluff. No generic output. Just results.</p>
+            <h1 className="tp-h1">AI That Actually<br /><span>Sells For You</span></h1>
+            <p className="tp-sub">Not generic AI. Not another chatbot. Tools that read your actual business and work like your sharpest employee.</p>
           </div>
 
-          {/* ── DESKTOP STATS (hidden on mobile) ── */}
+          {/* ── FIX 2: REAL STATS — honest and credible ── */}
           <div className="tp-stats">
-            <div className="tp-stat"><div className="tp-stat-num">9,073+</div><div className="tp-stat-label">Founders using these tools</div></div>
+            <div className="tp-stat">
+              <div className="tp-stat-num">Real Estate</div>
+              <div className="tp-stat-label">D2C · SaaS · Restaurants · Agencies</div>
+            </div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat"><div className="tp-stat-num">₹4.2Cr</div><div className="tp-stat-label">Revenue audited this month</div></div>
+            <div className="tp-stat">
+              <div className="tp-stat-num">₹0</div>
+              <div className="tp-stat-label">Cost to start — completely free</div>
+            </div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat"><div className="tp-stat-num">340%</div><div className="tp-stat-label">Avg lead increase with Niquo</div></div>
+            <div className="tp-stat">
+              <div className="tp-stat-num">60 sec</div>
+              <div className="tp-stat-label">To see Niquo close your first lead</div>
+            </div>
           </div>
 
-          {/* ── MOBILE HOOK (shown only on mobile, above cards) ──
-               2 lines max. First line: what it is. Second line: why tap now.
-               No badge, no long sub — just enough to give context before the cards. */}
+          {/* MOBILE HOOK */}
           <div className="tp-mobile-hook">
-            <div className="tp-mobile-hook-title">4 Free AI Tools<br />for <span>Indian Founders</span></div>
-            <div className="tp-mobile-hook-sub">Tap any tool — no signup needed to start</div>
+            <div className="tp-mobile-hook-title">AI That<br /><span>Sells For You</span></div>
+            <div className="tp-mobile-hook-sub">Tap Niquo — see it close a real lead in 60 seconds</div>
           </div>
 
-          {/* ── TOOL CARDS (same on both, but single column on mobile) ── */}
+          {/* ── FIX 3: NIQUO LIVE PREVIEW ── */}
+          {/* Shows a real conversation snippet BEFORE they click anything.
+              Removes the "is this actually good?" doubt immediately.
+              Hidden on mobile to keep cards above fold. */}
+          <div className="tp-preview">
+            <div className="tp-preview-label">⚡ Niquo — Live conversation with a real estate buyer</div>
+            <div className="tp-preview-convo">
+              <div className="tp-preview-msg">
+                <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
+                  Hi! I'm Niquo. Tell me about your business and I'll run a live sales demo — right now, for your exact customers.
+                </div>
+              </div>
+              <div className="tp-preview-msg user">
+                <div className="tp-preview-av" style={{ background: "rgba(255,255,255,0.03)" }}>👤</div>
+                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>
+                  I run a real estate agency in Bangalore. Most leads ghost us after the first call.
+                </div>
+              </div>
+              <div className="tp-preview-msg">
+                <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
+                  Got it. I'm now your AI sales rep. Send me a message exactly like a buyer would — I'll show you how I handle it and why they stop ghosting.
+                </div>
+              </div>
+              <div className="tp-preview-msg user">
+                <div className="tp-preview-av" style={{ background: "rgba(255,255,255,0.03)" }}>👤</div>
+                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>
+                  Hi, I saw your ad. Looking for a 2BHK in Whitefield, budget around 75L.
+                </div>
+              </div>
+              <div className="tp-preview-msg">
+                <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
+                  Perfect timing — we have 2 units in Whitefield under 74L, both RERA approved and ready to move. Are you buying for self-use or investment? That changes which one I'd recommend for you. 🏠
+                </div>
+              </div>
+            </div>
+            <div className="tp-preview-cta">
+              <span className="tp-preview-cta-text">This is what Niquo does for YOUR business — live, specific, human.</span>
+              <button className="tp-preview-cta-btn" onClick={function() { openTool("niquo"); }}>Try it now →</button>
+            </div>
+          </div>
+
+          {/* TOOL CARDS */}
           <div className="tp-grid">
             {Object.values(TOOLS).map(function(t) {
               return (
@@ -651,7 +661,7 @@ export default function ToolsPage() {
                   <div className="tp-card-name">{t.name}</div>
                   <div className="tp-card-desc">{t.longDesc}</div>
                   <div className="tp-card-footer">
-                    <div className="tp-card-users" style={{ color: "#333" }}>{t.users} using this</div>
+                    <div className="tp-card-users" style={{ color: "#333" }}>{t.users}</div>
                     <div className="tp-card-cta" style={{ color: t.color }}>Try free →</div>
                   </div>
                 </div>
@@ -659,21 +669,21 @@ export default function ToolsPage() {
             })}
           </div>
 
-          {/* ── MOBILE STATS (shown only on mobile, below cards as trust signal) ── */}
+          {/* MOBILE STATS */}
           <div className="tp-mobile-stats">
-            <div className="tp-mobile-stat">
-              <div className="tp-mobile-stat-num">9,073+</div>
-              <div className="tp-mobile-stat-label">Founders</div>
-            </div>
-            <div className="tp-mobile-stat-divider" />
-            <div className="tp-mobile-stat">
-              <div className="tp-mobile-stat-num">₹4.2Cr</div>
-              <div className="tp-mobile-stat-label">Audited</div>
-            </div>
-            <div className="tp-mobile-stat-divider" />
             <div className="tp-mobile-stat">
               <div className="tp-mobile-stat-num">Free</div>
               <div className="tp-mobile-stat-label">No card needed</div>
+            </div>
+            <div className="tp-mobile-stat-divider" />
+            <div className="tp-mobile-stat">
+              <div className="tp-mobile-stat-num">60s</div>
+              <div className="tp-mobile-stat-label">To first result</div>
+            </div>
+            <div className="tp-mobile-stat-divider" />
+            <div className="tp-mobile-stat">
+              <div className="tp-mobile-stat-num">Real</div>
+              <div className="tp-mobile-stat-label">Reads your business</div>
             </div>
           </div>
 
@@ -684,7 +694,7 @@ export default function ToolsPage() {
                 return <div key={i} className="tp-sp-av" style={{ background: bgs[i] }}>{l}</div>;
               })}
             </div>
-            <div className="tp-sp-text"><strong>9,073+ founders</strong> from India, UAE, Singapore and 18 other countries are already using these tools. Completely free.</div>
+            <div className="tp-sp-text">Used by founders in <strong>real estate, D2C, SaaS, restaurants and agencies</strong> across India, UAE and Singapore.</div>
             <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer"
               style={{ flexShrink:0, padding:"9px 18px", background:"linear-gradient(135deg,#a78bfa,#8b5cf6)", borderRadius:9, color:"#fff", textDecoration:"none", fontSize:13, fontWeight:700, fontFamily:"'Syne',sans-serif", whiteSpace:"nowrap" }}>
               Book a Call →
@@ -700,7 +710,7 @@ export default function ToolsPage() {
               <div className="tp-chat-ico" style={{ background: tool.headerBg, border: "1px solid " + tool.borderFaint }}>{tool.icon}</div>
               <div className="tp-chat-inf">
                 <div className="tp-chat-name">{tool.name}</div>
-                <div className="tp-chat-desc">{tool.users} founders have used this</div>
+                <div className="tp-chat-desc">{tool.users}</div>
               </div>
               {countdown ? (
                 <div className="tp-countdown">⚡ {countdown}</div>
@@ -761,7 +771,7 @@ export default function ToolsPage() {
                     <div className="tp-msg-body">
                       <div className="tp-msg-name">{msg.role === "user" ? "You" : tool.shortName}</div>
                       <div className="tp-bubble" style={msg.role === "user" ? { background: tool.userBg, borderColor: tool.borderActive, color: "#ddd", borderRadius: "12px 4px 12px 12px" } : {}}>
-                          {renderText(msg.content)}
+                        {renderText(msg.content)}
                       </div>
                     </div>
                   </div>
@@ -802,7 +812,7 @@ export default function ToolsPage() {
           <div className="tp-gate-modal">
             {!gateSuccess ? (
               <div>
-                <div className="tp-gate-ico">{currentTool === "audit" ? "🔍" : currentTool === "niquo" ? "⚡" : "🚀"}</div>
+                <div className="tp-gate-ico">{currentTool === "audit" ? "🔍" : currentTool === "niquo" ? "⚡" : currentTool === "content" ? "✍️" : "🌐"}</div>
                 <h2 className="tp-gate-title">{gateTitle()}</h2>
                 <p className="tp-gate-sub" dangerouslySetInnerHTML={{ __html: gateSub() }} />
                 <input type="email" className={"tp-gate-inp" + (emailError ? " err" : "")}
@@ -847,7 +857,7 @@ export default function ToolsPage() {
               {currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Audit credits used up!" : "You've hit your free limit!"}
             </div>
             <div className="tp-upgrade-sub">
-              {currentTool === "niquo" ? "Ready to build a custom AI sales system?" : currentTool === "audit" ? "Want unlimited audits and all other tools?" : "Upgrade to keep going."}
+              {currentTool === "niquo" ? "Ready to build this for your business?" : currentTool === "audit" ? "Want the full unlimited audit + all tools?" : "Upgrade to keep going."}
             </div>
             <div className="tp-plans">
               {PLANS.map(function(plan) {
