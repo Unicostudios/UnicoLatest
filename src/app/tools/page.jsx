@@ -1,13 +1,22 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 
-function stripMarkdown(text) {
-    return text
-      .replace(/#{1,6}\s*/gm, '')
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/^\s*[-*]\s+/gm, '')
-      .trim();
+function renderText(text) {
+      return text.split('\n').map(function(line, li) {
+              var isHeading = /^#{1,6}\s+/.test(line);
+              var cleanLine = line.replace(/^#{1,6}\s+/, '');
+              var parts = cleanLine.split(/(\*\*[^*]+\*\*)/g);
+              return (
+                        <span key={li} style={{ display: 'block', fontWeight: isHeading ? '700' : 'inherit', fontSize: isHeading ? '14px' : 'inherit', marginTop: isHeading ? '8px' : '0' }}>
+                            {parts.map(function(p, pi) {
+                                      if (/^\*\*[^*]+\*\*$/.test(p)) {
+                                                      return <strong key={pi}>{p.slice(2, -2)}</strong>;
+                                      }
+                                      return p;
+                        })}
+                        </span>
+                      );
+});
 }
 
 const TOOLS = {
@@ -752,20 +761,7 @@ export default function ToolsPage() {
                     <div className="tp-msg-body">
                       <div className="tp-msg-name">{msg.role === "user" ? "You" : tool.shortName}</div>
                       <div className="tp-bubble" style={msg.role === "user" ? { background: tool.userBg, borderColor: tool.borderActive, color: "#ddd", borderRadius: "12px 4px 12px 12px" } : {}}>
-                        {stripMarkdown(msg.content).split(/(https?:\/\/[^\s]+)/g).map(function(part, j) {
-                          if (part.match(/^https?:\/\//)) {
-                            if (part.includes("calendly")) {
-                              return (
-                                <a key={j} href={part} target="_blank" rel="noopener noreferrer"
-                                  style={{ color: tool.color, textDecoration:"none", display:"inline-flex", alignItems:"center", gap:6, marginTop:8, padding:"8px 14px", background: tool.bgActive, border:"1px solid " + tool.borderActive, borderRadius:8, fontWeight:600, fontSize:13 }}>
-                                  📅 Click here to book your call
-                                </a>
-                              );
-                            }
-                            return <a key={j} href={part} target="_blank" rel="noopener noreferrer" style={{ color: tool.color, textDecoration:"underline" }}>{part}</a>;
-                          }
-                          return <span key={j}>{part}</span>;
-                        })}
+                          {renderText(msg.content)}
                       </div>
                     </div>
                   </div>
