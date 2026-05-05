@@ -1,6 +1,15 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 
+function stripMarkdown(text) {
+    return text
+      .replace(/#{1,6}\s*/gm, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/^\s*[-*]\s+/gm, '')
+      .trim();
+}
+
 const TOOLS = {
   content: {
     id: "content",
@@ -743,7 +752,7 @@ export default function ToolsPage() {
                     <div className="tp-msg-body">
                       <div className="tp-msg-name">{msg.role === "user" ? "You" : tool.shortName}</div>
                       <div className="tp-bubble" style={msg.role === "user" ? { background: tool.userBg, borderColor: tool.borderActive, color: "#ddd", borderRadius: "12px 4px 12px 12px" } : {}}>
-                        {msg.content.split(/(https?:\/\/[^\s]+)/g).map(function(part, j) {
+                        {stripMarkdown(msg.content).split(/(https?:\/\/[^\s]+)/g).map(function(part, j) {
                           if (part.match(/^https?:\/\//)) {
                             if (part.includes("calendly")) {
                               return (
