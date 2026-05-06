@@ -241,8 +241,10 @@ If the conversation history shows they already told you something, you already k
 
 THE DEMO FLOW:
 
-PHASE 1 — OPENING:
-Say only: "I'm Niquo. I'm about to become your best salesperson. What's your business?"
+PHASE 1 — OPENING (only on the very first message of the conversation):
+Say only this once and never again: "I'm Niquo. What's your business?"
+If the conversation already has messages — you are mid-conversation. Never re-introduce yourself. Never repeat the opening line. Pick up exactly where things are.
+If the user has already given a URL or company name — you already know their business. Never ask again.
 
 PHASE 2 — INTELLIGENCE GATHERING:
 After they tell you their business:
@@ -403,24 +405,16 @@ User message: ${message}`;
       }
     }
 
-    // ── NIQUO: smart company/website detection on first message ──────────
+    // ── NIQUO: website detection — any message can trigger a scrape ─────
     if (mode === "niquo") {
       const isFirstMessage = !history || history.length === 0;
+      const urlInMessage = extractURL(message);
 
-      // If user uploaded a PDF/image previously, inject that content
-      if (uploadedContent) {
-        enhancedMessage = `PDF CONTENT (you have read the user's company document — use this to know their business deeply):
----
-${uploadedContent}
----
-
-User message: ${message}`;
-      }
-      // If user confirmed a URL from the suggestion
-      else if (confirmedUrl) {
-        const content = await scrapeWebsite(confirmedUrl);
+      // URL in message — scrape it immediately (handles company switching too)
+      if (urlInMessage) {
+        const content = await scrapeWebsite(urlInMessage);
         if (content) {
-          enhancedMessage = `WEBSITE CONFIRMED (you have read their confirmed website — use this data to run the demo as their specific salesperson):
+          enhancedMessage = `WEBSITE CONFIRMED (you have read this website in full — use specific details naturally in the demo. If this is a NEW website different from a previous one, switch fully to this new business):
 ---
 ${content}
 ---
@@ -428,33 +422,38 @@ ${content}
 User message: ${message}`;
         }
       }
-      // First message — try to find their website from company name
-      else if (isFirstMessage || (history && history.length <= 2)) {
-        const url = extractURL(message);
-        if (url) {
-          // They gave a URL directly — scrape it
-          const content = await scrapeWebsite(url);
-          if (content) {
-            enhancedMessage = `WEBSITE CONFIRMED (you have read their website — use this data to run the demo as their specific salesperson):
+      // PDF uploaded — inject content
+      else if (uploadedContent) {
+        enhancedMessage = `PDF CONTENT (you have read the user company document — use this to know their business):
+---
+${uploadedContent}
+---
+
+User message: ${message}`;
+      }
+      // Confirmed URL from confirmation banner
+      else if (confirmedUrl) {
+        const content = await scrapeWebsite(confirmedUrl);
+        if (content) {
+          enhancedMessage = `WEBSITE CONFIRMED (you have read their confirmed website — use specific details):
 ---
 ${content}
 ---
 
 User message: ${message}`;
-          }
-        } else {
-          // No URL — try to find their company website
-          const companyName = extractCompanyName(message);
-          if (companyName) {
-            const foundUrl = await findCompanyWebsite(companyName);
-            if (foundUrl) {
-              // Inject found URL for confirmation — Niquo will ask user to confirm
-              enhancedMessage = `COMPANY FOUND (you found a possible website for this company — ask the user to confirm before proceeding):
-Company name mentioned: ${companyName}
+        }
+      }
+      // First message only — try to find website from company name
+      else if (isFirstMessage) {
+        const companyName = extractCompanyName(message);
+        if (companyName) {
+          const foundUrl = await findCompanyWebsite(companyName);
+          if (foundUrl) {
+            enhancedMessage = `COMPANY FOUND (ask user to confirm this website before proceeding):
+Company: ${companyName}
 Website found: ${foundUrl}
 
 User message: ${message}`;
-            }
           }
         }
       }
