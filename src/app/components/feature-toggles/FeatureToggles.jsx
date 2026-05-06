@@ -7,22 +7,17 @@ import { SectionSubheading } from "../shared/SectionSubheading";
 
 export const FeatureToggles = () => {
   const [selected, setSelected] = useState(1);
-
   const el = data.find((d) => d.id === selected);
 
   return (
-    <section className="relative mx-auto max-w-6xl px-4 my-24">
+    <section className="relative mx-auto max-w-6xl px-4 my-12 md:my-24">
       <SectionHeading>What We Do Best</SectionHeading>
       <SectionSubheading>Tailored Solutions. Proven Results</SectionSubheading>
       <div className="w-full">
-        <div className="mb-9 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {/* ── Toggle buttons: 2 cols on mobile, 4 on desktop ── */}
+        <div className="mb-6 grid grid-cols-2 gap-3 md:mb-9 md:grid-cols-4 md:gap-4">
           {data.map((d) => (
-            <ToggleButton
-              key={d.id}
-              id={d.id}
-              selected={selected}
-              setSelected={setSelected}
-            >
+            <ToggleButton key={d.id} id={d.id} selected={selected} setSelected={setSelected}>
               {d.title}
             </ToggleButton>
           ))}
