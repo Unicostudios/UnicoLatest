@@ -9,9 +9,7 @@ function renderText(text) {
     return (
       <span key={li} style={{ display: 'block', fontWeight: isHeading ? '700' : 'inherit', fontSize: isHeading ? '14px' : 'inherit', marginTop: isHeading ? '8px' : '0' }}>
         {parts.map(function(p, pi) {
-          if (/^\*\*[^*]+\*\*$/.test(p)) {
-            return <strong key={pi}>{p.slice(2, -2)}</strong>;
-          }
+          if (/^\*\*[^*]+\*\*$/.test(p)) return <strong key={pi}>{p.slice(2, -2)}</strong>;
           return p;
         })}
       </span>
@@ -19,10 +17,6 @@ function renderText(text) {
   });
 }
 
-// ── FIX 1: CARD ORDER ────────────────────────────────────────────────────────
-// Niquo first (star product), Audit second (unique differentiator),
-// Content third, Website Consultant fourth.
-// Your two strongest tools lead. First impression = what matters most.
 const TOOLS = {
   niquo: {
     id: "niquo",
@@ -39,8 +33,9 @@ const TOOLS = {
     userBg: "rgba(34,211,238,0.05)",
     chipBg: "rgba(34,211,238,0.04)",
     chipBorder: "rgba(34,211,238,0.16)",
-    greeting: "Hi. I'm Niquo.\n\nIn the next 5 minutes I'll show you exactly how an AI sales assistant works for YOUR business — live and personalised.\n\nTell me: what's your business, who's your customer, and what's the #1 reason deals fall through?",
-    chips: ["I run an e-commerce brand selling fashion", "I have a real estate agency in Bangalore", "I run a SaaS product for HR teams", "I own a restaurant chain"],
+    // ── NEW SHORT GREETING ───────────────────────────────────────────────
+    greeting: "I'm Niquo. I'm about to become your best salesperson.\n\nWhat's your business?",
+    chips: ["I run a real estate agency in Bangalore", "I have a D2C fashion brand", "I run a SaaS product for HR teams", "I own a restaurant chain"],
     mode: "niquo",
     limit: 50,
     tag: "🔥 Star Product",
@@ -62,7 +57,8 @@ const TOOLS = {
     userBg: "rgba(251,146,60,0.06)",
     chipBg: "rgba(251,146,60,0.05)",
     chipBorder: "rgba(251,146,60,0.18)",
-    greeting: "I've audited 1000+ websites. The average business bleeds ₹40,000–₹80,000 every month from 5 specific issues — and most owners have no idea.\n\nDrop your website URL and I'll show you exactly where your money is going.",
+    // ── NEW SHORT GREETING ───────────────────────────────────────────────
+    greeting: "Drop your website URL.\n\nI'll tell you exactly how much money it's losing — and why.",
     chips: ["Audit unicostudios.in", "Audit my competitor's website", "Find my conversion killers", "How much revenue am I losing?"],
     mode: "audit",
     limit: 3,
@@ -85,7 +81,8 @@ const TOOLS = {
     userBg: "rgba(167,139,250,0.06)",
     chipBg: "rgba(167,139,250,0.05)",
     chipBorder: "rgba(167,139,250,0.18)",
-    greeting: "Hey! Before you even type anything — here's what I can do for your brand right now:\n\n✍️ Hook #1 (Curiosity): \"Nobody told me running a business in India looked like THIS until I tried it...\"\n✍️ Hook #2 (Pain): \"If you're a founder and you're still posting generic content, this is going to hurt to watch.\"\n✍️ Hook #3 (Result): \"I went from 0 to 50,000 followers in 90 days — here's exactly what changed.\"\n\nThese are just samples. Tell me about YOUR business and I'll generate 3 hooks made specifically for your brand. What do you do?",
+    // ── NEW SHORT GREETING ───────────────────────────────────────────────
+    greeting: "Tell me what your business does — one line.\n\nI'll generate 3 hooks your competitors wish they'd written first.",
     chips: ["I run a D2C skincare brand", "I have a SaaS product for HR teams", "I run a real estate agency", "I own a fashion brand on Instagram"],
     mode: "content",
     limit: 10,
@@ -108,7 +105,8 @@ const TOOLS = {
     userBg: "rgba(244,114,182,0.06)",
     chipBg: "rgba(244,114,182,0.05)",
     chipBorder: "rgba(244,114,182,0.18)",
-    greeting: "Most websites lose 80% of their visitors in the first 10 seconds. Not because the product is bad — because the website fails to communicate value fast enough.\n\nShare your website URL or describe what your site is supposed to do and I'll tell you exactly what's costing you leads.",
+    // ── NEW SHORT GREETING ───────────────────────────────────────────────
+    greeting: "Share your website URL.\n\nI'll tell you exactly why it's not converting — and what to fix first.",
     chips: ["My website isn't getting leads", "Review my landing page", "I want to build a new website", "Why isn't my site converting?"],
     mode: "code",
     limit: 10,
@@ -136,32 +134,20 @@ async function logAnonymousVisit() {
     if (last && now - parseInt(last) < 60 * 60 * 1000) return;
     localStorage.setItem(key, now.toString());
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
-    await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Page Visit", country: tz, status: "Visitor" }),
-    });
+    await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Page Visit", country: tz, status: "Visitor" }) });
   } catch (_) {}
 }
 
 async function logToolClick(toolId) {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
-    await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Clicked: " + toolId, country: tz, status: "Tool Click" }),
-    });
+    await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: "anonymous_visitor", phone: "", tool: "Clicked: " + toolId, country: tz, status: "Tool Click" }) });
   } catch (_) {}
 }
 
 async function logRecurringVisit(email, toolId) {
   try {
-    await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, phone: "Returning", tool: "Return: " + toolId, returning: true, status: "Return Visit" }),
-    });
+    await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, phone: "Returning", tool: "Return: " + toolId, returning: true, status: "Return Visit" }) });
   } catch (_) {}
 }
 
@@ -176,12 +162,8 @@ function useScrollTracking() {
       checkpoints.forEach(function(point) {
         if (pct >= point && !fired.has(point)) {
           fired.add(point);
-          if (typeof window !== "undefined" && window.gtag) {
-            window.gtag("event", "scroll_depth", { event_category: "engagement", event_label: point + "%", value: point });
-          }
-          if (typeof window !== "undefined" && window.fbq) {
-            window.fbq("trackCustom", "ScrollDepth", { depth: point });
-          }
+          if (window.gtag) window.gtag("event", "scroll_depth", { event_category: "engagement", event_label: point + "%", value: point });
+          if (window.fbq) window.fbq("trackCustom", "ScrollDepth", { depth: point });
         }
       });
     }
@@ -198,11 +180,7 @@ function downloadAuditPDF(messages, url) {
   const blob = new Blob([htmlContent], { type: "text/html" });
   const blobUrl = URL.createObjectURL(blob);
   const printWindow = window.open(blobUrl, "_blank");
-  if (printWindow) {
-    printWindow.onload = function() {
-      setTimeout(function() { printWindow.print(); URL.revokeObjectURL(blobUrl); }, 500);
-    };
-  }
+  if (printWindow) { printWindow.onload = function() { setTimeout(function() { printWindow.print(); URL.revokeObjectURL(blobUrl); }, 500); }; }
 }
 
 export default function ToolsPage() {
@@ -223,16 +201,23 @@ export default function ToolsPage() {
   const [auditPart1Done, setAuditPart1Done] = useState(false);
   const [auditPdfReady, setAuditPdfReady] = useState(false);
   const [auditUrl, setAuditUrl] = useState("");
+  // ── NEW STATE: file upload & website confirmation ──────────────────────
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
+  const [uploadedContent, setUploadedContent] = useState(null);
+  const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [pendingWebsiteUrl, setPendingWebsiteUrl] = useState(null);
+  const [confirmedUrl, setConfirmedUrl] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(function() {
     logAnonymousVisit();
     const saved = sessionStorage.getItem("unico_tools_email");
     const savedTime = sessionStorage.getItem("unico_tools_time");
     const now = Date.now();
-    const ONE_HOUR = 60 * 60 * 1000;
-    if (saved && savedTime && now - parseInt(savedTime) < ONE_HOUR) {
+    if (saved && savedTime && now - parseInt(savedTime) < 60 * 60 * 1000) {
       setEmail(saved);
     } else {
       sessionStorage.removeItem("unico_tools_email");
@@ -243,15 +228,100 @@ export default function ToolsPage() {
   useScrollTracking();
 
   useEffect(function() {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    if (messagesEndRef.current) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // Close plus menu when clicking outside
+  useEffect(function() {
+    function handleClickOutside(e) {
+      if (showPlusMenu && !e.target.closest(".tp-plus-menu") && !e.target.closest(".tp-plus-btn")) {
+        setShowPlusMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return function() { document.removeEventListener("mousedown", handleClickOutside); };
+  }, [showPlusMenu]);
 
   const tool = currentTool ? TOOLS[currentTool] : null;
   const currentUses = currentTool ? uses[currentTool] : 0;
   const currentLimit = tool ? tool.limit : 10;
   const gateAfter = tool ? tool.gateAfter : 5;
+
+  // ── FILE UPLOAD HANDLER ────────────────────────────────────────────────
+  async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setShowPlusMenu(false);
+    setUploadingFile(true);
+
+    try {
+      // Read file as base64
+      const reader = new FileReader();
+      reader.onload = async function(ev) {
+        const base64 = ev.target.result.split(",")[1];
+        const mimeType = file.type;
+
+        const res = await fetch("/api/niquo-upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileData: base64, fileName: file.name, mimeType }),
+        });
+        const data = await res.json();
+
+        if (data.success && data.content) {
+          setUploadedContent(data.content);
+          setUploadedFileName(file.name);
+          // Show a system message in chat
+          setMessages(function(prev) {
+            return {
+              ...prev,
+              [currentTool]: [...prev[currentTool], {
+                role: "system-notice",
+                content: "📎 " + file.name + " uploaded. Niquo has read your document.",
+              }]
+            };
+          });
+        } else {
+          setMessages(function(prev) {
+            return {
+              ...prev,
+              [currentTool]: [...prev[currentTool], {
+                role: "system-notice",
+                content: "⚠️ Couldn't read that file. Try a PDF or image.",
+              }]
+            };
+          });
+        }
+        setUploadingFile(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setUploadingFile(false);
+    }
+    // Reset file input
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  // ── WEBSITE CONFIRMATION HANDLER ──────────────────────────────────────
+  function confirmWebsite(confirmed) {
+    if (confirmed) {
+      setConfirmedUrl(pendingWebsiteUrl);
+      setPendingWebsiteUrl(null);
+      // Send a silent confirmation to trigger scraping
+      sendMessage("Yes, that's correct", true, pendingWebsiteUrl);
+    } else {
+      setPendingWebsiteUrl(null);
+      setMessages(function(prev) {
+        return {
+          ...prev,
+          [currentTool]: [...prev[currentTool], {
+            role: "system-notice",
+            content: "No problem — what's your website URL?",
+          }]
+        };
+      });
+    }
+  }
 
   function openTool(toolId) {
     setCurrentTool(toolId);
@@ -259,14 +329,14 @@ export default function ToolsPage() {
     setAuditPart1Done(false);
     setAuditPdfReady(false);
     setAuditUrl("");
+    setUploadedContent(null);
+    setUploadedFileName(null);
+    setPendingWebsiteUrl(null);
+    setConfirmedUrl(null);
     setScreen("chat");
     if (!email) { logToolClick(toolId); } else { logRecurringVisit(email, toolId); }
-    if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "tool_opened", { event_category: "tools", event_label: toolId });
-    }
-    if (typeof window !== "undefined" && window.fbq) {
-      window.fbq("trackCustom", "ToolOpened", { tool: toolId });
-    }
+    if (window.gtag) window.gtag("event", "tool_opened", { event_category: "tools", event_label: toolId });
+    if (window.fbq) window.fbq("trackCustom", "ToolOpened", { tool: toolId });
     setTimeout(function() { if (textareaRef.current) textareaRef.current.focus(); }, 100);
   }
 
@@ -274,6 +344,10 @@ export default function ToolsPage() {
     setScreen("landing");
     setCurrentTool(null);
     setInput("");
+    setUploadedContent(null);
+    setUploadedFileName(null);
+    setPendingWebsiteUrl(null);
+    setConfirmedUrl(null);
   }
 
   async function handleSubmit() {
@@ -285,46 +359,30 @@ export default function ToolsPage() {
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailInput,
-          phone: "",
-          tool: currentTool ? "Gate: " + currentTool : "Tools Page",
-          country: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
-        }),
+        body: JSON.stringify({ email: emailInput, phone: "", tool: currentTool ? "Gate: " + currentTool : "Tools Page", country: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown" }),
       });
       sessionStorage.setItem("unico_tools_email", emailInput);
       sessionStorage.setItem("unico_tools_time", Date.now().toString());
       setEmail(emailInput);
       setGateSuccess(true);
-      if (typeof window !== "undefined" && window.fbq) {
-        window.fbq("track", "Lead", { currency: "INR", value: 0 });
-      }
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "generate_lead", { event_category: "gate", event_label: currentTool || "tools", value: 0, currency: "INR" });
-      }
+      if (window.fbq) window.fbq("track", "Lead", { currency: "INR", value: 0 });
+      if (window.gtag) window.gtag("event", "generate_lead", { event_category: "gate", event_label: currentTool || "tools", value: 0, currency: "INR" });
     } catch (err) {
       setEmailError("Something went wrong. Please try again.");
     }
     setSubmitting(false);
   }
 
-  function closeGate() {
-    setShowGate(false);
-    setGateSuccess(false);
-  }
+  function closeGate() { setShowGate(false); setGateSuccess(false); }
 
-  async function sendMessage(text) {
+  async function sendMessage(text, isConfirmation, urlToConfirm) {
     const msg = text || input.trim();
     if (!msg || !currentTool) return;
     const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
     if (!email && exchangesSoFar >= gateAfter) {
       setShowGate(true);
-      if (typeof window !== "undefined" && window.fbq) {
-        window.fbq("track", "ViewContent", { content_name: "Delayed Gate", content_category: currentTool });
-      }
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "gate_viewed", { event_category: "gate", event_label: currentTool });
-      }
+      if (window.fbq) window.fbq("track", "ViewContent", { content_name: "Delayed Gate", content_category: currentTool });
+      if (window.gtag) window.gtag("event", "gate_viewed", { event_category: "gate", event_label: currentTool });
       return;
     }
     if (currentUses >= currentLimit) { setShowUpgrade(true); return; }
@@ -332,21 +390,33 @@ export default function ToolsPage() {
       const urlMatch = msg.match(/https?:\/\/[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?:\/[^\s]*)?/);
       if (urlMatch) setAuditUrl(urlMatch[0]);
     }
-    const userMsg = { role: "user", content: msg };
-    setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], userMsg] }; });
+
+    // Don't show confirmation message as a user bubble
+    if (!isConfirmation) {
+      const userMsg = { role: "user", content: msg };
+      setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], userMsg] }; });
+    }
+
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
     setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
-    if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
-    }
+    if (window.gtag) window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
+
     try {
-      const history = [...messages[currentTool], userMsg];
+      const history = [...messages[currentTool].filter(m => m.role === "user" || m.role === "assistant")];
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, history: history.slice(0, -1), mode: tool.mode, email: email }),
+        body: JSON.stringify({
+          message: msg,
+          history: history.slice(0, -1),
+          mode: tool.mode,
+          email: email,
+          // ── Pass uploaded content and confirmed URL to backend ──────
+          uploadedContent: uploadedContent || null,
+          confirmedUrl: urlToConfirm || confirmedUrl || null,
+        }),
       });
       const data = await res.json();
       const reply = data.reply || "";
@@ -354,6 +424,10 @@ export default function ToolsPage() {
       if (data.demoCompleted) setDemoCompleted(true);
       if (currentTool === "audit" && reply.includes("Want to see them?")) setAuditPart1Done(true);
       if (data.pdfReady && currentTool === "audit") setAuditPdfReady(true);
+      // ── Set pending website URL for confirmation banner ──────────────
+      if (data.pendingWebsiteUrl && currentTool === "niquo" && !confirmedUrl) {
+        setPendingWebsiteUrl(data.pendingWebsiteUrl);
+      }
     } catch (err) {
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: "Something went wrong. Please try again." }] }; });
     }
@@ -372,7 +446,6 @@ export default function ToolsPage() {
     return remaining === 1 ? "1 free message left" : remaining + " free messages left";
   }
 
-  // ── FIX 4: GATE COPY — specific and compelling per tool ──────────────────
   function gateTitle() {
     if (currentTool === "audit") return "Your revenue bleed report is half done.";
     if (currentTool === "niquo") return "Niquo just read your buyer. The close is next.";
@@ -381,7 +454,7 @@ export default function ToolsPage() {
   }
 
   function gateSub() {
-    if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — including the one that's costing you the most high-intent buyers.";
+    if (currentTool === "audit") return "Enter your email to unlock <strong>Bleeds #4 and #5</strong> — the ones costing you the most high-intent buyers.";
     if (currentTool === "niquo") return "Enter your email to see Niquo deliver the <strong>full personalised close</strong> for your exact buyer type.";
     if (currentTool === "content") return "Enter your email to get your <strong>complete content pack</strong> — scripts, CTAs, thumbnail concepts and a 30-day calendar.";
     return "Enter your email to keep this going and get everything we've built so far sent to you.";
@@ -409,15 +482,11 @@ export default function ToolsPage() {
         .tp-h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:-0.02em;line-height:1.08;color:#fff;margin-bottom:16px;}
         .tp-h1 span{background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
         .tp-sub{font-size:16px;color:#555;font-weight:300;max-width:480px;margin:0 auto 32px;line-height:1.6;}
-
-        /* ── FIX 2: REAL STATS — credible, specific, not inflated ── */
         .tp-stats{display:flex;align-items:center;justify-content:center;gap:32px;margin-bottom:48px;}
         .tp-stat{text-align:center;}
         .tp-stat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.01em;}
         .tp-stat-label{font-size:11px;color:#444;margin-top:2px;}
         .tp-stat-divider{width:1px;height:28px;background:#1e1e1e;}
-
-        /* ── FIX 3: NIQUO PREVIEW STRIP ── */
         .tp-preview{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:16px;padding:20px;margin-bottom:28px;position:relative;overflow:hidden;}
         .tp-preview::before{content:'LIVE PREVIEW';position:absolute;top:12px;right:14px;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#22d3ee;opacity:0.6;}
         .tp-preview-label{font-size:11px;color:#333;margin-bottom:12px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;}
@@ -430,7 +499,6 @@ export default function ToolsPage() {
         .tp-preview-cta{margin-top:14px;display:flex;align-items:center;justify-content:space-between;}
         .tp-preview-cta-text{font-size:12px;color:#333;font-family:'DM Sans',sans-serif;}
         .tp-preview-cta-btn{font-size:12px;font-weight:700;color:#22d3ee;font-family:'Syne',sans-serif;background:none;border:none;cursor:pointer;padding:0;}
-
         .tp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
         .tp-card{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:18px;padding:22px 20px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
         .tp-card:hover{transform:translateY(-3px);}
@@ -458,7 +526,7 @@ export default function ToolsPage() {
         .tp-chat-live{display:flex;align-items:center;gap:5px;font-size:11px;color:#333;}
         .tp-countdown{font-size:10px;color:#fb923c;font-weight:600;letter-spacing:0.04em;animation:tpblink 2s ease infinite;}
         .tp-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:tpblink 2s ease infinite;}
-        .tp-msgs{flex:1;min-height:300px;max-height:calc(100vh - 260px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;}
+        .tp-msgs{flex:1;min-height:300px;max-height:calc(100vh - 280px);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;}
         .tp-msg{display:flex;gap:8px;animation:tpfadeup 0.25s ease both;}
         .tp-msg.user{flex-direction:row-reverse;}
         .tp-msg.user .tp-msg-body{align-items:flex-end;}
@@ -467,6 +535,7 @@ export default function ToolsPage() {
         .tp-msg-name{font-size:10px;font-weight:500;color:#333;letter-spacing:0.06em;text-transform:uppercase;}
         .tp-bubble{font-size:14px;line-height:1.7;color:#aaa;background:#111;border:1px solid #1d1d1d;border-radius:4px 12px 12px 12px;padding:11px 14px;white-space:pre-wrap;}
         .tp-msg.user .tp-bubble{border-radius:12px 4px 12px 12px;color:#ddd;}
+        .tp-system-notice{font-size:11px;color:#333;text-align:center;padding:6px 12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid #1a1a1a;margin:0 auto;}
         .tp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
         .tp-chip{font-size:12px;border-radius:100px;padding:5px 12px;cursor:pointer;border:1px solid;font-family:'DM Sans',sans-serif;}
         .tp-typing{display:flex;gap:4px;align-items:center;padding:4px 0;}
@@ -477,8 +546,27 @@ export default function ToolsPage() {
         .tp-banner-title{font-weight:700;font-size:14px;margin-bottom:5px;}
         .tp-banner-sub{font-size:12px;margin-bottom:10px;}
         .tp-banner-btn{display:inline-block;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;}
-        .tp-inp-area{border-top:1px solid #1a1a1a;padding:12px 14px;background:#080808;}
+
+        /* ── WEBSITE CONFIRMATION BANNER ─────────────────────────────── */
+        .tp-confirm-banner{background:rgba(34,211,238,0.04);border:1px solid rgba(34,211,238,0.15);border-radius:12px;padding:12px 16px;margin:0 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:tpfadeup 0.3s ease both;}
+        .tp-confirm-text{font-size:12px;color:#555;font-family:'DM Sans',sans-serif;line-height:1.5;}
+        .tp-confirm-text strong{color:#22d3ee;}
+        .tp-confirm-btns{display:flex;gap:8px;flex-shrink:0;}
+        .tp-confirm-yes{font-size:11px;font-weight:700;color:#000;background:#22d3ee;border:none;border-radius:7px;padding:5px 12px;cursor:pointer;font-family:'Syne',sans-serif;}
+        .tp-confirm-no{font-size:11px;font-weight:500;color:#444;background:none;border:1px solid #222;border-radius:7px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+        /* ── INPUT AREA WITH PLUS BUTTON ─────────────────────────────── */
+        .tp-inp-area{border-top:1px solid #1a1a1a;padding:12px 14px;background:#080808;position:relative;}
         .tp-inp-row{display:flex;align-items:flex-end;gap:8px;}
+        .tp-plus-btn{width:34px;height:34px;border-radius:9px;border:1px solid #1e1e1e;background:#0d0d0d;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#444;font-size:18px;transition:all 0.2s;line-height:1;}
+        .tp-plus-btn:hover{border-color:#333;color:#888;}
+        .tp-plus-btn.active{border-color:#22d3ee44;color:#22d3ee;background:rgba(34,211,238,0.05);}
+        .tp-plus-menu{position:absolute;bottom:58px;left:14px;background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:6px;min-width:180px;z-index:20;animation:tpfadeup 0.2s ease both;box-shadow:0 16px 40px rgba(0,0,0,0.6);}
+        .tp-plus-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:#888;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+        .tp-plus-item:hover{background:rgba(255,255,255,0.04);color:#ccc;}
+        .tp-plus-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+        .tp-uploaded-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#22d3ee;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.15);border-radius:100px;padding:3px 10px;margin-bottom:6px;}
+
         .tp-inp-wrap{flex:1;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:10px 14px;transition:border-color 0.2s;}
         .tp-textarea{width:100%;background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:#ccc;resize:none;line-height:1.55;max-height:100px;min-height:20px;overflow-y:auto;}
         .tp-textarea::placeholder{color:#252525;}
@@ -486,7 +574,7 @@ export default function ToolsPage() {
         .tp-hint{text-align:center;font-size:10px;color:#222;margin-top:8px;}
         .tp-gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:tpGateBgIn 0.4s ease both;}
         .tp-gate::before{content:'';position:absolute;inset:0;animation:tpGateBlur 0.55s cubic-bezier(0.16,1,0.3,1) both;pointer-events:none;}
-        .tp-gate-modal{position:relative;background:rgba(16,16,18,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:28px;padding:40px 36px;width:100%;max-width:400px;text-align:center;max-height:92vh;overflow-y:auto;box-shadow:0 48px 100px rgba(0,0,0,0.75),0 0 0 0.5px rgba(255,255,255,0.03) inset;animation:tpModalIn 0.6s cubic-bezier(0.16,1,0.3,1) both;transform-origin:center 60%;}
+        .tp-gate-modal{position:relative;background:rgba(16,16,18,0.95);border:1px solid rgba(255,255,255,0.07);border-radius:28px;padding:40px 36px;width:100%;max-width:400px;text-align:center;max-height:92vh;overflow-y:auto;box-shadow:0 48px 100px rgba(0,0,0,0.75);animation:tpModalIn 0.6s cubic-bezier(0.16,1,0.3,1) both;transform-origin:center 60%;}
         .tp-gate-ico{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(34,211,238,0.08));border:1px solid rgba(167,139,250,0.18);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both;}
         .tp-gate-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#efefef;margin-bottom:10px;letter-spacing:-0.01em;line-height:1.35;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both;}
         .tp-gate-sub{font-size:13px;color:#484848;line-height:1.65;margin-bottom:24px;font-weight:400;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.19s both;}
@@ -498,8 +586,7 @@ export default function ToolsPage() {
         .tp-gate-err{font-size:12px;color:#f87171;margin-bottom:8px;text-align:left;}
         .tp-gate-btn{width:100%;background:linear-gradient(135deg,#a78bfa,#8b5cf6);border:none;border-radius:12px;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;margin-top:2px;letter-spacing:0.01em;transition:opacity 0.2s,transform 0.15s;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.27s both;}
         .tp-gate-btn:hover{opacity:0.87;transform:translateY(-1px);}
-        .tp-gate-btn:active{transform:translateY(0);}
-        .tp-gate-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+        .tp-gate-btn:disabled{opacity:0.4;cursor:not-allowed;}
         .tp-gate-fine{font-size:11px;color:#1e1e1e;margin-top:12px;animation:tpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.31s both;}
         .tp-ok-ico{width:48px;height:48px;border-radius:50%;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 16px;}
         .tp-upgrade{position:fixed;inset:0;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -528,9 +615,7 @@ export default function ToolsPage() {
         @keyframes tpModalIn{from{opacity:0;transform:scale(0.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
         @keyframes tpItemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         @media(max-width:640px){
-          .tp-hero{display:none;}
-          .tp-stats{display:none;}
-          .tp-preview{display:none;}
+          .tp-hero{display:none;} .tp-stats{display:none;} .tp-preview{display:none;}
           .tp-mobile-hook{display:block;padding:20px 16px 14px;text-align:center;}
           .tp-mobile-hook-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1.15;margin-bottom:6px;}
           .tp-mobile-hook-title span{background:linear-gradient(90deg,#a78bfa 0%,#f472b6 60%,#22d3ee 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -539,18 +624,26 @@ export default function ToolsPage() {
           .tp-grid{grid-template-columns:1fr;gap:10px;padding:0 16px;margin-bottom:20px;}
           .tp-card{padding:18px 16px;border-radius:16px;min-height:80px;}
           .tp-card-icon{width:36px;height:36px;font-size:17px;margin-bottom:10px;}
-          .tp-card-name{font-size:14px;}
-          .tp-card-desc{font-size:12px;margin-bottom:12px;}
+          .tp-card-name{font-size:14px;} .tp-card-desc{font-size:12px;margin-bottom:12px;}
           .tp-mobile-stats{display:flex;align-items:center;justify-content:center;gap:20px;padding:16px;margin-bottom:16px;}
           .tp-mobile-stat{text-align:center;}
           .tp-mobile-stat-num{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;}
           .tp-mobile-stat-label{font-size:10px;color:#444;margin-top:1px;}
           .tp-mobile-stat-divider{width:1px;height:22px;background:#1e1e1e;}
           .tp-sp{flex-direction:column;text-align:center;margin:0 16px;}
-          .tp-gate-modal{padding:28px 20px;}
-          .tp-chat{padding:10px 10px 28px;}
+          .tp-gate-modal{padding:28px 20px;} .tp-chat{padding:10px 10px 28px;}
+          .tp-confirm-banner{margin:0 10px 10px;}
         }
       `}</style>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,image/*"
+        style={{ display: "none" }}
+        onChange={handleFileUpload}
+      />
 
       <nav className="tp-nav">
         <a href="/" className="tp-logo">∂ Unico</a>
@@ -572,83 +665,51 @@ export default function ToolsPage() {
 
       {screen === "landing" && (
         <div className="tp-landing">
-
-          {/* DESKTOP HERO */}
           <div className="tp-hero">
             <div className="tp-badge">Free AI Tools by Unico Studios</div>
             <h1 className="tp-h1">AI That Actually<br /><span>Sells For You</span></h1>
             <p className="tp-sub">Not generic AI. Not another chatbot. Tools that read your actual business and work like your sharpest employee.</p>
           </div>
-
-          {/* ── FIX 2: REAL STATS — honest and credible ── */}
           <div className="tp-stats">
-            <div className="tp-stat">
-              <div className="tp-stat-num">Real Estate</div>
-              <div className="tp-stat-label">D2C · SaaS · Restaurants · Agencies</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">Real Estate</div><div className="tp-stat-label">D2C · SaaS · Restaurants · Agencies</div></div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat">
-              <div className="tp-stat-num">₹0</div>
-              <div className="tp-stat-label">Cost to start — completely free</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">₹0</div><div className="tp-stat-label">Cost to start — completely free</div></div>
             <div className="tp-stat-divider" />
-            <div className="tp-stat">
-              <div className="tp-stat-num">60 sec</div>
-              <div className="tp-stat-label">To see Niquo close your first lead</div>
-            </div>
+            <div className="tp-stat"><div className="tp-stat-num">60 sec</div><div className="tp-stat-label">To see Niquo close your first lead</div></div>
           </div>
-
-          {/* MOBILE HOOK */}
           <div className="tp-mobile-hook">
             <div className="tp-mobile-hook-title">AI That<br /><span>Sells For You</span></div>
             <div className="tp-mobile-hook-sub">Tap Niquo — see it close a real lead in 60 seconds</div>
           </div>
-
-          {/* ── FIX 3: NIQUO LIVE PREVIEW ── */}
-          {/* Shows a real conversation snippet BEFORE they click anything.
-              Removes the "is this actually good?" doubt immediately.
-              Hidden on mobile to keep cards above fold. */}
           <div className="tp-preview">
             <div className="tp-preview-label">⚡ Niquo — Live conversation with a real estate buyer</div>
             <div className="tp-preview-convo">
               <div className="tp-preview-msg">
                 <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
-                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
-                  Hi! I'm Niquo. Tell me about your business and I'll run a live sales demo — right now, for your exact customers.
-                </div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>I'm Niquo. I'm about to become your best salesperson. What's your business?</div>
               </div>
               <div className="tp-preview-msg user">
                 <div className="tp-preview-av" style={{ background: "rgba(255,255,255,0.03)" }}>👤</div>
-                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>
-                  I run a real estate agency in Bangalore. Most leads ghost us after the first call.
-                </div>
+                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>I run PropStar Realty in Bangalore. Most leads ghost us after the first call.</div>
               </div>
               <div className="tp-preview-msg">
                 <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
-                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
-                  Got it. I'm now your AI sales rep. Send me a message exactly like a buyer would — I'll show you how I handle it and why they stop ghosting.
-                </div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>Found your website — propstarrealty.com. Is this correct?</div>
               </div>
               <div className="tp-preview-msg user">
                 <div className="tp-preview-av" style={{ background: "rgba(255,255,255,0.03)" }}>👤</div>
-                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>
-                  Hi, I saw your ad. Looking for a 2BHK in Whitefield, budget around 75L.
-                </div>
+                <div className="tp-preview-bubble" style={{ background: "rgba(34,211,238,0.05)", border: "1px solid rgba(34,211,238,0.15)", borderRadius: "10px 3px 10px 10px" }}>Yes</div>
               </div>
               <div className="tp-preview-msg">
                 <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
-                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>
-                  Perfect timing — we have 2 units in Whitefield under 74L, both RERA approved and ready to move. Are you buying for self-use or investment? That changes which one I'd recommend for you. 🏠
-                </div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>I'm stepping into PropStar now. Send me a message exactly like a buyer would. Let's run it live.</div>
               </div>
             </div>
             <div className="tp-preview-cta">
-              <span className="tp-preview-cta-text">This is what Niquo does for YOUR business — live, specific, human.</span>
+              <span className="tp-preview-cta-text">Niquo finds your website automatically. No setup needed.</span>
               <button className="tp-preview-cta-btn" onClick={function() { openTool("niquo"); }}>Try it now →</button>
             </div>
           </div>
-
-          {/* TOOL CARDS */}
           <div className="tp-grid">
             {Object.values(TOOLS).map(function(t) {
               return (
@@ -668,25 +729,13 @@ export default function ToolsPage() {
               );
             })}
           </div>
-
-          {/* MOBILE STATS */}
           <div className="tp-mobile-stats">
-            <div className="tp-mobile-stat">
-              <div className="tp-mobile-stat-num">Free</div>
-              <div className="tp-mobile-stat-label">No card needed</div>
-            </div>
+            <div className="tp-mobile-stat"><div className="tp-mobile-stat-num">Free</div><div className="tp-mobile-stat-label">No card needed</div></div>
             <div className="tp-mobile-stat-divider" />
-            <div className="tp-mobile-stat">
-              <div className="tp-mobile-stat-num">60s</div>
-              <div className="tp-mobile-stat-label">To first result</div>
-            </div>
+            <div className="tp-mobile-stat"><div className="tp-mobile-stat-num">60s</div><div className="tp-mobile-stat-label">To first result</div></div>
             <div className="tp-mobile-stat-divider" />
-            <div className="tp-mobile-stat">
-              <div className="tp-mobile-stat-num">Real</div>
-              <div className="tp-mobile-stat-label">Reads your business</div>
-            </div>
+            <div className="tp-mobile-stat"><div className="tp-mobile-stat-num">Real</div><div className="tp-mobile-stat-label">Reads your business</div></div>
           </div>
-
           <div className="tp-sp">
             <div className="tp-sp-avs">
               {["S","R","A","P","M"].map(function(l, i) {
@@ -710,7 +759,11 @@ export default function ToolsPage() {
               <div className="tp-chat-ico" style={{ background: tool.headerBg, border: "1px solid " + tool.borderFaint }}>{tool.icon}</div>
               <div className="tp-chat-inf">
                 <div className="tp-chat-name">{tool.name}</div>
-                <div className="tp-chat-desc">{tool.users}</div>
+                <div className="tp-chat-desc">
+                  {uploadedFileName ? (
+                    <span className="tp-uploaded-chip">📎 {uploadedFileName}</span>
+                  ) : tool.users}
+                </div>
               </div>
               {countdown ? (
                 <div className="tp-countdown">⚡ {countdown}</div>
@@ -718,6 +771,7 @@ export default function ToolsPage() {
                 <div className="tp-chat-live"><div className="tp-dot" />Live</div>
               )}
             </div>
+
             <div className="tp-msgs">
               {demoCompleted && currentTool === "niquo" && (
                 <div className="tp-banner" style={{ background:"rgba(34,211,238,0.05)", border:"1px solid rgba(34,211,238,0.2)" }}>
@@ -738,12 +792,13 @@ export default function ToolsPage() {
               {auditPdfReady && currentTool === "audit" && (
                 <div className="tp-banner" style={{ background:"rgba(251,146,60,0.06)", border:"1px solid rgba(251,146,60,0.25)" }}>
                   <div className="tp-banner-title" style={{ color:"#fb923c" }}>✅ Full Audit Complete</div>
-                  <div className="tp-banner-sub" style={{ color:"#666" }}>Your complete revenue audit is ready. Download it as a PDF to share with your team or act on later.</div>
+                  <div className="tp-banner-sub" style={{ color:"#666" }}>Your complete revenue audit is ready. Download it as a PDF.</div>
                   <button className="tp-pdf-btn" onClick={function() { downloadAuditPDF(currentMessages, auditUrl); }}>
                     ⬇️ Download Full Audit Report (PDF)
                   </button>
                 </div>
               )}
+
               <div className="tp-msg">
                 <div className="tp-av" style={{ background: tool.headerBg }}>{tool.icon}</div>
                 <div className="tp-msg-body">
@@ -762,7 +817,12 @@ export default function ToolsPage() {
                   </div>
                 </div>
               </div>
+
               {currentMessages.map(function(msg, i) {
+                // System notice — centre aligned info message
+                if (msg.role === "system-notice") {
+                  return <div key={i} className="tp-system-notice">{msg.content}</div>;
+                }
                 return (
                   <div key={i} className={"tp-msg" + (msg.role === "user" ? " user" : "")}>
                     <div className="tp-av" style={{ background: msg.role === "user" ? "rgba(255,255,255,0.03)" : tool.headerBg }}>
@@ -777,6 +837,7 @@ export default function ToolsPage() {
                   </div>
                 );
               })}
+
               {loading && (
                 <div className="tp-msg">
                   <div className="tp-av" style={{ background: tool.headerBg }}>{tool.icon}</div>
@@ -788,8 +849,51 @@ export default function ToolsPage() {
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* ── WEBSITE CONFIRMATION BANNER ── shown when Niquo finds a website */}
+            {pendingWebsiteUrl && currentTool === "niquo" && (
+              <div className="tp-confirm-banner">
+                <div className="tp-confirm-text">
+                  Found your website — <strong>{pendingWebsiteUrl}</strong>. Is this correct?
+                </div>
+                <div className="tp-confirm-btns">
+                  <button className="tp-confirm-yes" onClick={function() { confirmWebsite(true); }}>Yes ✓</button>
+                  <button className="tp-confirm-no" onClick={function() { confirmWebsite(false); }}>No</button>
+                </div>
+              </div>
+            )}
+
             <div className="tp-inp-area">
+              {/* Plus menu */}
+              {showPlusMenu && currentTool === "niquo" && (
+                <div className="tp-plus-menu">
+                  <div className="tp-plus-item" onClick={function() { setShowPlusMenu(false); fileInputRef.current && fileInputRef.current.click(); }}>
+                    <div className="tp-plus-item-icon" style={{ background: "rgba(251,146,60,0.1)" }}>📄</div>
+                    Upload PDF
+                  </div>
+                  <div className="tp-plus-item" onClick={function() { setShowPlusMenu(false); fileInputRef.current && fileInputRef.current.click(); }}>
+                    <div className="tp-plus-item-icon" style={{ background: "rgba(167,139,250,0.1)" }}>🖼️</div>
+                    Upload Image
+                  </div>
+                </div>
+              )}
+
               <div className="tp-inp-row">
+                {/* Plus button — only shown for Niquo */}
+                {currentTool === "niquo" && (
+                  <button
+                    className={"tp-plus-btn" + (showPlusMenu ? " active" : "")}
+                    onClick={function() { setShowPlusMenu(function(v) { return !v; }); }}
+                    title="Upload company document"
+                  >
+                    {uploadingFile ? (
+                      <span style={{ fontSize: 12, color: "#22d3ee" }}>...</span>
+                    ) : (
+                      <span style={{ fontSize: 20, lineHeight: 1 }}>+</span>
+                    )}
+                  </button>
+                )}
+
                 <div className="tp-inp-wrap" style={{ borderColor: input ? tool.color + "88" : "#1a1a1a" }}>
                   <textarea ref={textareaRef} className="tp-textarea" rows={1} value={input}
                     onChange={function(e) { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
@@ -821,16 +925,12 @@ export default function ToolsPage() {
                   onKeyDown={function(e) { if (e.key === "Enter") handleSubmit(); }}
                   autoComplete="email" autoFocus />
                 {emailError && <p className="tp-gate-err">⚠️ {emailError}</p>}
-                <button
-                  className="tp-gate-btn"
+                <button className="tp-gate-btn"
                   onClick={function() {
-                    if (typeof window !== "undefined" && window.fbq) {
-                      window.fbq("trackCustom", "ButtonClick", { button_name: "gate_continue" });
-                    }
+                    if (window.fbq) window.fbq("trackCustom", "ButtonClick", { button_name: "gate_continue" });
                     handleSubmit();
                   }}
-                  disabled={submitting}
-                >
+                  disabled={submitting}>
                   {submitting ? "One moment..." : "Continue →"}
                 </button>
                 <p className="tp-gate-fine">🔒 No spam. No credit card. Unsubscribe anytime.</p>
@@ -850,15 +950,9 @@ export default function ToolsPage() {
       {showUpgrade && tool && (
         <div className="tp-upgrade">
           <div className="tp-upgrade-modal">
-            <div style={{ fontSize:38, marginBottom:10 }}>
-              {currentTool === "niquo" ? "⚡" : currentTool === "audit" ? "🔍" : "🔥"}
-            </div>
-            <div className="tp-upgrade-title">
-              {currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Audit credits used up!" : "You've hit your free limit!"}
-            </div>
-            <div className="tp-upgrade-sub">
-              {currentTool === "niquo" ? "Ready to build this for your business?" : currentTool === "audit" ? "Want the full unlimited audit + all tools?" : "Upgrade to keep going."}
-            </div>
+            <div style={{ fontSize:38, marginBottom:10 }}>{currentTool === "niquo" ? "⚡" : currentTool === "audit" ? "🔍" : "🔥"}</div>
+            <div className="tp-upgrade-title">{currentTool === "niquo" ? "You've seen what Niquo can do!" : currentTool === "audit" ? "Audit credits used up!" : "You've hit your free limit!"}</div>
+            <div className="tp-upgrade-sub">{currentTool === "niquo" ? "Ready to build this for your business?" : currentTool === "audit" ? "Want unlimited audits + all tools?" : "Upgrade to keep going."}</div>
             <div className="tp-plans">
               {PLANS.map(function(plan) {
                 return (
@@ -869,21 +963,14 @@ export default function ToolsPage() {
                       <div className="tp-plan-name" style={{ color: plan.popular ? plan.color : "#fff" }}>{plan.name}</div>
                       <div className="tp-plan-price" style={{ color: plan.color }}>{plan.price}<span>{plan.period}</span></div>
                     </div>
-                    <div className="tp-plan-feats">
-                      {plan.features.map(function(f) { return <span key={f} className="tp-plan-feat">{f}</span>; })}
-                    </div>
+                    <div className="tp-plan-feats">{plan.features.map(function(f) { return <span key={f} className="tp-plan-feat">{f}</span>; })}</div>
                   </a>
                 );
               })}
             </div>
             <div className="tp-or">— or —</div>
-            <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="tp-cal-btn">
-              📅 Book a Free Strategy Call with Saurav
-            </a>
-            <button onClick={function() { setShowUpgrade(false); }}
-              style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:12, marginTop:12, display:"block", width:"100%" }}>
-              Close
-            </button>
+            <a href="https://calendly.com/unicostudioss/30min" target="_blank" rel="noopener noreferrer" className="tp-cal-btn">📅 Book a Free Strategy Call with Saurav</a>
+            <button onClick={function() { setShowUpgrade(false); }} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:12, marginTop:12, display:"block", width:"100%" }}>Close</button>
           </div>
         </div>
       )}
