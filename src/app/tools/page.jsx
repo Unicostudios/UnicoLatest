@@ -214,18 +214,134 @@ export default function ToolsPage() {
 
   useEffect(function() {
     logAnonymousVisit();
-    const saved = sessionStorage.getItem("unico_tools_email");
-    const savedTime = sessionStorage.getItem("unico_tools_time");
+
     const now = Date.now();
-    if (saved && savedTime && now - parseInt(savedTime) < 60 * 60 * 1000) {
-      setEmail(saved);
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+
+    // ── RESTORE EMAIL (extended to 24 hours) ──────────────────────────
+    const savedEmail = localStorage.getItem("unico_email");
+    const savedEmailTime = localStorage.getItem("unico_email_time");
+    if (savedEmail && savedEmailTime && now - parseInt(savedEmailTime) < ONE_DAY) {
+      setEmail(savedEmail);
     } else {
-      sessionStorage.removeItem("unico_tools_email");
-      sessionStorage.removeItem("unico_tools_time");
+      localStorage.removeItem("unico_email");
+      localStorage.removeItem("unico_email_time");
+    }
+
+    // ── RESTORE CONVERSATION STATE ────────────────────────────────────
+    // Each tool's messages, uploaded content, confirmed URL all persisted
+    try {
+      const persistedTime = localStorage.getItem("unico_persist_time");
+      if (persistedTime && now - parseInt(persistedTime) < ONE_DAY) {
+
+        // Restore messages for all tools
+        var restoredMessages = { content: [], code: [], niquo: [], audit: [] };
+        ["content", "code", "niquo", "audit"].forEach(function(toolId) {
+          var saved = localStorage.getItem("unico_msgs_" + toolId);
+          if (saved) restoredMessages[toolId] = JSON.parse(saved);
+        });
+        setMessages(restoredMessages);
+
+        // Restore uses count
+        var savedUses = localStorage.getItem("unico_uses");
+        if (savedUses) setUses(JSON.parse(savedUses));
+
+        // Restore Niquo-specific state
+        var savedUploadContent = localStorage.getItem("unico_upload_content");
+        var savedUploadName = localStorage.getItem("unico_upload_name");
+        var savedConfirmedUrl = localStorage.getItem("unico_confirmed_url");
+        var savedAuditUrl = localStorage.getItem("unico_audit_url");
+        if (savedUploadContent) setUploadedContent(savedUploadContent);
+        if (savedUploadName) setUploadedFileName(savedUploadName);
+        if (savedConfirmedUrl) setConfirmedUrl(savedConfirmedUrl);
+        if (savedAuditUrl) setAuditUrl(savedAuditUrl);
+
+        // ── RESTORE LAST OPEN TOOL + inject welcome back message ─────
+        var savedTool = localStorage.getItem("unico_last_tool");
+        if (savedTool && TOOLS[savedTool]) {
+          var toolMessages = restoredMessages[savedTool];
+          // Only restore if there's a real conversation (not just the greeting)
+          if (toolMessages && toolMessages.length > 0) {
+            setCurrentTool(savedTool);
+            setScreen("chat");
+
+            // Extract business name from conversation for personalised welcome
+            var businessContext = "";
+            var firstUserMsg = toolMessages.find(function(m) { return m.role === "user"; });
+            if (firstUserMsg) businessContext = firstUserMsg.content.slice(0, 60);
+
+            // Inject welcome back system notice
+            var welcomeMsg = {
+              role: "system-notice",
+              content: savedTool === "niquo"
+                ? "👋 Welcome back. Niquo remembers your conversation — picking up where you left off."
+                : savedTool === "audit"
+                ? "👋 Welcome back. Your audit session is restored."
+                : "👋 Welcome back. Your conversation is restored.",
+            };
+            setMessages(function(prev) {
+              return {
+                ...prev,
+                [savedTool]: [...(restoredMessages[savedTool] || []), welcomeMsg],
+              };
+            });
+          }
+        }
+      }
+    } catch (e) {
+      // localStorage parse error — start fresh
+      console.error("Persistence restore error:", e);
     }
   }, []);
 
   useScrollTracking();
+
+  // ── PERSIST MESSAGES whenever they change ────────────────────────────
+  useEffect(function() {
+    try {
+      ["content", "code", "niquo", "audit"].forEach(function(toolId) {
+        var msgs = messages[toolId];
+        if (msgs && msgs.length > 0) {
+          // Don't save system-notice messages — they're transient
+          var toSave = msgs.filter(function(m) { return m.role !== "system-notice"; });
+          localStorage.setItem("unico_msgs_" + toolId, JSON.stringify(toSave));
+        }
+      });
+      localStorage.setItem("unico_persist_time", Date.now().toString());
+    } catch (e) {}
+  }, [messages]);
+
+  // ── PERSIST USES COUNT ────────────────────────────────────────────────
+  useEffect(function() {
+    try { localStorage.setItem("unico_uses", JSON.stringify(uses)); } catch (e) {}
+  }, [uses]);
+
+  // ── PERSIST NIQUO SPECIFIC STATE ─────────────────────────────────────
+  useEffect(function() {
+    try {
+      if (uploadedContent) localStorage.setItem("unico_upload_content", uploadedContent);
+      if (uploadedFileName) localStorage.setItem("unico_upload_name", uploadedFileName);
+    } catch (e) {}
+  }, [uploadedContent, uploadedFileName]);
+
+  useEffect(function() {
+    try {
+      if (confirmedUrl) localStorage.setItem("unico_confirmed_url", confirmedUrl);
+    } catch (e) {}
+  }, [confirmedUrl]);
+
+  useEffect(function() {
+    try {
+      if (auditUrl) localStorage.setItem("unico_audit_url", auditUrl);
+    } catch (e) {}
+  }, [auditUrl]);
+
+  // ── PERSIST LAST OPEN TOOL ────────────────────────────────────────────
+  useEffect(function() {
+    try {
+      if (currentTool) localStorage.setItem("unico_last_tool", currentTool);
+    } catch (e) {}
+  }, [currentTool]);
 
   useEffect(function() {
     if (messagesEndRef.current) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -344,10 +460,33 @@ export default function ToolsPage() {
     setScreen("landing");
     setCurrentTool(null);
     setInput("");
-    setUploadedContent(null);
-    setUploadedFileName(null);
     setPendingWebsiteUrl(null);
-    setConfirmedUrl(null);
+    // Note: we do NOT clear uploadedContent, confirmedUrl, messages here
+    // Those persist so the user can return to any tool and continue
+    try { localStorage.removeItem("unico_last_tool"); } catch (e) {}
+  }
+
+  function clearToolHistory(toolId) {
+    // Explicit clear — only when user wants a fresh start
+    setMessages(function(prev) { return { ...prev, [toolId]: [] }; });
+    setUses(function(prev) { return { ...prev, [toolId]: 0 }; });
+    if (toolId === "niquo") {
+      setUploadedContent(null);
+      setUploadedFileName(null);
+      setConfirmedUrl(null);
+      try {
+        localStorage.removeItem("unico_upload_content");
+        localStorage.removeItem("unico_upload_name");
+        localStorage.removeItem("unico_confirmed_url");
+      } catch (e) {}
+    }
+    if (toolId === "audit") {
+      setAuditUrl("");
+      setAuditPart1Done(false);
+      setAuditPdfReady(false);
+      try { localStorage.removeItem("unico_audit_url"); } catch (e) {}
+    }
+    try { localStorage.removeItem("unico_msgs_" + toolId); } catch (e) {}
   }
 
   async function handleSubmit() {
@@ -361,6 +500,9 @@ export default function ToolsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailInput, phone: "", tool: currentTool ? "Gate: " + currentTool : "Tools Page", country: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown" }),
       });
+      localStorage.setItem("unico_email", emailInput);
+      localStorage.setItem("unico_email_time", Date.now().toString());
+      // Keep sessionStorage for backwards compatibility
       sessionStorage.setItem("unico_tools_email", emailInput);
       sessionStorage.setItem("unico_tools_time", Date.now().toString());
       setEmail(emailInput);
@@ -768,7 +910,16 @@ export default function ToolsPage() {
               {countdown ? (
                 <div className="tp-countdown">⚡ {countdown}</div>
               ) : (
-                <div className="tp-chat-live"><div className="tp-dot" />Live</div>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <button
+                    onClick={function() { if (window.confirm("Start a fresh conversation?")) { clearToolHistory(currentTool); setDemoCompleted(false); setAuditPart1Done(false); setAuditPdfReady(false); } }}
+                    style={{ background:"none", border:"none", cursor:"pointer", color:"#2a2a2a", fontSize:11, fontFamily:"'DM Sans',sans-serif", padding:0 }}
+                    title="Start fresh"
+                  >
+                    ↺ Fresh start
+                  </button>
+                  <div className="tp-chat-live"><div className="tp-dot" />Live</div>
+                </div>
               )}
             </div>
 
