@@ -661,7 +661,7 @@ export default function ToolsPage() {
         .tp-sp-avs{display:flex;}
         .tp-sp-av{width:28px;height:28px;border-radius:50%;border:2px solid #080808;margin-left:-7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
         .tp-mobile-hook{display:none;}
-        .tp-chat{max-width:720px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;min-height:calc(100vh - 65px);font-family:'DM Sans',sans-serif;}
+        .tp-chat{max-width:720px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;min-height:calc(100dvh - 65px);font-family:'DM Sans',sans-serif;}
         .tp-chat-win{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;flex:1;box-shadow:0 40px 100px rgba(0,0,0,0.7);}
         .tp-chat-hdr{padding:14px 18px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:12px;background:#111;}
         .tp-chat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
