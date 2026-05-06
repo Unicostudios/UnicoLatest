@@ -34,7 +34,7 @@ const TOOLS = {
     chipBg: "rgba(34,211,238,0.04)",
     chipBorder: "rgba(34,211,238,0.16)",
     // ── NEW SHORT GREETING ───────────────────────────────────────────────
-    greeting: "I'm Niquo. I'm about to become your best salesperson.\n\nWhat's your business?",
+    greeting: "I'm Niquo.\n\nWhat's your business?",
     chips: ["I run a real estate agency in Bangalore", "I have a D2C fashion brand", "I run a SaaS product for HR teams", "I own a restaurant chain"],
     mode: "niquo",
     limit: 50,
@@ -546,13 +546,16 @@ export default function ToolsPage() {
     if (window.gtag) window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
 
     try {
-      const history = [...messages[currentTool].filter(m => m.role === "user" || m.role === "assistant")];
+      // ── HISTORY FIX ─────────────────────────────────────────────────────
+      // Get all real messages BEFORE the current one (userMsg not yet in state)
+      // Do NOT slice — send the full history so Niquo never loses context
+      const history = messages[currentTool].filter(m => m.role === "user" || m.role === "assistant");
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: msg,
-          history: history.slice(0, -1),
+          history: history,
           mode: tool.mode,
           email: email,
           // ── Pass uploaded content and confirmed URL to backend ──────
@@ -828,7 +831,7 @@ export default function ToolsPage() {
             <div className="tp-preview-convo">
               <div className="tp-preview-msg">
                 <div className="tp-preview-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
-                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>I'm Niquo. I'm about to become your best salesperson. What's your business?</div>
+                <div className="tp-preview-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", borderRadius: "3px 10px 10px 10px" }}>I'm Niquo. What's your business?</div>
               </div>
               <div className="tp-preview-msg user">
                 <div className="tp-preview-av" style={{ background: "rgba(255,255,255,0.03)" }}>👤</div>
