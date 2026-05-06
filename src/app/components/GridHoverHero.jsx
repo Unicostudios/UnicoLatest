@@ -32,6 +32,13 @@ export default function GridHoverHero({ h1, p, btn, href, target, click }) {
 
   return (
     <div className="bg-neutral-950">
+      <style>{`
+        @media(max-width:640px){
+          .gh-badge{font-size:10px;padding:3px 10px;white-space:nowrap;}
+          .gh-trust{display:none;}
+          .gh-cta-row{flex-direction:column;gap:10px;align-items:center;}
+        }
+      `}</style>
       <div
         ref={scope}
         className="grid h-screen w-full grid-cols-[repeat(auto-fit,_minmax(75px,_1fr))] grid-rows-[repeat(auto-fit,_minmax(75px,_1fr))]"
@@ -65,7 +72,7 @@ export default function GridHoverHero({ h1, p, btn, href, target, click }) {
           textTransform: "uppercase",
         }}>
           <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#a78bfa", display: "inline-block" }} />
-          India's First AI-Powered Growth Agency
+          India's First AI-Powered Agency
         </div>
 
         <h1 className="font-montserrat-bold text-center text-3xl text-white sm:text-4xl md:text-5xl">
