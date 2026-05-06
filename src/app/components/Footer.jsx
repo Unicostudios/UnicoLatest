@@ -54,7 +54,7 @@ export const Footer = ({ theme }) => {
               title="Contact"
               links={[
                 {
-                  title: "WhatsApp: +91 81470 57109",
+                  title: "WhatsApp: +91 81470 57109",
                   href: "https://wa.me/918147057109?text=Hi%20Saurav%2C%20I%20saw%20Unico%20Studios%20and%20want%20to%20know%20more",
                   Icon: SiWhatsapp,
                 },
@@ -141,7 +141,7 @@ const GenericColumn = ({ title, links }) => {
           <Link
             key={l.title}
             href={l.href}
-            className="flex items-center break-all gap-1.5 transition-colors hover:text-indigo-600 hover:underline"
+            className="flex items-center break-all gap-1.5 transition-colors hover:text-indigo-600 hover:underline" style={{whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}
           >
             {l.Icon && <l.Icon />}
             {l.title}
