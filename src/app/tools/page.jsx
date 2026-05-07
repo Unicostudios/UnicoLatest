@@ -199,6 +199,7 @@ export default function ToolsPage() {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [simulationRunning, setSimulationRunning] = useState(false);
+  const simulationPausedRef = React.useRef(false);
   const [typingMessage, setTypingMessage] = useState(null); // {role, text, partial} — current typing message
   const [simulationDone, setSimulationDone] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
@@ -534,7 +535,7 @@ export default function ToolsPage() {
     const isSimTrigger = msg === "SIMULATE_SCENARIO";
     if (!msg || !currentTool) return;
     const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
-    if (!email && exchangesSoFar >= gateAfter) {
+    if (!email && exchangesSoFar >= gateAfter && !simulationRunning) {
       setShowGate(true);
       if (window.fbq) window.fbq("track", "ViewContent", { content_name: "Delayed Gate", content_category: currentTool });
       if (window.gtag) window.gtag("event", "gate_viewed", { event_category: "gate", event_label: currentTool });
@@ -595,9 +596,9 @@ export default function ToolsPage() {
         const simMessages = [];
         for (const line of lines) {
           if (line.startsWith("PROSPECT:")) {
-            simMessages.push({ role: "sim-prospect", content: line.replace(/^PROSPECT:s*/, "") });
+            simMessages.push({ role: "sim-prospect", content: line.replace(/^PROSPECT:\s*/, "") });
           } else if (line.startsWith("NIQUO:")) {
-            simMessages.push({ role: "assistant", content: line.replace(/^NIQUO:s*/, "") });
+            simMessages.push({ role: "assistant", content: line.replace(/^NIQUO:\s*/, "") });
           } else if (line.startsWith("Watch how") || line.startsWith("Right.")) {
             setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: line }] }; });
           }
@@ -612,8 +613,8 @@ export default function ToolsPage() {
           setTypingMessage({ role: msg.role, typing: true });
           // Typing speed: prospects type faster and more casually
           // Niquo types thoughtfully — slightly slower, more deliberate
-          const baseDelay = isProspect ? 55 : 70;
-          const typingIndicatorDuration = Math.min(words.length * baseDelay * 0.8, isProspect ? 900 : 1400);
+          const baseDelay = isProspect ? 80 : 110;
+          const typingIndicatorDuration = Math.min(words.length * baseDelay * 0.9, isProspect ? 1400 : 2000);
 
           setTimeout(() => {
             setTypingMessage(null);
@@ -670,7 +671,7 @@ export default function ToolsPage() {
           }
           const msg = msgs[index];
           // Gap between messages — feels like reading and thinking
-          const gapBefore = msg.role === 'sim-prospect' ? 400 : 600;
+          const gapBefore = msg.role === 'sim-prospect' ? 600 : 900;
           setTimeout(() => {
             typeMessage(msg, () => streamMessages(msgs, index + 1));
           }, index === 0 ? 300 : gapBefore);
@@ -678,9 +679,7 @@ export default function ToolsPage() {
 
         setSimulationRunning(true);
         streamMessages(simMessages, 0);
-        return; // don't fall through to normal handler
-
-        if (data.demoCompleted) setDemoCompleted(true);
+        return; // simulation handled — do not fall through
       }
 
       // Normal (non-simulation) reply
