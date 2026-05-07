@@ -1,66 +1,85 @@
+// src/app/api/leads/route.js
+// Replaces SheetDB entirely. Uses Supabase — free tier = 50,000 rows.
+
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 export async function POST(request) {
   try {
-    const { email, phone, tool, returning, country, status } = await request.json();
+    const body = await request.json();
+    const { email, phone, tool, country, status } = body;
+    const timestamp = new Date().toISOString();
 
-    // ─── ANONYMOUS VISITOR LOGGING ──────────────────────────────────────────
-    // WHY: We log every page visit even without email/phone so we can see
-    // real traffic volume in Google Sheets. Anonymous rows use "anonymous_visitor"
-    // as the email and "Visitor" as the status — easy to filter separately.
-    const isAnonymous = email === "anonymous_visitor";
-
-    if (!isAnonymous && !email) {
-      return Response.json({ error: "Missing fields" }, { status: 400 });
-    }
-    if (!isAnonymous && !tool) {
-      return Response.json({ error: "Missing fields" }, { status: 400 });
-    }
-
-    const date = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-
-    // Skip duplicate check for anonymous visitors — always log them
-    let isReturning = returning || false;
-    let existingPhone = "";
-    let existingCountry = country || "Unknown";
-
-    if (!isAnonymous) {
-      const checkRes = await fetch(
-        `${process.env.SHEETDB_API_URL}/search?Email=${encodeURIComponent(email)}`,
-        { headers: { "Accept": "application/json" } }
-      );
-      const existing = await checkRes.json();
-      isReturning = returning || (Array.isArray(existing) && existing.length > 0);
-      existingPhone = isReturning ? (existing[0]?.Phone || "Returning") : (phone || "Not provided");
-      existingCountry = isReturning ? (existing[0]?.Country || "Unknown") : (country || "Unknown");
+    // Anonymous visit or tool click — goes to visitors table
+    if (!email || email === "anonymous_visitor") {
+      await supabase.from("visitors").insert([{
+        type: status || "Visitor",
+        tool: tool || null,
+        country: country || null,
+        created_at: timestamp,
+      }]);
+      return Response.json({ ok: true });
     }
 
-    const rowData = {
-      Email: email,
-      Phone: isAnonymous ? "" : existingPhone,
-      Tool: tool || "Page Visit",
-      Date: date,
-      // ─── STATUS FIELD ──────────────────────────────────────────────────
-      // WHY: This lets you filter your sheet easily:
-      // "Visitor" = anonymous, just landed
-      // "New Lead" = filled the gate for the first time
-      // "Return Visit" = came back after filling gate before
-      Status: isAnonymous ? "Visitor" : (status || (isReturning ? "Return Visit" : "New Lead")),
-      "Demo Completed": "No",
-      Country: isAnonymous ? (country || "Unknown") : existingCountry,
-    };
+    // Real email — upsert to leads table (never duplicate same email)
+    await supabase.from("leads").upsert([{
+      email: email.toLowerCase().trim(),
+      phone: phone || null,
+      tool: tool || null,
+      country: country || null,
+      status: status || "New Lead",
+      demo_completed: false,
+      updated_at: timestamp,
+    }], { onConflict: "email" });
 
-    console.log("Saving:", JSON.stringify(rowData));
+    return Response.json({ ok: true });
 
-    const sheetRes = await fetch(process.env.SHEETDB_API_URL, {
-      method: "POST",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify({ data: [rowData] }),
-    });
-    const result = await sheetRes.json();
-    console.log("SheetDB:", JSON.stringify(result));
+  } catch (err) {
+    console.error("Leads POST error:", err);
+    return Response.json({ error: "Server error" }, { status: 500 });
+  }
+}
 
-    return Response.json({ success: true, isReturning });
-  } catch (error) {
-    console.error("Error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+export async function PATCH(request) {
+  try {
+    const { email, demoCompleted, industry } = await request.json();
+    if (!email) return Response.json({ error: "Email required" }, { status: 400 });
+
+    const updateData = { updated_at: new Date().toISOString() };
+    if (demoCompleted) { updateData.demo_completed = true; updateData.status = "Demo Completed"; }
+    if (industry) updateData.industry = industry;
+
+    await supabase.from("leads").update(updateData).eq("email", email.toLowerCase().trim());
+    return Response.json({ ok: true });
+
+  } catch (err) {
+    console.error("Leads PATCH error:", err);
+    return Response.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function GET(request) {
+  try {
+    const adminKey = request.headers.get("x-admin-key");
+    if (adminKey !== process.env.ADMIN_SECRET_KEY) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const type = new URL(request.url).searchParams.get("type") || "leads";
+
+    if (type === "visitors") {
+      const { data } = await supabase.from("visitors").select("*").order("created_at", { ascending: false }).limit(500);
+      return Response.json({ data });
+    }
+
+    const { data } = await supabase.from("leads").select("*").order("updated_at", { ascending: false });
+    return Response.json({ data });
+
+  } catch (err) {
+    return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
