@@ -683,18 +683,19 @@ export default function ToolsPage() {
 
             const typeNextWord = () => {
               if (wordIndex >= words.length) {
-                // Message complete — add to messages list
-                setMessages(function(prev) {
-                  return { ...prev, [currentTool]: [...prev[currentTool], msg] };
-                });
-                onComplete();
+                // Clear partial FIRST to avoid overlap, then commit message
+                setTypingMessage(null);
+                setTimeout(function() {
+                  setMessages(function(prev) {
+                    return { ...prev, [currentTool]: [...prev[currentTool], msg] };
+                  });
+                  onComplete();
+                }, 60);
                 return;
               }
               current += (wordIndex > 0 ? ' ' : '') + words[wordIndex];
               wordIndex++;
-              // Show partial message as it types
               setTypingMessage({ role: msg.role, typing: false, partial: current, isProspect });
-              // Variable speed — slightly random to feel human
               const wordDelay = baseDelay + (Math.random() * 25 - 12);
               setTimeout(typeNextWord, wordDelay);
             };
@@ -1114,44 +1115,11 @@ export default function ToolsPage() {
                 <div className="tp-countdown">⚡ {countdown}</div>
               ) : (
                 <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                  {/* Take control button — shown during simulation */}
+                  {/* Simulation status shown in header */}
                   {simulationRunning && currentTool === "niquo" && (
-                    <button
-                      onClick={takeControl}
-                      style={{
-                        background: "rgba(34,211,238,0.08)",
-                        border: "1px solid rgba(34,211,238,0.3)",
-                        borderRadius: 7,
-                        cursor: "pointer",
-                        color: "#22d3ee",
-                        fontSize: 11,
-                        fontFamily: "'Syne',sans-serif",
-                        fontWeight: 600,
-                        padding: "3px 10px",
-                        animation: "tpblink 2s ease infinite"
-                      }}
-                    >
-                      ✋ Take control
-                    </button>
-                  )}
-                  {/* Resume button — shown when manual mode active and pending messages exist */}
-                  {manualMode && pendingSimMessages.length > 0 && currentTool === "niquo" && (
-                    <button
-                      onClick={resumeSimulation}
-                      style={{
-                        background: "rgba(167,139,250,0.08)",
-                        border: "1px solid rgba(167,139,250,0.3)",
-                        borderRadius: 7,
-                        cursor: "pointer",
-                        color: "#a78bfa",
-                        fontSize: 11,
-                        fontFamily: "'Syne',sans-serif",
-                        fontWeight: 600,
-                        padding: "3px 10px"
-                      }}
-                    >
-                      ▶ Resume sim
-                    </button>
+                    <div style={{ fontSize:10, color:"#22d3ee", fontWeight:600, letterSpacing:"0.05em", animation:"tpblink 2s ease infinite" }}>
+                      ⚡ LIVE
+                    </div>
                   )}
                   <button
                     onClick={function() {
@@ -1437,6 +1405,49 @@ export default function ToolsPage() {
                 <div className="tp-confirm-btns">
                   <button className="tp-confirm-yes" onClick={function() { confirmWebsite(true); }}>Yes ✓</button>
                   <button className="tp-confirm-no" onClick={function() { confirmWebsite(false); }}>No</button>
+                </div>
+              </div>
+            )}
+
+            {/* ── TAKE CONTROL / RESUME — floating above input, always visible ── */}
+            {currentTool === "niquo" && (simulationRunning || (manualMode && pendingSimMessages.length > 0)) && (
+              <div style={{
+                padding: "8px 14px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderTop: "1px solid #111",
+                background: "#080808"
+              }}>
+                {simulationRunning && (
+                  <div style={{ fontSize:11, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>
+                    Watching simulation — or jump in anytime
+                  </div>
+                )}
+                {manualMode && pendingSimMessages.length > 0 && (
+                  <div style={{ fontSize:11, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>
+                    ✋ You're in control
+                  </div>
+                )}
+                <div style={{ display:"flex", gap:6 }}>
+                  {simulationRunning && (
+                    <button onClick={takeControl} style={{
+                      background:"rgba(34,211,238,0.08)", border:"1px solid rgba(34,211,238,0.35)",
+                      borderRadius:8, cursor:"pointer", color:"#22d3ee", fontSize:12,
+                      fontFamily:"'Syne',sans-serif", fontWeight:700, padding:"5px 14px"
+                    }}>
+                      ✋ Take control
+                    </button>
+                  )}
+                  {manualMode && pendingSimMessages.length > 0 && (
+                    <button onClick={resumeSimulation} style={{
+                      background:"rgba(167,139,250,0.08)", border:"1px solid rgba(167,139,250,0.35)",
+                      borderRadius:8, cursor:"pointer", color:"#a78bfa", fontSize:12,
+                      fontFamily:"'Syne',sans-serif", fontWeight:700, padding:"5px 14px"
+                    }}>
+                      ▶ Resume simulation
+                    </button>
+                  )}
                 </div>
               </div>
             )}
