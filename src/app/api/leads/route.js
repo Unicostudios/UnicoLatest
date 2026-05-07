@@ -1,12 +1,14 @@
 // src/app/api/leads/route.js
-// Replaces SheetDB entirely. Uses Supabase — free tier = 50,000 rows.
-
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+console.log("Supabase URL exists:", !!supabaseUrl);
+console.log("Supabase Key exists:", !!supabaseKey);
+console.log("Supabase Key prefix:", supabaseKey ? supabaseKey.substring(0, 15) : "MISSING");
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request) {
   try {
@@ -14,19 +16,26 @@ export async function POST(request) {
     const { email, phone, tool, country, status } = body;
     const timestamp = new Date().toISOString();
 
-    // Anonymous visit or tool click — goes to visitors table
+    console.log("POST /api/leads called:", { email, tool, status });
+
     if (!email || email === "anonymous_visitor") {
-      await supabase.from("visitors").insert([{
+      const { data, error } = await supabase.from("visitors").insert([{
         type: status || "Visitor",
         tool: tool || null,
         country: country || null,
         created_at: timestamp,
       }]);
+
+      if (error) {
+        console.error("SUPABASE VISITORS ERROR:", JSON.stringify(error));
+        return Response.json({ ok: false, error: error.message }, { status: 500 });
+      }
+
+      console.log("Visitor inserted successfully");
       return Response.json({ ok: true });
     }
 
-    // Real email — upsert to leads table (never duplicate same email)
-    await supabase.from("leads").upsert([{
+    const { data, error } = await supabase.from("leads").upsert([{
       email: email.toLowerCase().trim(),
       phone: phone || null,
       tool: tool || null,
@@ -36,10 +45,16 @@ export async function POST(request) {
       updated_at: timestamp,
     }], { onConflict: "email" });
 
+    if (error) {
+      console.error("SUPABASE LEADS ERROR:", JSON.stringify(error));
+      return Response.json({ ok: false, error: error.message }, { status: 500 });
+    }
+
+    console.log("Lead upserted successfully");
     return Response.json({ ok: true });
 
   } catch (err) {
-    console.error("Leads POST error:", err);
+    console.error("Leads POST catch error:", err.message);
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -53,11 +68,12 @@ export async function PATCH(request) {
     if (demoCompleted) { updateData.demo_completed = true; updateData.status = "Demo Completed"; }
     if (industry) updateData.industry = industry;
 
-    await supabase.from("leads").update(updateData).eq("email", email.toLowerCase().trim());
-    return Response.json({ ok: true });
+    const { error } = await supabase.from("leads").update(updateData).eq("email", email.toLowerCase().trim());
+    if (error) console.error("SUPABASE PATCH ERROR:", JSON.stringify(error));
 
+    return Response.json({ ok: true });
   } catch (err) {
-    console.error("Leads PATCH error:", err);
+    console.error("Leads PATCH error:", err.message);
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -72,14 +88,17 @@ export async function GET(request) {
     const type = new URL(request.url).searchParams.get("type") || "leads";
 
     if (type === "visitors") {
-      const { data } = await supabase.from("visitors").select("*").order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("visitors").select("*").order("created_at", { ascending: false }).limit(500);
+      if (error) console.error("SUPABASE GET VISITORS ERROR:", JSON.stringify(error));
       return Response.json({ data });
     }
 
-    const { data } = await supabase.from("leads").select("*").order("updated_at", { ascending: false });
+    const { data, error } = await supabase.from("leads").select("*").order("updated_at", { ascending: false });
+    if (error) console.error("SUPABASE GET LEADS ERROR:", JSON.stringify(error));
     return Response.json({ data });
 
   } catch (err) {
+    console.error("Leads GET error:", err.message);
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
