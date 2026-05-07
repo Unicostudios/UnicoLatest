@@ -199,6 +199,7 @@ export default function ToolsPage() {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [simulationRunning, setSimulationRunning] = useState(false);
+  const [typingMessage, setTypingMessage] = useState(null); // {role, text, partial} — current typing message
   const [simulationDone, setSimulationDone] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
   const [scenariosRun, setScenariosRun] = useState(new Set());
@@ -584,7 +585,7 @@ export default function ToolsPage() {
       const reply = data.reply || "";
 
       // ── SIMULATION PARSER ────────────────────────────────────────────
-      if (currentTool === "niquo" && reply.includes("END_SIMULATION")) {
+      if (currentTool === "niquo" && (reply.includes("END_SIMULATION") || data.hasSimulation)) {
         const parts = reply.split("END_SIMULATION");
         const simBlock = parts[0];
         const afterSim = parts[1] ? parts[1].trim() : "";
@@ -602,28 +603,77 @@ export default function ToolsPage() {
           }
         }
 
-        // Stream messages with CORRECT sequential delays
-        // Each message waits for previous to complete before scheduling next
-        const streamMessages = async (msgs, index) => {
+        // ── TYPEWRITER ENGINE ─────────────────────────────────────────
+        // Shows typing indicator, then types each word one by one
+        const typeMessage = (msg, onComplete) => {
+          const words = msg.content.split(' ');
+          const isProspect = msg.role === 'sim-prospect';
+          // Show typing indicator first
+          setTypingMessage({ role: msg.role, typing: true });
+          // Typing speed: prospects type faster and more casually
+          // Niquo types thoughtfully — slightly slower, more deliberate
+          const baseDelay = isProspect ? 55 : 70;
+          const typingIndicatorDuration = Math.min(words.length * baseDelay * 0.8, isProspect ? 900 : 1400);
+
+          setTimeout(() => {
+            setTypingMessage(null);
+            // Now type the message word by word
+            let current = '';
+            let wordIndex = 0;
+
+            const typeNextWord = () => {
+              if (wordIndex >= words.length) {
+                // Message complete — add to messages list
+                setMessages(function(prev) {
+                  return { ...prev, [currentTool]: [...prev[currentTool], msg] };
+                });
+                onComplete();
+                return;
+              }
+              current += (wordIndex > 0 ? ' ' : '') + words[wordIndex];
+              wordIndex++;
+              // Show partial message as it types
+              setTypingMessage({ role: msg.role, typing: false, partial: current, isProspect });
+              // Variable speed — slightly random to feel human
+              const wordDelay = baseDelay + (Math.random() * 25 - 12);
+              setTimeout(typeNextWord, wordDelay);
+            };
+            typeNextWord();
+          }, typingIndicatorDuration);
+        };
+
+        const streamMessages = (msgs, index) => {
           if (index >= msgs.length) {
-            // All sim messages done — show after-sim commentary
+            setTypingMessage(null);
+            // All sim messages done — type the after-sim commentary
             if (afterSim) {
-              await new Promise(r => setTimeout(r, 1200));
-              setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: afterSim }] }; });
+              setTimeout(() => {
+                typeMessage({ role: 'assistant', content: afterSim }, () => {
+                  setTypingMessage(null);
+                  setSimulationRunning(false);
+                  setSimulationDone(true);
+                  if (activeScenario) {
+                    setScenariosRun(function(prev) { const n = new Set(prev); n.add(activeScenario); return n; });
+                  }
+                  setLoading(false);
+                });
+              }, 600);
+            } else {
+              setSimulationRunning(false);
+              setSimulationDone(true);
+              if (activeScenario) {
+                setScenariosRun(function(prev) { const n = new Set(prev); n.add(activeScenario); return n; });
+              }
+              setLoading(false);
             }
-            setSimulationRunning(false);
-            setSimulationDone(true);
-            if (activeScenario) {
-              setScenariosRun(function(prev) { const n = new Set(prev); n.add(activeScenario); return n; });
-            }
-            setLoading(false);
             return;
           }
           const msg = msgs[index];
-          const delay = msg.role === "sim-prospect" ? 700 : 1100;
-          await new Promise(r => setTimeout(r, delay));
-          setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], msg] }; });
-          streamMessages(msgs, index + 1);
+          // Gap between messages — feels like reading and thinking
+          const gapBefore = msg.role === 'sim-prospect' ? 400 : 600;
+          setTimeout(() => {
+            typeMessage(msg, () => streamMessages(msgs, index + 1));
+          }, index === 0 ? 300 : gapBefore);
         };
 
         setSimulationRunning(true);
@@ -751,6 +801,8 @@ export default function ToolsPage() {
         .tp-msg.user .tp-bubble{border-radius:12px 4px 12px 12px;color:#ddd;}
         .tp-system-notice{font-size:11px;color:#333;text-align:center;padding:6px 12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid #1a1a1a;margin:0 auto;}
         .tp-sim-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#333;margin-bottom:3px;}
+        .tp-typing-cursor{display:inline-block;width:2px;height:13px;background:currentColor;margin-left:2px;vertical-align:text-bottom;animation:tpblink 0.7s ease infinite;}
+        .tp-bubble-typing{opacity:0.85;}
         .tp-sim-banner{background:rgba(34,211,238,0.03);border:1px solid rgba(34,211,238,0.12);border-radius:10px;padding:8px 14px;margin:0 18px 10px;font-size:11px;color:#444;text-align:center;letter-spacing:0.02em;}
         .tp-scenarios{padding:12px 16px;border-top:1px solid #111;}
         .tp-scenarios-label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:#333;margin-bottom:10px;}
@@ -1107,7 +1159,39 @@ export default function ToolsPage() {
                 );
               })}
 
-              {loading && (
+              {/* ── TYPEWRITER: show partial typed message OR typing dots ── */}
+              {typingMessage && (
+                <div className={"tp-msg" + (typingMessage.isProspect ? " user" : "")}>
+                  <div className="tp-av" style={{
+                    background: typingMessage.isProspect ? "rgba(251,146,60,0.1)" : tool.headerBg,
+                    border: typingMessage.isProspect ? "1px solid rgba(251,146,60,0.2)" : "none"
+                  }}>
+                    {typingMessage.isProspect ? "👤" : tool.icon}
+                  </div>
+                  <div className="tp-msg-body" style={typingMessage.isProspect ? { alignItems: "flex-end" } : {}}>
+                    <div className="tp-msg-name" style={{ color: typingMessage.isProspect ? "#fb923c" : "" }}>
+                      {typingMessage.isProspect ? "Prospect" : tool.shortName}
+                    </div>
+                    {typingMessage.typing ? (
+                      <div className="tp-bubble">
+                        <div className="tp-typing"><span /><span /><span /></div>
+                      </div>
+                    ) : (
+                      <div className={"tp-bubble tp-bubble-typing" + (typingMessage.isProspect ? "" : "")}
+                        style={typingMessage.isProspect ? {
+                          background: "rgba(251,146,60,0.05)",
+                          borderColor: "rgba(251,146,60,0.2)",
+                          color: "#ddd",
+                          borderRadius: "12px 4px 12px 12px"
+                        } : {}}>
+                        {typingMessage.partial}<span className="tp-typing-cursor" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {loading && !simulationRunning && (
                 <div className="tp-msg">
                   <div className="tp-av" style={{ background: tool.headerBg }}>{tool.icon}</div>
                   <div className="tp-msg-body">
