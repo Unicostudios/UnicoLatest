@@ -200,6 +200,9 @@ export default function ToolsPage() {
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [simulationRunning, setSimulationRunning] = useState(false);
   const simulationPausedRef = React.useRef(false);
+  const [manualMode, setManualMode] = useState(false); // founder took control
+  const [pendingSimMessages, setPendingSimMessages] = useState([]); // remaining sim messages for resume
+  const simAbortRef = React.useRef(false); // signal to abort running simulation
   const [typingMessage, setTypingMessage] = useState(null); // {role, text, partial} — current typing message
   const [simulationDone, setSimulationDone] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
@@ -498,6 +501,62 @@ export default function ToolsPage() {
     try { localStorage.removeItem("unico_msgs_" + toolId); } catch (e) {}
   }
 
+  function takeControl() {
+    simAbortRef.current = true; // signal running simulation to stop
+    setSimulationRunning(false);
+    setManualMode(true);
+    setTypingMessage(null);
+    // Focus input
+    setTimeout(function() { if (textareaRef.current) textareaRef.current.focus(); }, 100);
+  }
+
+  function resumeSimulation() {
+    if (pendingSimMessages.length === 0) return;
+    setManualMode(false);
+    simAbortRef.current = false;
+    setSimulationRunning(true);
+    // Re-run the remaining messages through the typewriter
+    // We need to trigger this through a mini-simulation
+    const remaining = pendingSimMessages;
+    setPendingSimMessages([]);
+
+    const typeMessage = (msg, onComplete) => {
+      const words = msg.content.split(' ');
+      const isProspect = msg.role === 'sim-prospect';
+      setTypingMessage({ role: msg.role, typing: true });
+      const baseDelay = isProspect ? 80 : 110;
+      const typingIndicatorDuration = Math.min(words.length * baseDelay * 0.9, isProspect ? 1400 : 2000);
+      setTimeout(() => {
+        setTypingMessage(null);
+        let current = '';
+        let wordIndex = 0;
+        const typeNextWord = () => {
+          if (simAbortRef.current) { setMessages(function(prev) { return { ...prev, niquo: [...prev.niquo, msg] }; }); onComplete(); return; }
+          if (wordIndex >= words.length) { setMessages(function(prev) { return { ...prev, niquo: [...prev.niquo, msg] }; }); onComplete(); return; }
+          current += (wordIndex > 0 ? ' ' : '') + words[wordIndex];
+          wordIndex++;
+          setTypingMessage({ role: msg.role, typing: false, partial: current, isProspect });
+          setTimeout(typeNextWord, baseDelay + (Math.random() * 25 - 12));
+        };
+        typeNextWord();
+      }, typingIndicatorDuration);
+    };
+
+    const streamRemaining = (msgs, index) => {
+      if (simAbortRef.current) { setPendingSimMessages(msgs.slice(index)); setSimulationRunning(false); return; }
+      if (index >= msgs.length) {
+        setTypingMessage(null);
+        setSimulationRunning(false);
+        setSimulationDone(true);
+        return;
+      }
+      const msg = msgs[index];
+      const gapBefore = msg.role === 'sim-prospect' ? 600 : 900;
+      setTimeout(() => { typeMessage(msg, () => streamRemaining(msgs, index + 1)); }, index === 0 ? 300 : gapBefore);
+    };
+    streamRemaining(remaining, 0);
+  }
+
   async function handleSubmit() {
     setEmailError("");
     if (!emailInput) { setEmailError("Please enter your email address"); return; }
@@ -644,6 +703,13 @@ export default function ToolsPage() {
         };
 
         const streamMessages = (msgs, index) => {
+          if (simAbortRef.current) {
+            // Simulation was aborted — save remaining messages for potential resume
+            setPendingSimMessages(msgs.slice(index));
+            setSimulationRunning(false);
+            setLoading(false);
+            return;
+          }
           if (index >= msgs.length) {
             setTypingMessage(null);
             // All sim messages done — type the after-sim commentary
@@ -677,6 +743,9 @@ export default function ToolsPage() {
           }, index === 0 ? 300 : gapBefore);
         };
 
+        simAbortRef.current = false;
+        setPendingSimMessages([]);
+        setManualMode(false);
         setSimulationRunning(true);
         streamMessages(simMessages, 0);
         return; // simulation handled — do not fall through
@@ -1044,13 +1113,54 @@ export default function ToolsPage() {
               {countdown ? (
                 <div className="tp-countdown">⚡ {countdown}</div>
               ) : (
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  {/* Take control button — shown during simulation */}
+                  {simulationRunning && currentTool === "niquo" && (
+                    <button
+                      onClick={takeControl}
+                      style={{
+                        background: "rgba(34,211,238,0.08)",
+                        border: "1px solid rgba(34,211,238,0.3)",
+                        borderRadius: 7,
+                        cursor: "pointer",
+                        color: "#22d3ee",
+                        fontSize: 11,
+                        fontFamily: "'Syne',sans-serif",
+                        fontWeight: 600,
+                        padding: "3px 10px",
+                        animation: "tpblink 2s ease infinite"
+                      }}
+                    >
+                      ✋ Take control
+                    </button>
+                  )}
+                  {/* Resume button — shown when manual mode active and pending messages exist */}
+                  {manualMode && pendingSimMessages.length > 0 && currentTool === "niquo" && (
+                    <button
+                      onClick={resumeSimulation}
+                      style={{
+                        background: "rgba(167,139,250,0.08)",
+                        border: "1px solid rgba(167,139,250,0.3)",
+                        borderRadius: 7,
+                        cursor: "pointer",
+                        color: "#a78bfa",
+                        fontSize: 11,
+                        fontFamily: "'Syne',sans-serif",
+                        fontWeight: 600,
+                        padding: "3px 10px"
+                      }}
+                    >
+                      ▶ Resume sim
+                    </button>
+                  )}
                   <button
                     onClick={function() {
                       clearToolHistory(currentTool);
                       setDemoCompleted(false);
                       setAuditPart1Done(false);
                       setAuditPdfReady(false);
+                      setManualMode(false);
+                      setPendingSimMessages([]);
                     }}
                     style={{
                       background: "rgba(255,255,255,0.03)",
@@ -1061,16 +1171,13 @@ export default function ToolsPage() {
                       fontSize: 11,
                       fontFamily: "'DM Sans',sans-serif",
                       padding: "3px 9px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
                       transition: "all 0.15s"
                     }}
                     onMouseEnter={function(e) { e.currentTarget.style.color = "#ccc"; e.currentTarget.style.borderColor = "#333"; }}
                     onMouseLeave={function(e) { e.currentTarget.style.color = "#444"; e.currentTarget.style.borderColor = "#1e1e1e"; }}
                     title="Clear chat and start fresh"
                   >
-                    ↺ Clear chat
+                    ↺ Clear
                   </button>
                   <div className="tp-chat-live"><div className="tp-dot" />Live</div>
                 </div>
@@ -1294,6 +1401,33 @@ export default function ToolsPage() {
               </div>
             )}
 
+            {/* ── MANUAL MODE BANNER ── */}
+            {manualMode && currentTool === "niquo" && (
+              <div style={{
+                margin: "0 16px 8px",
+                padding: "8px 14px",
+                background: "rgba(167,139,250,0.04)",
+                border: "1px solid rgba(167,139,250,0.2)",
+                borderRadius: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12
+              }}>
+                <div style={{ fontSize: 12, color: "#666", fontFamily: "'DM Sans',sans-serif" }}>
+                  ✋ <span style={{ color: "#a78bfa", fontWeight: 600 }}>You're in control.</span> Type a prospect message and Niquo will respond live.
+                </div>
+                {pendingSimMessages.length > 0 && (
+                  <button
+                    onClick={resumeSimulation}
+                    style={{ background:"none", border:"none", cursor:"pointer", color:"#a78bfa", fontSize:11, fontFamily:"'Syne',sans-serif", fontWeight:600, whiteSpace:"nowrap" }}
+                  >
+                    ▶ Resume sim →
+                  </button>
+                )}
+              </div>
+            )}
+
             {/* ── WEBSITE CONFIRMATION BANNER ── shown when Niquo finds a website */}
             {pendingWebsiteUrl && currentTool === "niquo" && (
               <div className="tp-confirm-banner">
@@ -1338,10 +1472,13 @@ export default function ToolsPage() {
                   </button>
                 )}
 
-                <div className="tp-inp-wrap" style={{ borderColor: input ? tool.color + "88" : "#1a1a1a" }}>
+                <div className="tp-inp-wrap" style={{ borderColor: input ? tool.color + "88" : "#1a1a1a", opacity: (simulationRunning && !manualMode) ? 0.3 : 1 }}>
                   <textarea ref={textareaRef} className="tp-textarea" rows={1} value={input}
                     onChange={function(e) { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
-                    onKeyDown={handleKeyDown} placeholder="Type your message…" />
+                    onKeyDown={handleKeyDown}
+                    placeholder={simulationRunning && !manualMode ? "Simulation running… tap ✋ Take control to type" : manualMode ? "Type a prospect message…" : "Type your message…"}
+                    disabled={simulationRunning && !manualMode}
+                  />
                 </div>
                 <button className="tp-send" style={{ background: tool.color }} onClick={function() { sendMessage(); }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
