@@ -471,13 +471,16 @@ export default function ToolsPage() {
   }
 
   function clearToolHistory(toolId) {
-    // Explicit clear — only when user wants a fresh start
     setMessages(function(prev) { return { ...prev, [toolId]: [] }; });
     setUses(function(prev) { return { ...prev, [toolId]: 0 }; });
     if (toolId === "niquo") {
       setUploadedContent(null);
       setUploadedFileName(null);
       setConfirmedUrl(null);
+      setSimulationRunning(false);
+      setSimulationDone(false);
+      setActiveScenario(null);
+      setScenariosRun(new Set());
       try {
         localStorage.removeItem("unico_upload_content");
         localStorage.removeItem("unico_upload_name");
@@ -526,6 +529,8 @@ export default function ToolsPage() {
     // If this is a scenario run, inject the scenario tag
     const currentScenario = scenarioOverride || activeScenario;
     const scenarioTag = currentScenario ? " SCENARIO " + currentScenario : "";
+    // For SIMULATE_SCENARIO messages, don't show as user bubble
+    const isSimTrigger = msg === "SIMULATE_SCENARIO";
     if (!msg || !currentTool) return;
     const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
     if (!email && exchangesSoFar >= gateAfter) {
@@ -540,8 +545,8 @@ export default function ToolsPage() {
       if (urlMatch) setAuditUrl(urlMatch[0]);
     }
 
-    // Don't show confirmation message as a user bubble
-    if (!isConfirmation) {
+    // Don't show confirmation or scenario triggers as user bubbles
+    if (!isConfirmation && !isSimTrigger) {
       const userMsg = { role: "user", content: msg };
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], userMsg] }; });
     }
@@ -549,14 +554,19 @@ export default function ToolsPage() {
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
-    setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
+    if (!isSimTrigger) {
+      setUses(function(prev) { return { ...prev, [currentTool]: prev[currentTool] + 1 }; });
+    }
     if (window.gtag) window.gtag("event", "message_sent", { event_category: "tools", event_label: currentTool, value: uses[currentTool] + 1 });
 
     try {
       // ── HISTORY FIX ─────────────────────────────────────────────────────
       // Get all real messages BEFORE the current one (userMsg not yet in state)
       // Do NOT slice — send the full history so Niquo never loses context
-      const history = messages[currentTool].filter(m => m.role === "user" || m.role === "assistant");
+      // For scenario triggers, only send the business context (first few messages) not full history
+      // This prevents confusion from previous simulation content
+      const allHistory = messages[currentTool].filter(m => m.role === "user" || m.role === "assistant");
+      const history = isSimTrigger ? allHistory.slice(0, 4) : allHistory;
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -574,62 +584,53 @@ export default function ToolsPage() {
       const reply = data.reply || "";
 
       // ── SIMULATION PARSER ────────────────────────────────────────────
-      // If reply contains END_SIMULATION, parse and stream it message by message
       if (currentTool === "niquo" && reply.includes("END_SIMULATION")) {
-        setSimulationRunning(true);
         const parts = reply.split("END_SIMULATION");
         const simBlock = parts[0];
         const afterSim = parts[1] ? parts[1].trim() : "";
 
-        // Parse simulation into alternating messages
-        const lines = simBlock.split("\n").filter(l => l.trim());
+        // Parse lines into messages
+        const lines = simBlock.split("\n").map(l => l.trim()).filter(Boolean);
         const simMessages = [];
         for (const line of lines) {
           if (line.startsWith("PROSPECT:")) {
-            simMessages.push({ role: "prospect", content: line.replace("PROSPECT:", "").trim() });
+            simMessages.push({ role: "sim-prospect", content: line.replace(/^PROSPECT:s*/, "") });
           } else if (line.startsWith("NIQUO:")) {
-            simMessages.push({ role: "assistant", content: line.replace("NIQUO:", "").trim() });
-          } else if (line.startsWith("Watch how")) {
-            // The intro line — show as assistant message first
+            simMessages.push({ role: "assistant", content: line.replace(/^NIQUO:s*/, "") });
+          } else if (line.startsWith("Watch how") || line.startsWith("Right.")) {
             setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: line }] }; });
           }
         }
 
-        // Stream simulation messages with typing delays
-        let delay = 800;
-        for (const simMsg of simMessages) {
-          await new Promise(resolve => {
-            setTimeout(() => {
-              if (simMsg.role === "prospect") {
-                // Show prospect messages as special sim-prospect role
-                setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "sim-prospect", content: simMsg.content }] }; });
-              } else {
-                setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: simMsg.content }] }; });
-              }
-              resolve();
-            }, delay);
-            delay += 600 + Math.random() * 400; // stagger with slight randomness
-          });
-        }
+        // Stream messages with CORRECT sequential delays
+        // Each message waits for previous to complete before scheduling next
+        const streamMessages = async (msgs, index) => {
+          if (index >= msgs.length) {
+            // All sim messages done — show after-sim commentary
+            if (afterSim) {
+              await new Promise(r => setTimeout(r, 1200));
+              setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: afterSim }] }; });
+            }
+            setSimulationRunning(false);
+            setSimulationDone(true);
+            if (activeScenario) {
+              setScenariosRun(function(prev) { const n = new Set(prev); n.add(activeScenario); return n; });
+            }
+            setLoading(false);
+            return;
+          }
+          const msg = msgs[index];
+          const delay = msg.role === "sim-prospect" ? 700 : 1100;
+          await new Promise(r => setTimeout(r, delay));
+          setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], msg] }; });
+          streamMessages(msgs, index + 1);
+        };
 
-        // Show the after-simulation commentary
-        if (afterSim) {
-          await new Promise(resolve => setTimeout(resolve, 1200));
-          setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: afterSim }] }; });
-        }
+        setSimulationRunning(true);
+        streamMessages(simMessages, 0);
+        return; // don't fall through to normal handler
 
         if (data.demoCompleted) setDemoCompleted(true);
-        setSimulationRunning(false);
-        setSimulationDone(true);
-        if (activeScenario) {
-          setScenariosRun(function(prev) {
-            const next = new Set(prev);
-            next.add(activeScenario);
-            return next;
-          });
-        }
-        setLoading(false);
-        return;
       }
 
       // Normal (non-simulation) reply
@@ -994,11 +995,31 @@ export default function ToolsPage() {
               ) : (
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                   <button
-                    onClick={function() { if (window.confirm("Start a fresh conversation?")) { clearToolHistory(currentTool); setDemoCompleted(false); setAuditPart1Done(false); setAuditPdfReady(false); } }}
-                    style={{ background:"none", border:"none", cursor:"pointer", color:"#2a2a2a", fontSize:11, fontFamily:"'DM Sans',sans-serif", padding:0 }}
-                    title="Start fresh"
+                    onClick={function() {
+                      clearToolHistory(currentTool);
+                      setDemoCompleted(false);
+                      setAuditPart1Done(false);
+                      setAuditPdfReady(false);
+                    }}
+                    style={{
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid #1e1e1e",
+                      borderRadius: 7,
+                      cursor: "pointer",
+                      color: "#444",
+                      fontSize: 11,
+                      fontFamily: "'DM Sans',sans-serif",
+                      padding: "3px 9px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                      transition: "all 0.15s"
+                    }}
+                    onMouseEnter={function(e) { e.currentTarget.style.color = "#ccc"; e.currentTarget.style.borderColor = "#333"; }}
+                    onMouseLeave={function(e) { e.currentTarget.style.color = "#444"; e.currentTarget.style.borderColor = "#1e1e1e"; }}
+                    title="Clear chat and start fresh"
                   >
-                    ↺ Fresh start
+                    ↺ Clear chat
                   </button>
                   <div className="tp-chat-live"><div className="tp-dot" />Live</div>
                 </div>
@@ -1128,15 +1149,18 @@ export default function ToolsPage() {
                         onClick={function() {
                           setActiveScenario(sc.id);
                           setSimulationDone(false);
+                          // Add visual notice
                           setMessages(function(prev) {
                             return { ...prev, niquo: [...prev.niquo, {
                               role: "system-notice",
-                              content: "Running scenario: " + sc.title
+                              content: "▶ Running: " + sc.title + " scenario"
                             }]};
                           });
+                          // Send the scenario trigger — this tells Niquo to run a new simulation
+                          // We pass it as a system trigger, not a user message
                           setTimeout(function() {
-                            sendMessage("Run the demo again", false, null, sc.id);
-                          }, 300);
+                            sendMessage("SIMULATE_SCENARIO", false, null, sc.id);
+                          }, 400);
                         }}
                       >
                         <div className="tp-scenario-title">{sc.title}</div>
