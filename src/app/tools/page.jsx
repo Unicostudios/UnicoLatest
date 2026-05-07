@@ -199,10 +199,10 @@ export default function ToolsPage() {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
   const [simulationRunning, setSimulationRunning] = useState(false);
-  const simulationPausedRef = React.useRef(false);
+  const simulationPausedRef = useRef(false);
   const [manualMode, setManualMode] = useState(false); // founder took control
   const [pendingSimMessages, setPendingSimMessages] = useState([]); // remaining sim messages for resume
-  const simAbortRef = React.useRef(false); // signal to abort running simulation
+  const simAbortRef = useRef(false); // signal to abort running simulation
   const [typingMessage, setTypingMessage] = useState(null); // {role, text, partial} — current typing message
   const [simulationDone, setSimulationDone] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
