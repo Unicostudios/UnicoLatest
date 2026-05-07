@@ -201,6 +201,7 @@ export default function ToolsPage() {
   const [simulationRunning, setSimulationRunning] = useState(false);
   const [simulationDone, setSimulationDone] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
+  const [scenariosRun, setScenariosRun] = useState(new Set());
   const [auditPart1Done, setAuditPart1Done] = useState(false);
   const [auditPdfReady, setAuditPdfReady] = useState(false);
   const [auditUrl, setAuditUrl] = useState("");
@@ -620,6 +621,13 @@ export default function ToolsPage() {
         if (data.demoCompleted) setDemoCompleted(true);
         setSimulationRunning(false);
         setSimulationDone(true);
+        if (activeScenario) {
+          setScenariosRun(function(prev) {
+            const next = new Set(prev);
+            next.add(activeScenario);
+            return next;
+          });
+        }
         setLoading(false);
         return;
       }
@@ -1137,6 +1145,45 @@ export default function ToolsPage() {
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* ── FOUNDER DEBRIEF — shown after 5+ scenarios run ── */}
+            {scenariosRun.size >= 5 && currentTool === "niquo" && !simulationRunning && (
+              <div style={{
+                margin: "0 16px 12px",
+                padding: "16px 18px",
+                background: "linear-gradient(135deg, rgba(34,211,238,0.06), rgba(167,139,250,0.06))",
+                border: "1px solid rgba(34,211,238,0.2)",
+                borderRadius: "14px",
+                textAlign: "center"
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#22d3ee", marginBottom: 8, fontFamily: "'Syne',sans-serif" }}>
+                  You just watched Niquo handle {scenariosRun.size} different types of leads.
+                </div>
+                <div style={{ fontSize: 12, color: "#555", lineHeight: 1.7, marginBottom: 14 }}>
+                  The skeptic. The angry one. The price objector. The ghoster.<br/>
+                  Every lead type your business will ever see — handled.<br/>
+                  While you sleep. Every day. Without you touching it.
+                </div>
+                <a
+                  href="https://calendly.com/unicostudioss/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-block",
+                    padding: "10px 22px",
+                    background: "linear-gradient(135deg, #a78bfa, #22d3ee)",
+                    borderRadius: "10px",
+                    color: "#000",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    fontFamily: "'Syne',sans-serif"
+                  }}
+                >
+                  Build this for my business →
+                </a>
               </div>
             )}
 
