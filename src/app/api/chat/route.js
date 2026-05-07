@@ -559,15 +559,14 @@ User message: ${message}`;
 
     if (demoCompleted && email) {
       try {
-        const updateData = { "Demo Completed": "Yes" };
-        if (industry) updateData["Tool"] = `Niquo — ${industry}`;
-        await fetch(`${process.env.SHEETDB_API_URL}/Email/${encodeURIComponent(email)}`, {
+        // Supabase via internal API — replaces SheetDB
+        await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ""}/api/leads`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: updateData }),
+          body: JSON.stringify({ email, demoCompleted: true, industry }),
         });
       } catch (e) {
-        console.error("Sheet update error:", e);
+        console.error("Lead update error:", e);
       }
     }
 
