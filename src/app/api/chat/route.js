@@ -607,7 +607,7 @@ User message: ${message}`;
       model: mode === "audit" || mode === "niquo" ? "gpt-4o" : "gpt-4o-mini",
       messages,
       temperature: mode === "niquo" ? 0.92 : mode === "audit" ? 0.75 : 0.9,
-      max_tokens: mode === "audit" ? 2000 : mode === "niquo" ? 1500 : mode === "code" ? 1000 : 800,
+      max_tokens: mode === "niquo" ? 4000 : mode === "audit" ? 2000 : mode === "code" ? 1000 : 800,
     });
 
     const rawReply = completion.choices[0].message.content;
@@ -624,7 +624,13 @@ User message: ${message}`;
     const industryMatch = rawReply.match(/\[INDUSTRY:\s*([^\]]+)\]/);
     if (industryMatch) industry = industryMatch[1].trim();
 
-    const reply = rawReply
+    // If simulation started but END_SIMULATION cut off by token limit — add it
+    let processedReply = rawReply;
+    if (processedReply.includes("PROSPECT:") && !processedReply.includes("END_SIMULATION")) {
+      processedReply = processedReply + "
+END_SIMULATION";
+    }
+    const reply = processedReply
       .replace("DEMO_COMPLETED", "")
       .replace(/\[INDUSTRY:[^\]]+\]/, "")
       .replace("PDF_READY", "")
@@ -643,7 +649,7 @@ User message: ${message}`;
       }
     }
 
-    return Response.json({ reply, demoCompleted, pdfReady, pendingWebsiteUrl });
+    return Response.json({ reply, demoCompleted, pdfReady, pendingWebsiteUrl, hasSimulation: processedReply.includes("PROSPECT:") });
 
   } catch (error) {
     console.error("Chat API error:", error);
