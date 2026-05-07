@@ -627,8 +627,7 @@ User message: ${message}`;
     // If simulation started but END_SIMULATION cut off by token limit — add it
     let processedReply = rawReply;
     if (processedReply.includes("PROSPECT:") && !processedReply.includes("END_SIMULATION")) {
-      processedReply = processedReply + "
-END_SIMULATION";
+      processedReply = processedReply + "\nEND_SIMULATION";
     }
     const reply = processedReply
       .replace("DEMO_COMPLETED", "")
