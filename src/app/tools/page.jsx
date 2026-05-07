@@ -198,6 +198,9 @@ export default function ToolsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [demoCompleted, setDemoCompleted] = useState(false);
+  const [simulationRunning, setSimulationRunning] = useState(false);
+  const [simulationDone, setSimulationDone] = useState(false);
+  const [activeScenario, setActiveScenario] = useState(null);
   const [auditPart1Done, setAuditPart1Done] = useState(false);
   const [auditPdfReady, setAuditPdfReady] = useState(false);
   const [auditUrl, setAuditUrl] = useState("");
@@ -517,8 +520,11 @@ export default function ToolsPage() {
 
   function closeGate() { setShowGate(false); setGateSuccess(false); }
 
-  async function sendMessage(text, isConfirmation, urlToConfirm) {
+  async function sendMessage(text, isConfirmation, urlToConfirm, scenarioOverride) {
     const msg = text || input.trim();
+    // If this is a scenario run, inject the scenario tag
+    const currentScenario = scenarioOverride || activeScenario;
+    const scenarioTag = currentScenario ? " SCENARIO " + currentScenario : "";
     if (!msg || !currentTool) return;
     const exchangesSoFar = messages[currentTool].filter(function(m) { return m.role === "assistant"; }).length;
     if (!email && exchangesSoFar >= gateAfter) {
@@ -554,7 +560,7 @@ export default function ToolsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: msg,
+          message: msg + scenarioTag,
           history: history,
           mode: tool.mode,
           email: email,
@@ -565,6 +571,60 @@ export default function ToolsPage() {
       });
       const data = await res.json();
       const reply = data.reply || "";
+
+      // ── SIMULATION PARSER ────────────────────────────────────────────
+      // If reply contains END_SIMULATION, parse and stream it message by message
+      if (currentTool === "niquo" && reply.includes("END_SIMULATION")) {
+        setSimulationRunning(true);
+        const parts = reply.split("END_SIMULATION");
+        const simBlock = parts[0];
+        const afterSim = parts[1] ? parts[1].trim() : "";
+
+        // Parse simulation into alternating messages
+        const lines = simBlock.split("\n").filter(l => l.trim());
+        const simMessages = [];
+        for (const line of lines) {
+          if (line.startsWith("PROSPECT:")) {
+            simMessages.push({ role: "prospect", content: line.replace("PROSPECT:", "").trim() });
+          } else if (line.startsWith("NIQUO:")) {
+            simMessages.push({ role: "assistant", content: line.replace("NIQUO:", "").trim() });
+          } else if (line.startsWith("Watch how")) {
+            // The intro line — show as assistant message first
+            setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: line }] }; });
+          }
+        }
+
+        // Stream simulation messages with typing delays
+        let delay = 800;
+        for (const simMsg of simMessages) {
+          await new Promise(resolve => {
+            setTimeout(() => {
+              if (simMsg.role === "prospect") {
+                // Show prospect messages as special sim-prospect role
+                setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "sim-prospect", content: simMsg.content }] }; });
+              } else {
+                setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: simMsg.content }] }; });
+              }
+              resolve();
+            }, delay);
+            delay += 600 + Math.random() * 400; // stagger with slight randomness
+          });
+        }
+
+        // Show the after-simulation commentary
+        if (afterSim) {
+          await new Promise(resolve => setTimeout(resolve, 1200));
+          setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: afterSim }] }; });
+        }
+
+        if (data.demoCompleted) setDemoCompleted(true);
+        setSimulationRunning(false);
+        setSimulationDone(true);
+        setLoading(false);
+        return;
+      }
+
+      // Normal (non-simulation) reply
       setMessages(function(prev) { return { ...prev, [currentTool]: [...prev[currentTool], { role: "assistant", content: reply }] }; });
       if (data.demoCompleted) setDemoCompleted(true);
       if (currentTool === "audit" && reply.includes("Want to see them?")) setAuditPart1Done(true);
@@ -681,6 +741,17 @@ export default function ToolsPage() {
         .tp-bubble{font-size:14px;line-height:1.7;color:#aaa;background:#111;border:1px solid #1d1d1d;border-radius:4px 12px 12px 12px;padding:11px 14px;white-space:pre-wrap;}
         .tp-msg.user .tp-bubble{border-radius:12px 4px 12px 12px;color:#ddd;}
         .tp-system-notice{font-size:11px;color:#333;text-align:center;padding:6px 12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid #1a1a1a;margin:0 auto;}
+        .tp-sim-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#333;margin-bottom:3px;}
+        .tp-sim-banner{background:rgba(34,211,238,0.03);border:1px solid rgba(34,211,238,0.12);border-radius:10px;padding:8px 14px;margin:0 18px 10px;font-size:11px;color:#444;text-align:center;letter-spacing:0.02em;}
+        .tp-scenarios{padding:12px 16px;border-top:1px solid #111;}
+        .tp-scenarios-label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:#333;margin-bottom:10px;}
+        .tp-scenario-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+        .tp-scenario-btn{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left;transition:all 0.2s;}
+        .tp-scenario-btn:hover{border-color:#22d3ee44;background:rgba(34,211,238,0.04);}
+        .tp-scenario-btn.active{border-color:rgba(34,211,238,0.4);background:rgba(34,211,238,0.06);}
+        .tp-scenario-title{font-size:11px;font-weight:600;color:#ccc;margin-bottom:2px;font-family:'Syne',sans-serif;}
+        .tp-scenario-desc{font-size:10px;color:#444;line-height:1.4;}
+        .tp-sim-banner span{color:#22d3ee;font-weight:600;}
         .tp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
         .tp-chip{font-size:12px;border-radius:100px;padding:5px 12px;cursor:pointer;border:1px solid;font-family:'DM Sans',sans-serif;}
         .tp-typing{display:flex;gap:4px;align-items:center;padding:4px 0;}
@@ -973,10 +1044,25 @@ export default function ToolsPage() {
               </div>
 
               {currentMessages.map(function(msg, i) {
-                // System notice — centre aligned info message
                 if (msg.role === "system-notice") {
                   return <div key={i} className="tp-system-notice">{msg.content}</div>;
                 }
+
+                // ── SIMULATION PROSPECT MESSAGE ──────────────────────────
+                if (msg.role === "sim-prospect") {
+                  return (
+                    <div key={i} className="tp-msg user">
+                      <div className="tp-av" style={{ background: "rgba(251,146,60,0.1)", border: "1px solid rgba(251,146,60,0.2)" }}>👤</div>
+                      <div className="tp-msg-body" style={{ alignItems: "flex-end" }}>
+                        <div className="tp-msg-name" style={{ color: "#fb923c" }}>Prospect</div>
+                        <div className="tp-bubble" style={{ background: "rgba(251,146,60,0.05)", borderColor: "rgba(251,146,60,0.2)", color: "#ddd", borderRadius: "12px 4px 12px 12px" }}>
+                          {renderText(msg.content)}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div key={i} className={"tp-msg" + (msg.role === "user" ? " user" : "")}>
                     <div className="tp-av" style={{ background: msg.role === "user" ? "rgba(255,255,255,0.03)" : tool.headerBg }}>
@@ -1003,6 +1089,56 @@ export default function ToolsPage() {
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* ── SIMULATION RUNNING BANNER ── */}
+            {simulationRunning && currentTool === "niquo" && (
+              <div className="tp-sim-banner">
+                <span>⚡ Live simulation running</span> — watch Niquo handle a real prospect for your business
+              </div>
+            )}
+
+            {/* ── SCENARIO SELECTOR — shown after first simulation completes ── */}
+            {simulationDone && currentTool === "niquo" && (
+              <div className="tp-scenarios">
+                <div className="tp-scenarios-label">Try harder scenarios ↓</div>
+                <div className="tp-scenario-grid">
+                  {[
+                    { id: "SKEPTIC", title: "The Skeptic", desc: "Tried AI before. All garbage." },
+                    { id: "ANGRY", title: "The Angry One", desc: "Rude from message one." },
+                    { id: "PRICE", title: "Price Objection", desc: "Too expensive. Can't afford it." },
+                    { id: "COMPETITOR", title: "Has a Competitor", desc: "Already uses HubSpot/Interakt." },
+                    { id: "GHOSTER", title: "The Ghoster", desc: "Goes cold mid-conversation." },
+                    { id: "CONFUSED", title: "The Confused One", desc: "Doesn't get it. Keeps asking why." },
+                    { id: "ALMOST", title: "Almost Closed", desc: "Interested but keeps delaying." },
+                    { id: "COMMITTEE", title: "Needs Approval", desc: "Has to check with the team." },
+                    { id: "WRONGFIT", title: "Wrong Fit", desc: "Actually not your customer." },
+                  ].map(function(sc) {
+                    return (
+                      <div
+                        key={sc.id}
+                        className={"tp-scenario-btn" + (activeScenario === sc.id ? " active" : "")}
+                        onClick={function() {
+                          setActiveScenario(sc.id);
+                          setSimulationDone(false);
+                          setMessages(function(prev) {
+                            return { ...prev, niquo: [...prev.niquo, {
+                              role: "system-notice",
+                              content: "Running scenario: " + sc.title
+                            }]};
+                          });
+                          setTimeout(function() {
+                            sendMessage("Run the demo again", false, null, sc.id);
+                          }, 300);
+                        }}
+                      >
+                        <div className="tp-scenario-title">{sc.title}</div>
+                        <div className="tp-scenario-desc">{sc.desc}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* ── WEBSITE CONFIRMATION BANNER ── shown when Niquo finds a website */}
             {pendingWebsiteUrl && currentTool === "niquo" && (
