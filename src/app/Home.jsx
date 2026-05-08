@@ -107,8 +107,8 @@ const AIToolsSection = () => {
 
         <div className="ais-stats">
           <div>
-            <div className="ais-stat-num">Real Estate</div>
-            <div className="ais-stat-label">D2C · SaaS · Restaurants · Agencies</div>
+            <div className="ais-stat-num">12+</div>
+            <div className="ais-stat-label">Industries using Niquo</div>
           </div>
           <div className="ais-stat-div" />
           <div>
@@ -186,6 +186,9 @@ const NiquoTeaser = () => {
             <div className="nq-feature"><div className="nq-feature-dot" />Live demo built specifically for YOUR business in 5 minutes</div>
           </div>
           <a href="/tools" className="nq-cta">Try Niquo Free →</a>
+          <p style={{ fontSize: 11, color: "#333", marginTop: 10, fontFamily: "'DM Sans', sans-serif" }}>
+            Starting from ₹4,999/month when you're ready to deploy
+          </p>
         </div>
         <div className="nq-window">
           <div className="nq-win-header">
@@ -196,7 +199,7 @@ const NiquoTeaser = () => {
             <div className="nq-msg">
               <div className="nq-msg-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
               <div className="nq-msg-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", color: "#777" }}>
-                Hi! Tell me about your business and I'll show you exactly how AI would close your clients.
+                I'm Niquo. What's your business?
               </div>
             </div>
             <div className="nq-msg user">
@@ -208,7 +211,7 @@ const NiquoTeaser = () => {
             <div className="nq-msg">
               <div className="nq-msg-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
               <div className="nq-msg-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", color: "#777" }}>
-                Perfect. Activating as your AI Sales Rep now. Send me a message as if you're a potential buyer looking for a 2BHK in Whitefield...
+                Watch how I'd handle a real lead for PropStar Realty.
               </div>
             </div>
             <div className="nq-msg user">
@@ -220,7 +223,7 @@ const NiquoTeaser = () => {
             <div className="nq-msg">
               <div className="nq-msg-av" style={{ background: "rgba(34,211,238,0.1)" }}>⚡</div>
               <div className="nq-msg-bubble" style={{ background: "#111", border: "1px solid #1d1d1d", color: "#777" }}>
-                Great timing! We have 3 units in Whitefield under 78L — all ready to move. Investment or self-use? 🏠
+                3BHK in Whitefield at 1.2Cr is very doable — we have 2 ready-to-move units right now. Are you buying to live in or as an investment?
               </div>
             </div>
             <div style={{ textAlign: "center", paddingTop: 6, borderTop: "1px solid #1a1a1a", marginTop: 4 }}>
