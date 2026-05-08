@@ -31,22 +31,44 @@ export const FoldingLogos = () => {
   );
 };
 
-const Copy = () => (
-  <div className="max-w-sm text-center md:text-start flex flex-col items-center md:items-start">
-    <h2 className="mb-3 text-3xl md:text-4xl text-white font-montserrat-bold">
-      Work with the best
-    </h2>
-    <p className="mb-6 text-sm leading-relaxed text-neutral-400">
-      Don't just take our word for it. See what our clients have to say about
-      their experience with Unico Studios
-    </p>
-    <Link href="/contact">
-      <button className="relative z-0 flex items-center gap-2 overflow-hidden rounded-full border border-[#5F14E0] bg-[#5F14E0] px-6 py-2 text-white text-sm transition-all duration-300 hover:bg-white hover:text-black cursor-pointer">
-        Let's Build Together
-      </button>
-    </Link>
-  </div>
-);
+const TESTIMONIALS = [
+  { name: "Founder, Haze UAE", quote: "Unico built our entire brand identity and website. Within 3 weeks we started getting inbound leads from the UAE market." },
+  { name: "Founder, Immersified", quote: "The AI tools are genuinely impressive — Niquo handled a real client demo and I was shocked at how natural it felt." },
+  { name: "Team, Aashir Kare", quote: "Professional, fast, and they actually understand what a brand needs. Not just design — strategy." },
+];
+
+const Copy = () => {
+  const [active, setActive] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setActive(p => (p + 1) % TESTIMONIALS.length), 3500);
+    return () => clearInterval(t);
+  }, []);
+  const t = TESTIMONIALS[active];
+  return (
+    <div className="max-w-sm text-center md:text-start flex flex-col items-center md:items-start">
+      <h2 className="mb-3 text-3xl md:text-4xl text-white font-montserrat-bold">
+        Work with the best
+      </h2>
+      {/* Rotating testimonial */}
+      <div style={{ minHeight: 90, marginBottom: 16 }}>
+        <p style={{ fontSize: 14, lineHeight: 1.7, color: "#aaa", fontStyle: "italic", marginBottom: 8 }}>
+          "{t.quote}"
+        </p>
+        <p style={{ fontSize: 12, color: "#555", fontWeight: 600 }}>— {t.name}</p>
+      </div>
+      <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
+        {TESTIMONIALS.map((_, i) => (
+          <div key={i} onClick={() => setActive(i)} style={{ width: i === active ? 18 : 6, height: 6, borderRadius: 100, background: i === active ? "#5F14E0" : "#333", cursor: "pointer", transition: "all 0.3s" }} />
+        ))}
+      </div>
+      <Link href="/contact">
+        <button className="relative z-0 flex items-center gap-2 overflow-hidden rounded-full border border-[#5F14E0] bg-[#5F14E0] px-6 py-2 text-white text-sm transition-all duration-300 hover:bg-white hover:text-black cursor-pointer">
+          Let's Build Together
+        </button>
+      </Link>
+    </div>
+  );
+};
 
 const DELAY_IN_MS = 2500;
 const TRANSITION_DURATION_IN_SECS = 1.5;
