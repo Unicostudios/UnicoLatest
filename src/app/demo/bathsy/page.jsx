@@ -206,11 +206,11 @@ function LiveChat() {
     setInput("");
     setLoading(true);
     try {
-      const history = messages.filter(m => m.role === "user" || m.role === "assistant");
-      const res = await fetch("/api/chat", {
+      const history = messages.filter(m => m.role === "user" || m.role === "assistant").map(m => ({ role: m.role === "assistant" ? "niquo" : "customer", content: m.content }));
+      const res = await fetch("https://niquo-bathsy-git-main-unico-studios-projects.vercel.app/api/niquo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, history, mode: "bathsy" }),
+        body: JSON.stringify({ messages: history, incomingMessage: msg }),
       });
       const data = await res.json();
       setMessages(prev => [...prev, { role: "assistant", content: data.reply || "Let me check on that for you." }]);
