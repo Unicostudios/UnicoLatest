@@ -2,65 +2,31 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-// ── Conversation data ──────────────────────────────────────────────────────
-const CONVOS = {
-  default: [
-    { r: 'p', t: "Hey, what exactly does Niquo do?" },
-    { r: 'n', t: "Easier to show than explain. What's your business?" },
-    { r: 'p', t: "We run a coaching institute. About 30–40 inquiries a week. Most go cold." },
-    { r: 'n', t: "That gap is where your revenue's disappearing. Niquo picks up every inquiry instantly — qualifies them, handles the price question, follows up the ones who ghost. You only step in when someone's ready to enroll." },
-    { r: 'p', t: "I've tried chatbots before. They feel robotic." },
-    { r: 'n', t: "Those are FAQ bots. Niquo actually sells — handles objections, mirrors how the lead communicates, pushes toward a decision. Want to see a live simulation for your institute right now?" },
-  ],
-  Skeptic: [
-    { r: 'p', t: "I've seen a hundred of these tools. Why would this actually work?" },
-    { r: 'n', t: "What's the business?" },
-    { r: 'p', t: "Real estate. We get leads from MagicBricks." },
-    { r: 'n', t: "MagicBricks leads go cold in under five minutes if nobody responds. Niquo picks up instantly — 11pm, Sunday, doesn't matter. Qualifies budget, location, timeline before your team even sees the name." },
-    { r: 'p', t: "But will it sound human?" },
-    { r: 'n', t: "Run the demo right now. I'd rather you judge it yourself." },
-  ],
-  Price: [
-    { r: 'p', t: "How much does this cost?" },
-    { r: 'n', t: "Starts at ₹4,999/month. But tell me the business first — the ROI math is different for everyone." },
-    { r: 'p', t: "We're a salon. Feels expensive." },
-    { r: 'n', t: "How many leads come in on Instagram DMs every week that don't convert?" },
-    { r: 'p', t: "Maybe 50–60. Half just ask price and disappear." },
-    { r: 'n', t: "If Niquo converts five of those ghosts per month — at ₹800 average — that's ₹4,000 you're currently losing. It pays for itself in the first week." },
-  ],
-  Angry: [
-    { r: 'p', t: "If this is another bot I'm going to lose it." },
-    { r: 'n', t: "Not a bot. What's the business?" },
-    { r: 'p', t: "Why does that matter? Just tell me what you do." },
-    { r: 'n', t: "Because what I do looks completely different for a D2C brand versus a services business. What are you selling?" },
-    { r: 'p', t: "Custom furniture. High-ticket." },
-    { r: 'n', t: "High-ticket means a long sales cycle. Niquo handles that patient follow-up so your team only talks to people who are genuinely close to buying." },
-  ],
-  Competitor: [
-    { r: 'p', t: "How is this different from Interakt or Wati?" },
-    { r: 'n', t: "Interakt and Wati are broadcast tools — great for bulk messages. Niquo isn't a WhatsApp sender. It's a closer. Reads context, handles objections, moves people toward a decision." },
-    { r: 'p', t: "So it costs more?" },
-    { r: 'n', t: "Different category. Interakt helps you reach people. Niquo converts them. Most of our clients run both." },
-  ],
-  Almost: [
-    { r: 'p', t: "Okay I'm actually interested. What does onboarding look like?" },
-    { r: 'n', t: "You share your URL, we configure Niquo for your business, go live on your channel — no long contracts, no engineering required on your end." },
-    { r: 'p', t: "And if it doesn't work for us?" },
-    { r: 'n', t: "We run the demo first so you see exactly how it handles your specific leads — before you pay anything." },
-    { r: 'p', t: "Alright. How do I get started?" },
-    { r: 'n', t: "Book a 20-minute call with the team. They'll set up a live pilot. Want me to drop the link?" },
-  ],
-  Ghost: [
-    { r: 'p', t: "Hi" },
-    { r: 'n', t: "Hey — what's the business?" },
-    { r: 'p', t: "..." },
-    { r: 'n', t: "Still there? Tell me what you're selling and I'll show you exactly what Niquo would do with your leads." },
-    { r: 'p', t: "Sorry, got pulled away. Event photography." },
-    { r: 'n', t: "All good. Photographers usually lose leads who inquire, get a quote, then go quiet. Niquo follows up those ghosts — the right nudge at exactly the right moment. Want to see it?" },
-  ],
-};
-
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ── Parse PROSPECT: / NIQUO: lines from simulation reply ──────────────────
+function parseSimulation(reply) {
+  const lines = reply.split('\n');
+  const messages = [];
+  let current = null;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('PROSPECT:')) {
+      if (current) messages.push(current);
+      current = { r: 'p', t: trimmed.replace('PROSPECT:', '').trim() };
+    } else if (trimmed.startsWith('NIQUO:')) {
+      if (current) messages.push(current);
+      current = { r: 'n', t: trimmed.replace('NIQUO:', '').trim() };
+    } else if (trimmed === 'END_SIMULATION') {
+      break;
+    } else if (current && trimmed) {
+      current.t += ' ' + trimmed;
+    }
+  }
+  if (current) messages.push(current);
+  return messages;
+}
 
 // ── Neural canvas hook ─────────────────────────────────────────────────────
 function useNeuralCanvas(canvasRef, heroRef) {
@@ -161,74 +127,140 @@ function useNeuralCanvas(canvasRef, heroRef) {
 }
 
 // ── Demo feed component ────────────────────────────────────────────────────
+const SCENARIO_TRIGGERS = {
+  Skeptic:    'SIMULATE_SCENARIO SKEPTIC',
+  Angry:      'SIMULATE_SCENARIO ANGRY',
+  Price:      'SIMULATE_SCENARIO PRICE',
+  Competitor: 'SIMULATE_SCENARIO COMPETITOR',
+  Almost:     'SIMULATE_SCENARIO ALMOST',
+  Ghost:      'SIMULATE_SCENARIO GHOSTER',
+};
+
 function DemoFeed() {
   const [messages, setMessages] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const [typing, setTyping] = useState(false);
   const [url, setUrl] = useState('');
+  const [error, setError] = useState('');
+  const [confirmedUrl, setConfirmedUrl] = useState(null);
   const feedRef = useRef(null);
   const abortRef = useRef(false);
-
-  async function runConvo(msgs) {
-    if (isRunning) return;
-    abortRef.current = false;
-    setIsRunning(true);
-    setMessages([]);
-
-    for (const m of msgs) {
-      if (abortRef.current) break;
-      const isP = m.r === 'p';
-      setTyping(true);
-      await sleep(isP ? 800 : 1300);
-      if (abortRef.current) break;
-      setTyping(false);
-
-      let built = '';
-      const words = m.t.split(' ');
-      for (const w of words) {
-        if (abortRef.current) break;
-        built += (built ? ' ' : '') + w;
-        setMessages((prev) => {
-          const copy = [...prev];
-          if (copy.length && copy[copy.length - 1].role === m.r && copy[copy.length - 1].partial) {
-            copy[copy.length - 1] = { role: m.r, text: built, partial: true };
-          } else {
-            copy.push({ role: m.r, text: built, partial: true });
-          }
-          return copy;
-        });
-        await sleep(isP ? 45 : 62);
-      }
-
-      setMessages((prev) => {
-        const copy = [...prev];
-        if (copy.length) copy[copy.length - 1] = { role: m.r, text: built, partial: false };
-        return copy;
-      });
-
-      await sleep(isP ? 320 : 500);
-    }
-
-    setIsRunning(false);
-    setTyping(false);
-  }
+  const historyRef = useRef([]);
 
   useEffect(() => {
     if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
   }, [messages, typing]);
 
+  // Stream parsed simulation messages word by word
+  async function streamMessages(msgs) {
+    for (const m of msgs) {
+      if (abortRef.current) break;
+      const isP = m.r === 'p';
+
+      setTyping(true);
+      await sleep(isP ? 900 : 1500);
+      if (abortRef.current) break;
+      setTyping(false);
+
+      let built = '';
+      const words = m.t.split(' ');
+      // Add empty bubble first
+      setMessages((prev) => [...prev, { role: m.r, text: '', partial: true }]);
+
+      for (const w of words) {
+        if (abortRef.current) break;
+        built += (built ? ' ' : '') + w;
+        setMessages((prev) => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: m.r, text: built, partial: true };
+          return copy;
+        });
+        await sleep(isP ? 50 : 68);
+      }
+
+      // Lock message in
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1] = { role: m.r, text: built, partial: false };
+        return copy;
+      });
+
+      await sleep(isP ? 400 : 600);
+    }
+  }
+
+  async function callNiquo(message, currentConfirmedUrl) {
+    if (isRunning) return;
+    abortRef.current = false;
+    setIsRunning(true);
+    setError('');
+    setMessages([]);
+    historyRef.current = [];
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          history: historyRef.current,
+          mode: 'niquo',
+          email: 'demo@niquo.ai',
+          uploadedContent: null,
+          confirmedUrl: currentConfirmedUrl || null,
+        }),
+      });
+
+      if (!res.ok) throw new Error('API error');
+
+      const data = await res.json();
+      const reply = data.reply || '';
+
+      // Parse PROSPECT: / NIQUO: lines
+      const parsed = parseSimulation(reply);
+
+      if (parsed.length > 0) {
+        await streamMessages(parsed);
+      } else {
+        // Fallback: show raw reply as Niquo message
+        await streamMessages([{ r: 'n', t: reply }]);
+      }
+
+      // Save to history for scenario chaining
+      historyRef.current = [
+        ...historyRef.current,
+        { role: 'user', content: message },
+        { role: 'assistant', content: reply },
+      ];
+
+    } catch (err) {
+      setError('Something went wrong. Make sure you\'re on unicostudios.in and try again.');
+    } finally {
+      setIsRunning(false);
+      setTyping(false);
+    }
+  }
+
   function handleRun() {
-    const msgs = url.trim()
-      ? [
-          { r: 'p', t: `Hi, came across ${url} — wanted to understand what Niquo actually does.` },
-          { r: 'n', t: "Good timing. I've had a look at your site. What's the biggest friction point in your sales right now?" },
-          { r: 'p', t: "Follow-ups. Leads come in, we respond once, then they go quiet." },
-          { r: 'n', t: "That silence gap is where most revenue goes. Niquo closes it — follows up every ghost at exactly the right moment. Want to see what that looks like for your specific leads?" },
-          { r: 'p', t: "How does it know what to say?" },
-          { r: 'n', t: "It reads your site, learns your offer, and handles it like your best salesperson. Except it works at 2am and has never missed a follow-up." },
-        ]
-      : CONVOS.default;
-    runConvo(msgs);
+    if (!url.trim()) {
+      setError('Enter your website URL or company name first.');
+      return;
+    }
+    setError('');
+    // Normalise URL
+    let cleanUrl = url.trim();
+    if (!cleanUrl.startsWith('http')) cleanUrl = 'https://' + cleanUrl;
+    setConfirmedUrl(cleanUrl);
+    // Trigger simulation — Niquo reads the URL and runs both sides
+    callNiquo(cleanUrl, cleanUrl);
+  }
+
+  function handleScenario(scenarioKey) {
+    if (!confirmedUrl) {
+      setError('Run the main demo first so Niquo knows your business.');
+      return;
+    }
+    callNiquo(SCENARIO_TRIGGERS[scenarioKey], confirmedUrl);
   }
 
   return (
@@ -239,7 +271,9 @@ function DemoFeed() {
           <div className="chrome-dot cd2" />
           <div className="chrome-dot cd3" />
         </div>
-        <div className="chrome-url">unicostudios.in/tools — niquo live demo</div>
+        <div className="chrome-url">
+          {confirmedUrl ? confirmedUrl : 'unicostudios.in/niquo — live demo'}
+        </div>
       </div>
       <div className="demo-split">
         <div className="demo-controls">
@@ -250,36 +284,57 @@ function DemoFeed() {
               type="text"
               placeholder="yourwebsite.com"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => { setUrl(e.target.value); setError(''); }}
               onKeyDown={(e) => e.key === 'Enter' && handleRun()}
             />
           </div>
+          {error && (
+            <p style={{ fontSize: '11px', color: 'rgba(255,100,100,0.8)', marginTop: '-12px', lineHeight: 1.5 }}>
+              {error}
+            </p>
+          )}
           <button className="ctrl-run" onClick={handleRun} disabled={isRunning}>
-            {isRunning ? 'Running…' : 'Run simulation'}
+            {isRunning ? 'Niquo is thinking…' : 'Run simulation'}
           </button>
           <div className="ctrl-divider">scenarios</div>
           <div className="scenario-list">
-            {['Skeptic', 'Angry', 'Price', 'Competitor', 'Almost', 'Ghost'].map((s) => (
+            {Object.keys(SCENARIO_TRIGGERS).map((s) => (
               <button
                 key={s}
                 className="scen"
-                onClick={() => runConvo(CONVOS[s])}
+                onClick={() => handleScenario(s)}
                 disabled={isRunning}
+                title={!confirmedUrl ? 'Run the main demo first' : ''}
               >
-                {s === 'Skeptic' && 'The Skeptic'}
-                {s === 'Angry' && 'The Angry Lead'}
-                {s === 'Price' && 'Price Objection'}
+                {s === 'Skeptic'    && 'The Skeptic'}
+                {s === 'Angry'      && 'The Angry Lead'}
+                {s === 'Price'      && 'Price Objection'}
                 {s === 'Competitor' && 'Competitor Battle'}
-                {s === 'Almost' && 'Almost Closed'}
-                {s === 'Ghost' && 'The Ghost'}
+                {s === 'Almost'     && 'Almost Closed'}
+                {s === 'Ghost'      && 'The Ghost'}
               </button>
             ))}
           </div>
+          {confirmedUrl && (
+            <p style={{ fontSize: '10px', color: 'var(--muted2)', letterSpacing: '0.5px', lineHeight: 1.6 }}>
+              Niquo is selling for<br />
+              <span style={{ color: 'var(--muted)' }}>{confirmedUrl}</span>
+            </p>
+          )}
         </div>
         <div className="demo-feed" ref={feedRef}>
-          {messages.length === 0 && !typing && (
+          {messages.length === 0 && !typing && !isRunning && (
             <div className="feed-empty">
-              Enter your business above<br />and watch Niquo work.
+              Enter your website above.<br />
+              Watch Niquo sell your business.
+            </div>
+          )}
+          {isRunning && messages.length === 0 && (
+            <div className="feed-empty" style={{ flexDirection: 'column', gap: '12px' }}>
+              <div className="typing-row" style={{ justifyContent: 'center' }}>
+                <div className="ty" /><div className="ty" /><div className="ty" />
+              </div>
+              <span>Reading your business…</span>
             </div>
           )}
           {messages.map((m, i) => (
@@ -292,9 +347,7 @@ function DemoFeed() {
           ))}
           {typing && (
             <div className="typing-row">
-              <div className="ty" />
-              <div className="ty" />
-              <div className="ty" />
+              <div className="ty" /><div className="ty" /><div className="ty" />
             </div>
           )}
         </div>
