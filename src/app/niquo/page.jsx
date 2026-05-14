@@ -388,9 +388,11 @@ export default function NiquoPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body:has(#niquo-root) { background: #000 !important; overflow-x: hidden; }
 
-        :root {
+        /* ALL styles scoped to #niquo-root — beats Tailwind specificity */
+        #niquo-root {
           --bg:   #000;
           --bg2:  #0a0a0a;
           --bg3:  #111;
@@ -404,20 +406,27 @@ export default function NiquoPage() {
           --b2:   rgba(245,245,247,0.18);
           --brand:'Comfortaa',sans-serif;
           --sf:   -apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-          background: var(--bg);
-          color: var(--ow);
-          font-family: var(--sf);
+          display: block;
+          background: #000 !important;
+          color: #f5f5f7 !important;
+          font-family: -apple-system,'SF Pro Display','Helvetica Neue',sans-serif !important;
           -webkit-font-smoothing: antialiased;
           overflow-x: hidden;
+          line-height: 1.6;
+        }
+        #niquo-root *, #niquo-root *::before, #niquo-root *::after {
+          box-sizing: border-box;
+        }
+        /* Kill Tailwind's highlight/mark styles inside our page */
+        #niquo-root mark, #niquo-root em, #niquo-root strong {
+          background: none !important;
+          background-color: transparent !important;
+          color: inherit;
+          padding: 0;
         }
 
         /* ── NAV ── */
-        .np-nav {
+        #niquo-root .np-nav {
           height: 52px;
           display: flex; align-items: center; justify-content: space-between;
           padding: 0 44px;
@@ -426,89 +435,89 @@ export default function NiquoPage() {
           border-bottom: 0.5px solid var(--b1);
           position: sticky; top: 0; z-index: 100;
         }
-        .np-logo {
+        #niquo-root .np-logo {
           font-family: var(--brand);
           font-size: 18px; font-weight: 300;
           color: var(--ow); letter-spacing: 2px; text-decoration: none;
         }
-        .np-nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
-        .np-nav-links a {
+        #niquo-root .np-nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        #niquo-root .np-nav-links a {
           font-size: 12px; color: var(--m1); text-decoration: none;
           transition: color .2s; letter-spacing: .2px;
         }
-        .np-nav-links a:hover { color: var(--ow); }
-        .np-nav-cta {
+        #niquo-root .np-nav-links a:hover { color: var(--ow); }
+        #niquo-root .np-nav-cta {
           font-size: 12px; color: var(--ow);
           background: rgba(255,255,255,0.1);
           border: 0.5px solid var(--b2);
           padding: 6px 16px; border-radius: 20px;
           cursor: pointer; text-decoration: none; transition: background .2s;
         }
-        .np-nav-cta:hover { background: rgba(255,255,255,0.18); }
-        .np-nav-back {
+        #niquo-root .np-nav-cta:hover { background: rgba(255,255,255,0.18); }
+        #niquo-root .np-nav-back {
           font-size: 12px; color: var(--m2); text-decoration: none;
           display: flex; align-items: center; gap: 4px; transition: color .2s;
         }
-        .np-nav-back:hover { color: var(--m1); }
+        #niquo-root .np-nav-back:hover { color: var(--m1); }
 
         /* ── HERO ── */
-        .np-hero {
+        #niquo-root .np-hero {
           position: relative; min-height: 100vh;
           display: flex; flex-direction: column;
           align-items: center; justify-content: center;
           text-align: center; padding: 80px 44px 60px;
           overflow: hidden; background: var(--bg);
         }
-        .np-hero::before {
+        #niquo-root .np-hero::before {
           content: ''; position: absolute; inset: 0;
           background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(80,80,120,0.1) 0%, transparent 70%);
           pointer-events: none;
         }
-        .np-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-        .np-hero-fade {
+        #niquo-root .np-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+        #niquo-root .np-hero-fade {
           position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
           background: linear-gradient(transparent, var(--bg));
           pointer-events: none; z-index: 1;
         }
-        .np-hero-content { position: relative; z-index: 2; }
-        .np-hero-ey {
+        #niquo-root .np-hero-content { position: relative; z-index: 2; }
+        #niquo-root .np-hero-ey {
           font-size: 17px; font-weight: 400; color: #6e6e73;
           letter-spacing: -.2px; margin-bottom: 10px;
         }
-        .np-hero-h1 {
+        #niquo-root .np-hero-h1 {
           font-size: clamp(48px, 8vw, 96px);
           font-weight: 700; letter-spacing: -.03em; line-height: 1.05;
           color: var(--ow); margin-bottom: 10px;
         }
-        .np-hero-h1 .np-grad {
+        #niquo-root .np-hero-h1 .np-grad {
           background: linear-gradient(135deg, #f5f5f7 0%, #8a8a8e 100%);
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
           background-clip: text;
         }
-        .np-hero-sub {
+        #niquo-root .np-hero-sub {
           font-size: clamp(19px, 2.5vw, 28px); font-weight: 300;
           color: #6e6e73; letter-spacing: -.02em; line-height: 1.4;
           margin-bottom: 40px; max-width: 620px;
         }
-        .np-hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .np-btn-blue {
+        #niquo-root .np-hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        #niquo-root .np-btn-blue {
           background: #0071e3; color: #fff;
           font-size: 17px; font-weight: 400;
           padding: 12px 26px; border-radius: 980px;
           border: none; cursor: pointer; text-decoration: none;
           transition: background .2s; display: inline-block; letter-spacing: -.01em;
         }
-        .np-btn-blue:hover { background: #0077ed; }
-        .np-btn-link {
+        #niquo-root .np-btn-blue:hover { background: #0077ed; }
+        #niquo-root .np-btn-link {
           font-size: 17px; font-weight: 400; color: #2997ff;
           text-decoration: none; display: inline-flex;
           align-items: center; gap: 4px; transition: opacity .2s; letter-spacing: -.01em;
         }
-        .np-btn-link:hover { opacity: .8; }
+        #niquo-root .np-btn-link:hover { opacity: .8; }
 
         /* Phone in hero */
-        .np-phone-wrap { margin-top: 72px; position: relative; display: inline-block; }
-        .np-phone {
+        #niquo-root .np-phone-wrap { margin-top: 72px; position: relative; display: inline-block; }
+        #niquo-root .np-phone {
           width: 280px; height: 560px;
           background: linear-gradient(160deg,#1c1c1e 0%,#0a0a0a 100%);
           border-radius: 46px;
@@ -518,44 +527,44 @@ export default function NiquoPage() {
                       inset 0 0 0 1px rgba(255,255,255,0.08);
           overflow: hidden; position: relative;
         }
-        .np-notch {
+        #niquo-root .np-notch {
           width: 100px; height: 28px; background: #000;
           border-radius: 0 0 20px 20px; margin: 0 auto; position: relative; z-index: 2;
         }
-        .np-phone-screen {
+        #niquo-root .np-phone-screen {
           position: absolute; inset: 0;
           padding: 36px 16px 20px;
           display: flex; flex-direction: column;
         }
-        .np-ps-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 4px; }
-        .np-ps-time { font-size: 13px; font-weight: 600; color: var(--ow); }
-        .np-ps-bars { display: flex; gap: 5px; align-items: flex-end; }
-        .np-ps-bar  { width: 3px; border-radius: 1px; background: var(--ow); }
-        .np-wa-hdr  {
+        #niquo-root .np-ps-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 4px; }
+        #niquo-root .np-ps-time { font-size: 13px; font-weight: 600; color: var(--ow); }
+        #niquo-root .np-ps-bars { display: flex; gap: 5px; align-items: flex-end; }
+        #niquo-root .np-ps-bar  { width: 3px; border-radius: 1px; background: var(--ow); }
+        #niquo-root .np-wa-hdr  {
           display: flex; align-items: center; gap: 10px;
           padding: 10px 0; border-bottom: .5px solid rgba(255,255,255,0.08); margin-bottom: 16px;
         }
-        .np-wa-av {
+        #niquo-root .np-wa-av {
           width: 36px; height: 36px; border-radius: 50%;
           background: linear-gradient(135deg,#25d366,#128c7e);
           display: flex; align-items: center; justify-content: center;
           font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0;
         }
-        .np-wa-name   { font-size: 14px; font-weight: 500; color: var(--ow); }
-        .np-wa-status { font-size: 11px; color: #25d366; }
-        .np-chat-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; }
-        .np-chat-them {
+        #niquo-root .np-wa-name   { font-size: 14px; font-weight: 500; color: var(--ow); }
+        #niquo-root .np-wa-status { font-size: 11px; color: #25d366; }
+        #niquo-root .np-chat-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; }
+        #niquo-root .np-chat-them {
           background: #1c1c1e; color: var(--ow);
           padding: 8px 12px; border-radius: 4px 12px 12px 12px;
           font-size: 12px; line-height: 1.45; align-self: flex-start; max-width: 80%;
         }
-        .np-chat-us {
+        #niquo-root .np-chat-us {
           background: #0b5d2e; color: var(--ow);
           padding: 8px 12px; border-radius: 12px 12px 4px 12px;
           font-size: 12px; line-height: 1.45; align-self: flex-end; max-width: 80%;
         }
-        .np-chat-time { font-size: 9px; color: rgba(245,245,247,.35); margin-top: 2px; text-align: right; }
-        .np-phone-glow {
+        #niquo-root .np-chat-time { font-size: 9px; color: rgba(245,245,247,.35); margin-top: 2px; text-align: right; }
+        #niquo-root .np-phone-glow {
           position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
           width: 300px; height: 200px;
           background: radial-gradient(ellipse,rgba(37,211,102,.15) 0%,transparent 70%);
@@ -563,226 +572,228 @@ export default function NiquoPage() {
         }
 
         /* ── TICKER ── */
-        .np-ticker {
+        #niquo-root .np-ticker {
           border-top: .5px solid var(--b1); border-bottom: .5px solid var(--b1);
           padding: 13px 0; overflow: hidden; background: var(--bg2);
         }
-        .np-ticker-track {
+        #niquo-root .np-ticker-track {
           display: flex; gap: 60px; align-items: center;
           animation: nptick 28s linear infinite; width: max-content;
         }
         @keyframes nptick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        .np-ticker-item {
+        #niquo-root .np-ticker-item {
           font-size: 11px; font-weight: 300; color: var(--m2);
           letter-spacing: 2.2px; text-transform: uppercase; white-space: nowrap;
         }
-        .np-ticker-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--m2); flex-shrink: 0; }
+        #niquo-root .np-ticker-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--m2); flex-shrink: 0; }
 
         /* ── SECTION BASE ── */
-        .np-section {
+        #niquo-root .np-section {
           padding: 120px 44px;
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           text-align: center; position: relative; overflow: hidden;
         }
 
         /* ── TAGLINE ── */
-        .np-tag-ey   { font-size: 14px; font-weight: 400; color: #6e6e73; margin-bottom: 12px; letter-spacing: -.1px; }
-        .np-tag-h    { font-size: clamp(40px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); max-width: 800px; }
-        .np-tag-h em { font-style: normal; color: #6e6e73; }
-        .np-tag-sub  { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 560px; margin-top: 16px; line-height: 1.5; letter-spacing: -.01em; }
+        #niquo-root .np-tag-ey   { font-size: 14px; font-weight: 400; color: #6e6e73; margin-bottom: 12px; letter-spacing: -.1px; }
+        #niquo-root .np-tag-h    { font-size: clamp(40px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); max-width: 800px; }
+        #niquo-root .np-tag-h em { font-style: normal; color: #6e6e73; }
+        #niquo-root .np-tag-sub  { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 560px; margin-top: 16px; line-height: 1.5; letter-spacing: -.01em; }
 
         /* ── FEATURES ── */
-        .np-feat-h {
+        #niquo-root .np-feat-h {
           font-size: clamp(32px,5vw,64px); font-weight: 700;
           letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 80px;
         }
-        .np-feat-grid {
+        #niquo-root .np-feat-grid {
           display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
           background: var(--b1); border-radius: 18px; overflow: hidden;
           max-width: 960px; width: 100%; border: .5px solid var(--b1);
         }
-        .np-feat-card {
+        #niquo-root .np-feat-card {
           background: var(--bg3); padding: 40px 36px;
           text-align: left; transition: background .25s;
         }
-        .np-feat-card:hover { background: var(--bg4); }
-        .np-feat-icon { width: 48px; height: 48px; margin-bottom: 20px; }
-        .np-feat-icon svg { width: 100%; height: 100%; }
-        .np-feat-title { font-size: 19px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; line-height: 1.2; }
-        .np-feat-desc  { font-size: 14px; font-weight: 300; color: #6e6e73; line-height: 1.6; letter-spacing: -.01em; }
+        #niquo-root .np-feat-card:hover { background: var(--bg4); }
+        #niquo-root .np-feat-icon { width: 48px; height: 48px; margin-bottom: 20px; }
+        #niquo-root .np-feat-icon svg { width: 100%; height: 100%; }
+        #niquo-root .np-feat-title { font-size: 19px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; line-height: 1.2; }
+        #niquo-root .np-feat-desc  { font-size: 14px; font-weight: 300; color: #6e6e73; line-height: 1.6; letter-spacing: -.01em; }
 
         /* ── DEMO ── */
-        .np-demo-h   { font-size: clamp(36px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
-        .np-demo-sub { font-size: 17px; font-weight: 300; color: #6e6e73; max-width: 540px; margin: 0 auto 60px; line-height: 1.55; letter-spacing: -.01em; }
+        #niquo-root .np-demo-h   { font-size: clamp(36px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
+        #niquo-root .np-demo-sub { font-size: 17px; font-weight: 300; color: #6e6e73; max-width: 540px; margin: 0 auto 60px; line-height: 1.55; letter-spacing: -.01em; }
 
-        .np-demo-shell {
+        #niquo-root .np-demo-shell {
           max-width: 900px; margin: 0 auto;
           background: var(--bg2); border: .5px solid var(--b1);
           border-radius: 18px; overflow: hidden; text-align: left;
         }
-        .np-demo-chrome {
+        #niquo-root .np-demo-chrome {
           background: var(--bg3); border-bottom: .5px solid var(--b1);
           padding: 14px 20px; display: flex; align-items: center; gap: 12px;
         }
-        .np-dc-dots { display: flex; gap: 6px; }
-        .np-dc-dot  { width: 12px; height: 12px; border-radius: 50%; }
-        .np-d1 { background: #ff5f57; } .np-d2 { background: #febc2e; } .np-d3 { background: #28c840; }
-        .np-dc-url {
+        #niquo-root .np-dc-dots { display: flex; gap: 6px; }
+        #niquo-root .np-dc-dot  { width: 12px; height: 12px; border-radius: 50%; }
+        #niquo-root .np-d1 { background: #ff5f57; } .np-d2 { background: #febc2e; } .np-d3 { background: #28c840; }
+        #niquo-root .np-dc-url {
           flex: 1; font-size: 12px; font-weight: 300; color: var(--m2);
           background: var(--m4); border: .5px solid var(--b1);
           border-radius: 6px; padding: 5px 14px; letter-spacing: .2px;
         }
-        .np-demo-split { display: grid; grid-template-columns: 220px 1fr; min-height: 480px; }
-        .np-demo-ctrl  {
+        #niquo-root .np-demo-split { display: grid; grid-template-columns: 220px 1fr; min-height: 480px; }
+        #niquo-root .np-demo-ctrl  {
           border-right: .5px solid var(--b1); padding: 28px 22px;
           display: flex; flex-direction: column; gap: 18px;
         }
-        .np-ctrl-lbl { font-size: 10px; font-weight: 400; color: var(--m2); letter-spacing: 1.8px; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .np-ctrl-inp {
+        #niquo-root .np-ctrl-lbl { font-size: 10px; font-weight: 400; color: var(--m2); letter-spacing: 1.8px; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        #niquo-root .np-ctrl-inp {
           width: 100%; background: var(--m4); border: .5px solid var(--b1);
           border-radius: 8px; padding: 10px 14px; color: var(--ow);
           font-family: var(--sf); font-size: 13px; font-weight: 300; outline: none; transition: border-color .2s;
         }
-        .np-ctrl-inp:focus { border-color: var(--b2); }
-        .np-ctrl-inp::placeholder { color: var(--m2); }
-        .np-ctrl-run {
+        #niquo-root .np-ctrl-inp:focus { border-color: var(--b2); }
+        #niquo-root .np-ctrl-inp::placeholder { color: var(--m2); }
+        #niquo-root .np-ctrl-run {
           width: 100%; background: #0071e3; color: #fff;
           font-family: var(--sf); font-size: 13px; font-weight: 400;
           padding: 10px; border-radius: 8px; border: none; cursor: pointer;
           transition: background .2s; letter-spacing: -.01em;
         }
-        .np-ctrl-run:hover:not(:disabled) { background: #0077ed; }
-        .np-ctrl-run:disabled { opacity: .45; cursor: not-allowed; }
-        .np-ctrl-div {
+        #niquo-root .np-ctrl-run:hover:not(:disabled) { background: #0077ed; }
+        #niquo-root .np-ctrl-run:disabled { opacity: .45; cursor: not-allowed; }
+        #niquo-root .np-ctrl-div {
           display: flex; align-items: center; gap: 8px;
           color: var(--m2); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
         }
-        .np-ctrl-div::before, .np-ctrl-div::after { content: ''; flex: 1; height: .5px; background: var(--b1); }
-        .np-scen-list { display: flex; flex-direction: column; gap: 5px; }
-        .np-scen-btn {
+        #niquo-root .np-ctrl-div::before, .np-ctrl-div::after { content: ''; flex: 1; height: .5px; background: var(--b1); }
+        #niquo-root .np-scen-list { display: flex; flex-direction: column; gap: 5px; }
+        #niquo-root .np-scen-btn {
           background: transparent; border: .5px solid var(--b1);
           border-radius: 6px; padding: 8px 12px; color: var(--m1);
           font-family: var(--sf); font-size: 12px; font-weight: 300;
           cursor: pointer; text-align: left; transition: all .2s; letter-spacing: -.01em;
         }
-        .np-scen-btn:hover:not(:disabled) { background: var(--m4); border-color: var(--b2); color: var(--ow); }
-        .np-scen-btn:disabled { opacity: .35; cursor: not-allowed; }
-        .np-cbiz { font-size: 10px; color: var(--m2); line-height: 1.7; letter-spacing: .2px; }
-        .np-cbiz span { color: var(--m1); }
-        .np-derr { font-size: 11px; color: rgba(255,80,80,.8); line-height: 1.5; }
+        #niquo-root .np-scen-btn:hover:not(:disabled) { background: var(--m4); border-color: var(--b2); color: var(--ow); }
+        #niquo-root .np-scen-btn:disabled { opacity: .35; cursor: not-allowed; }
+        #niquo-root .np-cbiz { font-size: 10px; color: var(--m2); line-height: 1.7; letter-spacing: .2px; }
+        #niquo-root .np-cbiz span { color: var(--m1); }
+        #niquo-root .np-derr { font-size: 11px; color: rgba(255,80,80,.8); line-height: 1.5; }
 
-        .np-demo-feed { padding: 28px 22px; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; }
-        .np-feed-empty {
+        #niquo-root .np-demo-feed { padding: 28px 22px; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; }
+        #niquo-root .np-feed-empty {
           flex: 1; display: flex; align-items: center; justify-content: center;
           font-size: 13px; color: var(--m2); text-align: center; line-height: 2; font-weight: 300;
         }
-        .np-feed-loading {
+        #niquo-root .np-feed-loading {
           flex: 1; display: flex; flex-direction: column;
           align-items: center; justify-content: center;
           gap: 14px; color: var(--m2); font-size: 12px; font-weight: 300;
         }
-        .np-msg-grp { margin-bottom: 16px; animation: np-mfade .3s ease both; }
+        #niquo-root .np-msg-grp { margin-bottom: 16px; animation: np-mfade .3s ease both; }
         @keyframes np-mfade { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
-        .np-msg-who { font-size: 9px; font-weight: 500; letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 5px; }
-        .np-msg-who.p { color: rgba(255,200,80,.55); }
-        .np-msg-who.n { color: rgba(120,180,255,.6); }
-        .np-msg-bub {
+        #niquo-root .np-msg-who { font-size: 9px; font-weight: 500; letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 5px; }
+        #niquo-root .np-msg-who.p { color: rgba(255,200,80,.55); }
+        #niquo-root .np-msg-who.n { color: rgba(120,180,255,.6); }
+        #niquo-root .np-msg-bub {
           display: inline-block; max-width: 88%;
           padding: 10px 14px; border-radius: 4px 10px 10px 10px;
           font-size: 13px; font-weight: 300; line-height: 1.6; letter-spacing: -.01em;
         }
-        .np-msg-bub.p { background: rgba(255,200,80,.06); border: .5px solid rgba(255,200,80,.1);  color: var(--ow); }
-        .np-msg-bub.n { background: rgba(120,180,255,.06); border: .5px solid rgba(120,180,255,.1); color: var(--ow); }
-        .np-trow { display: flex; gap: 4px; padding: 10px 14px; margin-bottom: 16px; }
-        .np-ty   { width: 4px; height: 4px; border-radius: 50%; background: var(--m2); animation: np-tyb 1.1s infinite; }
-        .np-ty:nth-child(2){ animation-delay:.18s } .np-ty:nth-child(3){ animation-delay:.36s }
+        #niquo-root .np-msg-bub.p { background: rgba(255,200,80,.06); border: .5px solid rgba(255,200,80,.1);  color: var(--ow); }
+        #niquo-root .np-msg-bub.n { background: rgba(120,180,255,.06); border: .5px solid rgba(120,180,255,.1); color: var(--ow); }
+        #niquo-root .np-trow { display: flex; gap: 4px; padding: 10px 14px; margin-bottom: 16px; }
+        #niquo-root .np-ty   { width: 4px; height: 4px; border-radius: 50%; background: var(--m2); animation: np-tyb 1.1s infinite; }
+        #niquo-root .np-ty:nth-child(2){ animation-delay:.18s } .np-ty:nth-child(3){ animation-delay:.36s }
         @keyframes np-tyb { 0%,70%,100%{transform:translateY(0)} 35%{transform:translateY(-4px)} }
 
         /* ── HOW ── */
-        .np-how-h { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 80px; }
-        .np-how-steps {
+        #niquo-root .np-how-h { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 80px; }
+        #niquo-root .np-how-steps {
           display: grid; grid-template-columns: repeat(4,1fr);
           max-width: 960px; width: 100%;
           border-top: .5px solid var(--b1);
         }
-        .np-how-step { padding: 44px 28px 0; border-right: .5px solid var(--b1); text-align: left; }
-        .np-how-step:last-child { border-right: none; }
-        .np-hs-n {
+        #niquo-root .np-how-step { padding: 44px 28px 0; border-right: .5px solid var(--b1); text-align: left; }
+        #niquo-root .np-how-step:last-child { border-right: none; }
+        #niquo-root .np-hs-n {
           font-size: clamp(40px,5vw,64px); font-weight: 700;
           letter-spacing: -.04em; color: #1d1d1f;
           -webkit-text-stroke: 1px rgba(245,245,247,0.15);
           line-height: 1; margin-bottom: 16px; display: block;
         }
-        .np-hs-t { font-size: 17px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; }
-        .np-hs-d { font-size: 13px; font-weight: 300; color: #6e6e73; line-height: 1.65; letter-spacing: -.01em; }
+        #niquo-root .np-hs-t { font-size: 17px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; }
+        #niquo-root .np-hs-d { font-size: 13px; font-weight: 300; color: #6e6e73; line-height: 1.65; letter-spacing: -.01em; }
 
         /* ── PRICING ── */
-        .np-price-h   { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 16px; }
-        .np-price-sub { font-size: 17px; font-weight: 300; color: #6e6e73; margin-bottom: 64px; letter-spacing: -.01em; }
-        .np-price-grid {
+        #niquo-root .np-price-h   { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 16px; }
+        #niquo-root .np-price-sub { font-size: 17px; font-weight: 300; color: #6e6e73; margin-bottom: 64px; letter-spacing: -.01em; }
+        #niquo-root .np-price-grid {
           display: grid; grid-template-columns: 1fr 1fr;
           max-width: 760px; width: 100%;
           gap: 1px; background: var(--b1);
           border-radius: 18px; overflow: hidden; border: .5px solid var(--b1);
         }
-        .np-pplan    { background: var(--bg2); padding: 44px 40px; text-align: left; }
-        .np-pplan.hi { background: var(--bg3); }
-        .np-pp-tag   { font-size: 12px; font-weight: 500; color: #6e6e73; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; display: block; }
-        .np-pp-amt   { font-size: clamp(36px,5vw,56px); font-weight: 700; letter-spacing: -.04em; color: var(--ow); line-height: 1; margin-bottom: 4px; }
-        .np-pp-per   { font-size: 14px; font-weight: 300; color: #6e6e73; margin-bottom: 28px; display: block; }
-        .np-pp-line  { height: .5px; background: var(--b1); margin-bottom: 24px; }
-        .np-pp-feats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-        .np-pp-f     { font-size: 14px; font-weight: 300; color: #86868b; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
-        .np-pp-f::before { content:'✓'; color:#30d158; font-size:12px; margin-top:2px; flex-shrink:0; }
-        .np-pp-btn {
+        #niquo-root .np-pplan    { background: var(--bg2); padding: 44px 40px; text-align: left; }
+        #niquo-root .np-pplan.hi { background: var(--bg3); }
+        #niquo-root .np-pp-tag   { font-size: 12px; font-weight: 500; color: #6e6e73; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; display: block; }
+        #niquo-root .np-pp-amt   { font-size: clamp(36px,5vw,56px); font-weight: 700; letter-spacing: -.04em; color: var(--ow); line-height: 1; margin-bottom: 4px; }
+        #niquo-root .np-pp-per   { font-size: 14px; font-weight: 300; color: #6e6e73; margin-bottom: 28px; display: block; }
+        #niquo-root .np-pp-line  { height: .5px; background: var(--b1); margin-bottom: 24px; }
+        #niquo-root .np-pp-feats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+        #niquo-root .np-pp-f     { font-size: 14px; font-weight: 300; color: #86868b; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+        #niquo-root .np-pp-f::before { content:'✓'; color:#30d158; font-size:12px; margin-top:2px; flex-shrink:0; }
+        #niquo-root .np-pp-btn {
           display: inline-block; background: #0071e3; color: #fff;
           font-size: 14px; font-weight: 400; padding: 10px 22px;
           border-radius: 980px; border: none; cursor: pointer;
           text-decoration: none; transition: background .2s; letter-spacing: -.01em;
         }
-        .np-pp-btn:hover { background: #0077ed; }
-        .np-pp-btn.ghost { background: transparent; color: #2997ff; border: .5px solid rgba(41,151,255,.4); }
-        .np-pp-btn.ghost:hover { background: rgba(41,151,255,.08); }
-        .np-pp-note { font-size: 12px; color: #6e6e73; margin-top: 12px; line-height: 1.5; }
+        #niquo-root .np-pp-btn:hover { background: #0077ed; }
+        #niquo-root .np-pp-btn.ghost { background: transparent; color: #2997ff; border: .5px solid rgba(41,151,255,.4); }
+        #niquo-root .np-pp-btn.ghost:hover { background: rgba(41,151,255,.08); }
+        #niquo-root .np-pp-note { font-size: 12px; color: #6e6e73; margin-top: 12px; line-height: 1.5; }
 
         /* ── FINAL CTA ── */
-        .np-cta-h   { font-size: clamp(36px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
-        .np-cta-sub { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 500px; margin: 0 auto 40px; line-height: 1.5; letter-spacing: -.01em; }
-        .np-cta-note { margin-top: 20px; font-size: 13px; color: #6e6e73; }
+        #niquo-root .np-cta-h   { font-size: clamp(36px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
+        #niquo-root .np-cta-sub { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 500px; margin: 0 auto 40px; line-height: 1.5; letter-spacing: -.01em; }
+        #niquo-root .np-cta-note { margin-top: 20px; font-size: 13px; color: #6e6e73; }
 
         /* ── FOOTER ── */
-        .np-footer {
+        #niquo-root .np-footer {
           background: var(--bg2); border-top: .5px solid var(--b1);
           padding: 20px 44px; display: flex; align-items: center; justify-content: space-between;
         }
-        .np-fright { display: flex; gap: 28px; }
-        .np-flink  { font-size: 12px; color: #6e6e73; text-decoration: none; transition: color .2s; }
-        .np-flink:hover { color: var(--ow); }
+        #niquo-root .np-fright { display: flex; gap: 28px; }
+        #niquo-root .np-flink  { font-size: 12px; color: #6e6e73; text-decoration: none; transition: color .2s; }
+        #niquo-root .np-flink:hover { color: var(--ow); }
 
         /* ── SCROLL REVEAL ── */
-        .np-sr {
+        #niquo-root .np-sr {
           opacity: 0; transform: translateY(24px);
           transition: opacity .8s cubic-bezier(.25,.46,.45,.94), transform .8s cubic-bezier(.25,.46,.45,.94);
         }
-        .np-sr.np-vis { opacity: 1; transform: none; }
-        .np-d1 { transition-delay: .1s; } .np-d2 { transition-delay: .2s; }
-        .np-d3 { transition-delay: .3s; } .np-d4 { transition-delay: .4s; }
+        #niquo-root .np-sr.np-vis { opacity: 1; transform: none; }
+        #niquo-root .np-d1 { transition-delay: .1s; } .np-d2 { transition-delay: .2s; }
+        #niquo-root .np-d3 { transition-delay: .3s; } .np-d4 { transition-delay: .4s; }
 
         /* ── RESPONSIVE ── */
         @media(max-width: 768px) {
-          .np-nav { padding: 0 20px; }
-          .np-nav-links li:not(:last-child) { display: none; }
-          .np-hero { padding: 80px 20px 60px; }
-          .np-section { padding: 80px 20px; }
-          .np-feat-grid { grid-template-columns: 1fr; }
-          .np-how-steps { grid-template-columns: 1fr 1fr; }
-          .np-how-step { border-right: none; border-bottom: .5px solid var(--b1); padding: 28px 0; }
-          .np-demo-split { grid-template-columns: 1fr; }
-          .np-demo-ctrl { border-right: none; border-bottom: .5px solid var(--b1); }
-          .np-price-grid { grid-template-columns: 1fr; }
-          .np-footer { padding: 24px 20px; flex-direction: column; gap: 16px; }
+          #niquo-root .np-nav { padding: 0 20px; }
+          #niquo-root .np-nav-links li:not(:last-child) { display: none; }
+          #niquo-root .np-hero { padding: 80px 20px 60px; }
+          #niquo-root .np-section { padding: 80px 20px; }
+          #niquo-root .np-feat-grid { grid-template-columns: 1fr; }
+          #niquo-root .np-how-steps { grid-template-columns: 1fr 1fr; }
+          #niquo-root .np-how-step { border-right: none; border-bottom: .5px solid var(--b1); padding: 28px 0; }
+          #niquo-root .np-demo-split { grid-template-columns: 1fr; }
+          #niquo-root .np-demo-ctrl { border-right: none; border-bottom: .5px solid var(--b1); }
+          #niquo-root .np-price-grid { grid-template-columns: 1fr; }
+          #niquo-root .np-footer { padding: 24px 20px; flex-direction: column; gap: 16px; }
         }
       `}</style>
+
+      <div id="niquo-root">
 
       {/* ── NAV ── */}
       <nav className="np-nav">
@@ -990,6 +1001,8 @@ export default function NiquoPage() {
         </div>
       </footer>
 
+      </div>{/* end #niquo-root */}
+
       {/* ── SCROLL REVEAL INIT ── */}
       <ScrollReveal />
     </>
@@ -999,7 +1012,8 @@ export default function NiquoPage() {
 // Scroll reveal as a client component side-effect
 function ScrollReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll('.np-sr');
+    const root = document.getElementById('niquo-root');
+    const els = root ? root.querySelectorAll('.np-sr') : document.querySelectorAll('.np-sr');
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('np-vis'); io.unobserve(e.target); } }),
       { threshold: 0.1 }
