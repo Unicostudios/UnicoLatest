@@ -1,1025 +1,538 @@
 'use client';
 
-// ─────────────────────────────────────────────────────────────
 // PATH: src/app/niquo/page.jsx
-// ─────────────────────────────────────────────────────────────
+// ZERO classNames for layout/styling — 100% inline styles
+// Tailwind cannot interfere with inline styles ever.
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-// ─────────────────────────────────────────────────────────────
-// UTILITIES
-// ─────────────────────────────────────────────────────────────
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
+const C = {
+  black:   '#000000',
+  black2:  '#0a0a0a',
+  black3:  '#111111',
+  black4:  '#1a1a1a',
+  white:   '#f5f5f7',
+  gray:    '#6e6e73',
+  gray2:   'rgba(245,245,247,0.1)',
+  gray3:   'rgba(245,245,247,0.05)',
+  gray4:   'rgba(245,245,247,0.28)',
+  blue:    '#0071e3',
+  blue2:   '#2997ff',
+  green:   '#30d158',
+  wa:      '#25d366',
+  amber:   'rgba(255,200,80,0.55)',
+  violet:  'rgba(120,180,255,0.6)',
+  sf:      "-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif",
+  brand:   "'Comfortaa',sans-serif",
+};
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// ── PARSE SIMULATION ───────────────────────────────────────────────────────
 function parseSimulation(reply) {
   const lines = reply.split('\n');
   const msgs = [];
   let cur = null;
   for (const line of lines) {
     const t = line.trim();
-    if (t.startsWith('PROSPECT:')) {
-      if (cur) msgs.push(cur);
-      cur = { r: 'p', t: t.replace('PROSPECT:', '').trim() };
-    } else if (t.startsWith('NIQUO:')) {
-      if (cur) msgs.push(cur);
-      cur = { r: 'n', t: t.replace('NIQUO:', '').trim() };
-    } else if (t === 'END_SIMULATION') {
-      break;
-    } else if (cur && t) {
-      cur.t += ' ' + t;
-    }
+    if (t.startsWith('PROSPECT:'))      { if (cur) msgs.push(cur); cur = { r: 'p', t: t.replace('PROSPECT:', '').trim() }; }
+    else if (t.startsWith('NIQUO:'))    { if (cur) msgs.push(cur); cur = { r: 'n', t: t.replace('NIQUO:', '').trim() }; }
+    else if (t === 'END_SIMULATION')    { break; }
+    else if (cur && t)                  { cur.t += ' ' + t; }
   }
   if (cur) msgs.push(cur);
   return msgs;
 }
 
-// ─────────────────────────────────────────────────────────────
-// NEURAL CANVAS HOOK
-// ─────────────────────────────────────────────────────────────
+// ── NEURAL CANVAS ──────────────────────────────────────────────────────────
 function useNeuralCanvas(canvasRef, heroRef) {
-  const mouseRef = useRef({ x: -999, y: -999 });
-  const ptsRef   = useRef([]);
-  const rafRef   = useRef(null);
+  const mouse = useRef({ x: -999, y: -999 });
+  const pts   = useRef([]);
+  const raf   = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const hero   = heroRef.current;
-    if (!canvas || !hero) return;
-    const ctx = canvas.getContext('2d');
+    const cvs  = canvasRef.current;
+    const hero = heroRef.current;
+    if (!cvs || !hero) return;
+    const ctx = cvs.getContext('2d');
 
-    function resize() {
-      canvas.width  = hero.offsetWidth;
-      canvas.height = hero.offsetHeight;
-      buildPts();
-    }
-    function buildPts() {
-      const W = canvas.width, H = canvas.height;
-      const count = Math.floor((W * H) / 14000);
-      ptsRef.current = Array.from({ length: count }, () => ({
+    const resize = () => {
+      cvs.width  = hero.offsetWidth;
+      cvs.height = hero.offsetHeight;
+      const W = cvs.width, H = cvs.height;
+      pts.current = Array.from({ length: Math.floor((W * H) / 14000) }, () => ({
         x: Math.random() * W, y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: (Math.random() - 0.5) * 0.18,
-        r: 0.8 + Math.random() * 1.1,
-        ba: 0.07 + Math.random() * 0.16,
+        vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18,
+        r: 0.8 + Math.random() * 1.1, ba: 0.07 + Math.random() * 0.15,
       }));
-    }
-    function draw() {
-      const W = canvas.width, H = canvas.height;
-      const pts = ptsRef.current;
-      const mouse = mouseRef.current;
+    };
+
+    const draw = () => {
+      const W = cvs.width, H = cvs.height;
       ctx.clearRect(0, 0, W, H);
-      for (let i = 0; i < pts.length; i++) {
-        const p = pts[i];
+      for (let i = 0; i < pts.current.length; i++) {
+        const p = pts.current[i];
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > W) p.vx *= -1;
         if (p.y < 0 || p.y > H) p.vy *= -1;
-        const dm   = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+        const dm   = Math.hypot(p.x - mouse.current.x, p.y - mouse.current.y);
         const glow = dm < 120 ? (1 - dm / 120) * 0.4 : 0;
-        const alpha = Math.min(1, p.ba + glow);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r + glow * 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,245,247,${alpha.toFixed(3)})`;
+        ctx.fillStyle = `rgba(245,245,247,${Math.min(1, p.ba + glow).toFixed(3)})`;
         ctx.fill();
-        for (let j = i + 1; j < pts.length; j++) {
-          const q = pts[j];
+        for (let j = i + 1; j < pts.current.length; j++) {
+          const q = pts.current[j];
           const d = Math.hypot(p.x - q.x, p.y - q.y);
           if (d < 100) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(245,245,247,${((1 - d / 100) * 0.045).toFixed(3)})`;
-            ctx.lineWidth = 0.4;
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(245,245,247,${((1 - d / 100) * 0.04).toFixed(3)})`;
+            ctx.lineWidth = 0.4; ctx.stroke();
           }
         }
       }
-      rafRef.current = requestAnimationFrame(draw);
-    }
+      raf.current = requestAnimationFrame(draw);
+    };
+
+    const onMove  = (e) => { const r = cvs.getBoundingClientRect(); mouse.current = { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    const onLeave = ()  => { mouse.current = { x: -999, y: -999 }; };
 
     window.addEventListener('resize', resize);
-    hero.addEventListener('mousemove', (e) => {
-      const r = canvas.getBoundingClientRect();
-      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
-    });
-    hero.addEventListener('mouseleave', () => {
-      mouseRef.current = { x: -999, y: -999 };
-    });
-
-    resize();
-    draw();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [canvasRef, heroRef]);
+    hero.addEventListener('mousemove', onMove);
+    hero.addEventListener('mouseleave', onLeave);
+    resize(); draw();
+    return () => { window.removeEventListener('resize', resize); if (raf.current) cancelAnimationFrame(raf.current); };
+  }, []);
 }
 
-// ─────────────────────────────────────────────────────────────
-// DEMO FEED — connected to real /api/chat
-// ─────────────────────────────────────────────────────────────
-const SCENARIO_TRIGGERS = {
-  Skeptic:    'SIMULATE_SCENARIO SKEPTIC',
-  Angry:      'SIMULATE_SCENARIO ANGRY',
-  Price:      'SIMULATE_SCENARIO PRICE',
-  Competitor: 'SIMULATE_SCENARIO COMPETITOR',
-  Almost:     'SIMULATE_SCENARIO ALMOST',
-  Ghost:      'SIMULATE_SCENARIO GHOSTER',
+// ── DEMO FEED ──────────────────────────────────────────────────────────────
+const TRIGGERS = {
+  Skeptic: 'SIMULATE_SCENARIO SKEPTIC', Angry: 'SIMULATE_SCENARIO ANGRY',
+  Price: 'SIMULATE_SCENARIO PRICE',     Competitor: 'SIMULATE_SCENARIO COMPETITOR',
+  Almost: 'SIMULATE_SCENARIO ALMOST',   Ghost: 'SIMULATE_SCENARIO GHOSTER',
+};
+const SCENARIO_LABELS = {
+  Skeptic: 'The Skeptic', Angry: 'The Angry Lead', Price: 'Price Objection',
+  Competitor: 'Competitor Battle', Almost: 'Almost Closed', Ghost: 'The Ghost',
 };
 
 function DemoFeed() {
-  const [messages,     setMessages]     = useState([]);
-  const [isRunning,    setIsRunning]     = useState(false);
-  const [typing,       setTyping]        = useState(false);
-  const [url,          setUrl]           = useState('');
-  const [error,        setError]         = useState('');
-  const [confirmedUrl, setConfirmedUrl]  = useState(null);
-  const feedRef    = useRef(null);
-  const historyRef = useRef([]);
+  const [msgs,    setMsgs]    = useState([]);
+  const [running, setRunning] = useState(false);
+  const [typing,  setTyping]  = useState(false);
+  const [url,     setUrl]     = useState('');
+  const [err,     setErr]     = useState('');
+  const [bizUrl,  setBizUrl]  = useState(null);
+  const feedRef = useRef(null);
+  const histRef = useRef([]);
 
-  useEffect(() => {
-    if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
-  }, [messages, typing]);
+  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight; }, [msgs, typing]);
 
-  async function streamMsgs(msgs) {
-    for (const m of msgs) {
+  const stream = async (parsed) => {
+    for (const m of parsed) {
       const isP = m.r === 'p';
       setTyping(true);
       await sleep(isP ? 850 : 1400);
       setTyping(false);
-      setMessages((prev) => [...prev, { role: m.r, text: '', partial: true }]);
-      const words = m.t.split(' ');
-      for (const w of words) {
-        setMessages((prev) => {
-          const copy = [...prev];
-          copy[copy.length - 1] = {
-            role: m.r,
-            text: copy[copy.length - 1].text + (copy[copy.length - 1].text ? ' ' : '') + w,
-            partial: true,
-          };
-          return copy;
-        });
-        if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
+      setMsgs((p) => [...p, { role: m.r, text: '', partial: true }]);
+      for (const w of m.t.split(' ')) {
+        setMsgs((p) => { const c = [...p]; c[c.length - 1] = { role: m.r, text: c[c.length - 1].text + (c[c.length - 1].text ? ' ' : '') + w, partial: true }; return c; });
         await sleep(isP ? 46 : 64);
       }
-      setMessages((prev) => {
-        const copy = [...prev];
-        copy[copy.length - 1] = { ...copy[copy.length - 1], partial: false };
-        return copy;
-      });
+      setMsgs((p) => { const c = [...p]; c[c.length - 1] = { ...c[c.length - 1], partial: false }; return c; });
       await sleep(isP ? 360 : 520);
     }
-  }
+  };
 
-  async function callApi(message, urlToUse) {
-    if (isRunning) return;
-    setIsRunning(true);
-    setError('');
-    setMessages([]);
-    setTyping(false);
-
+  const callApi = async (message, useUrl) => {
+    if (running) return;
+    setRunning(true); setErr(''); setMsgs([]); setTyping(false);
     try {
-      const res = await fetch('/api/chat', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message,
-          history:        historyRef.current,
-          mode:           'niquo',
-          email:          'demo@niquo.ai',
-          uploadedContent: null,
-          confirmedUrl:   urlToUse || null,
-        }),
-      });
-      if (!res.ok) throw new Error('API error');
+      const res  = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: histRef.current, mode: 'niquo', email: 'demo@niquo.ai', uploadedContent: null, confirmedUrl: useUrl || null }) });
+      if (!res.ok) throw new Error();
       const data   = await res.json();
-      const reply  = data.reply || '';
-      const parsed = parseSimulation(reply);
-      await streamMsgs(parsed.length ? parsed : [{ r: 'n', t: reply }]);
-      historyRef.current = [
-        ...historyRef.current,
-        { role: 'user',      content: message },
-        { role: 'assistant', content: reply   },
-      ];
-    } catch {
-      setError('Something went wrong. Check your connection and try again.');
-    } finally {
-      setIsRunning(false);
-      setTyping(false);
-    }
-  }
+      const parsed = parseSimulation(data.reply || '');
+      await stream(parsed.length ? parsed : [{ r: 'n', t: data.reply }]);
+      histRef.current = [...histRef.current, { role: 'user', content: message }, { role: 'assistant', content: data.reply }];
+    } catch { setErr('Something went wrong. Try again.'); }
+    finally { setRunning(false); setTyping(false); }
+  };
 
-  function handleRun() {
-    if (!url.trim()) { setError('Enter your website URL or company name first.'); return; }
-    setError('');
-    let clean = url.trim();
-    if (!clean.startsWith('http')) clean = 'https://' + clean;
-    setConfirmedUrl(clean);
-    historyRef.current = [];
+  const handleRun = () => {
+    if (!url.trim()) { setErr('Enter your website URL first.'); return; }
+    setErr('');
+    const clean = url.startsWith('http') ? url : 'https://' + url;
+    setBizUrl(clean); histRef.current = [];
     callApi(clean, clean);
-  }
+  };
 
-  function handleScenario(key) {
-    if (!confirmedUrl) { setError('Run the main demo first so Niquo knows your business.'); return; }
-    setError('');
-    callApi(SCENARIO_TRIGGERS[key], confirmedUrl);
-  }
+  const handleScen = (key) => {
+    if (!bizUrl) { setErr('Run the main demo first.'); return; }
+    setErr(''); callApi(TRIGGERS[key], bizUrl);
+  };
+
+  // Styles
+  const S = {
+    shell:   { background: C.black2, border: `0.5px solid ${C.gray2}`, borderRadius: '12px', overflow: 'hidden', maxWidth: '900px', margin: '0 auto', textAlign: 'left' },
+    chrome:  { background: C.black3, borderBottom: `0.5px solid ${C.gray2}`, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: '12px' },
+    dot:     (bg) => ({ width: '11px', height: '11px', borderRadius: '50%', background: bg }),
+    url:     { flex: 1, fontSize: '11px', fontWeight: 300, color: C.gray4, background: C.gray3, border: `0.5px solid ${C.gray2}`, borderRadius: '4px', padding: '5px 14px', fontFamily: C.sf },
+    split:   { display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: '480px' },
+    ctrl:    { borderRight: `0.5px solid ${C.gray2}`, padding: '28px 22px', display: 'flex', flexDirection: 'column', gap: '18px' },
+    lbl:     { fontSize: '10px', fontWeight: 400, color: C.gray4, letterSpacing: '1.8px', textTransform: 'uppercase', display: 'block', marginBottom: '8px', fontFamily: C.sf },
+    inp:     { width: '100%', background: C.gray3, border: `0.5px solid ${C.gray2}`, borderRadius: '8px', padding: '10px 14px', color: C.white, fontFamily: C.sf, fontSize: '13px', fontWeight: 300, outline: 'none' },
+    runBtn:  (disabled) => ({ width: '100%', background: disabled ? '#444' : C.blue, color: C.white, fontFamily: C.sf, fontSize: '13px', fontWeight: 400, padding: '11px', borderRadius: '8px', border: 'none', cursor: disabled ? 'not-allowed' : 'pointer', letterSpacing: '-0.01em' }),
+    divider: { display: 'flex', alignItems: 'center', gap: '8px', color: C.gray4, fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 300, fontFamily: C.sf },
+    scenBtn: { background: 'transparent', border: `0.5px solid ${C.gray2}`, borderRadius: '6px', padding: '8px 12px', color: 'rgba(245,245,247,0.56)', fontFamily: C.sf, fontSize: '12px', fontWeight: 300, cursor: 'pointer', textAlign: 'left', width: '100%', marginBottom: '5px' },
+    feed:    { padding: '28px 22px', overflowY: 'auto', maxHeight: '480px', display: 'flex', flexDirection: 'column' },
+    empty:   { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: C.gray4, textAlign: 'center', lineHeight: 2, fontFamily: C.sf, fontWeight: 300 },
+    loading: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '14px', color: C.gray4, fontSize: '12px', fontWeight: 300, fontFamily: C.sf },
+    msgWho:  (role) => ({ fontSize: '9px', fontWeight: 500, letterSpacing: '1.8px', textTransform: 'uppercase', marginBottom: '5px', fontFamily: C.sf, color: role === 'p' ? C.amber : C.violet }),
+    msgBub:  (role) => ({ display: 'inline-block', maxWidth: '88%', padding: '10px 14px', borderRadius: role === 'p' ? '4px 10px 10px 10px' : '10px 10px 4px 10px', fontSize: '13px', fontWeight: 300, lineHeight: 1.6, fontFamily: C.sf, background: role === 'p' ? 'rgba(255,200,80,0.06)' : 'rgba(120,180,255,0.06)', border: role === 'p' ? '0.5px solid rgba(255,200,80,0.1)' : '0.5px solid rgba(120,180,255,0.1)', color: C.white }),
+  };
 
   return (
-    <div className="np-demo-shell">
-      {/* Chrome bar */}
-      <div className="np-demo-chrome">
-        <div className="np-dc-dots">
-          <div className="np-dc-dot np-d1" />
-          <div className="np-dc-dot np-d2" />
-          <div className="np-dc-dot np-d3" />
+    <div style={S.shell}>
+      {/* Chrome */}
+      <div style={S.chrome}>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <div style={S.dot('#ff5f57')} />
+          <div style={S.dot('#febc2e')} />
+          <div style={S.dot('#28c840')} />
         </div>
-        <div className="np-dc-url">
-          {confirmedUrl || 'unicostudios.in/niquo — live demo'}
-        </div>
+        <div style={S.url}>{bizUrl || 'unicostudios.in/niquo — live demo'}</div>
       </div>
 
       {/* Split */}
-      <div className="np-demo-split">
+      <div style={S.split}>
         {/* Controls */}
-        <div className="np-demo-ctrl">
+        <div style={S.ctrl}>
           <div>
-            <span className="np-ctrl-lbl">your business</span>
-            <input
-              className="np-ctrl-inp"
-              type="text"
-              placeholder="yourwebsite.com"
-              value={url}
-              onChange={(e) => { setUrl(e.target.value); setError(''); }}
-              onKeyDown={(e) => e.key === 'Enter' && handleRun()}
-            />
+            <span style={S.lbl}>your business</span>
+            <input style={S.inp} type="text" placeholder="yourwebsite.com" value={url}
+              onChange={(e) => { setUrl(e.target.value); setErr(''); }}
+              onKeyDown={(e) => e.key === 'Enter' && handleRun()} />
           </div>
-          {error && <p className="np-derr">{error}</p>}
-          <button
-            className="np-ctrl-run"
-            onClick={handleRun}
-            disabled={isRunning}
-          >
-            {isRunning ? 'Niquo is thinking…' : 'Run simulation'}
+          {err && <p style={{ fontSize: '11px', color: 'rgba(255,80,80,0.8)', fontFamily: C.sf, lineHeight: 1.5 }}>{err}</p>}
+          <button style={S.runBtn(running)} onClick={handleRun} disabled={running}>
+            {running ? 'Niquo is thinking…' : 'Run simulation'}
           </button>
-          <div className="np-ctrl-div">scenarios</div>
-          <div className="np-scen-list">
-            {Object.keys(SCENARIO_TRIGGERS).map((key) => (
-              <button
-                key={key}
-                className="np-scen-btn"
-                onClick={() => handleScenario(key)}
-                disabled={isRunning}
-              >
-                {key === 'Skeptic'    && 'The Skeptic'}
-                {key === 'Angry'      && 'The Angry Lead'}
-                {key === 'Price'      && 'Price Objection'}
-                {key === 'Competitor' && 'Competitor Battle'}
-                {key === 'Almost'     && 'Almost Closed'}
-                {key === 'Ghost'      && 'The Ghost'}
+          <div style={S.divider}>
+            <div style={{ flex: 1, height: '0.5px', background: C.gray2 }} />
+            scenarios
+            <div style={{ flex: 1, height: '0.5px', background: C.gray2 }} />
+          </div>
+          <div>
+            {Object.keys(TRIGGERS).map((key) => (
+              <button key={key} style={S.scenBtn} onClick={() => handleScen(key)} disabled={running}>
+                {SCENARIO_LABELS[key]}
               </button>
             ))}
           </div>
-          {confirmedUrl && (
-            <p className="np-cbiz">
-              Niquo is selling for<br />
-              <span>{confirmedUrl}</span>
+          {bizUrl && (
+            <p style={{ fontSize: '10px', color: C.gray4, lineHeight: 1.7, fontFamily: C.sf }}>
+              Niquo is selling for<br /><span style={{ color: 'rgba(245,245,247,0.56)' }}>{bizUrl}</span>
             </p>
           )}
         </div>
 
         {/* Feed */}
-        <div className="np-demo-feed" ref={feedRef}>
-          {messages.length === 0 && !typing && !isRunning && (
-            <div className="np-feed-empty">
-              Paste your business URL above.<br />
-              Watch Niquo become your salesperson.
-            </div>
+        <div style={S.feed} ref={feedRef}>
+          {msgs.length === 0 && !typing && !running && (
+            <div style={S.empty}>Paste your business URL above.<br />Watch Niquo become your salesperson.</div>
           )}
-          {isRunning && messages.length === 0 && (
-            <div className="np-feed-loading">
-              <div className="np-trow">
-                <div className="np-ty" /><div className="np-ty" /><div className="np-ty" />
-              </div>
+          {running && msgs.length === 0 && (
+            <div style={S.loading}>
+              <TypingDots />
               <span>Reading your business…</span>
             </div>
           )}
-          {messages.map((m, i) => (
-            <div key={i} className="np-msg-grp">
-              <div className={`np-msg-who ${m.role}`}>
-                {m.role === 'p' ? 'PROSPECT' : 'NIQUO'}
-              </div>
-              <div className={`np-msg-bub ${m.role}`}>{m.text}</div>
+          {msgs.map((m, i) => (
+            <div key={i} style={{ marginBottom: '16px' }}>
+              <div style={S.msgWho(m.role)}>{m.role === 'p' ? 'PROSPECT' : 'NIQUO'}</div>
+              <div style={S.msgBub(m.role)}>{m.text}</div>
             </div>
           ))}
-          {typing && (
-            <div className="np-trow">
-              <div className="np-ty" /><div className="np-ty" /><div className="np-ty" />
-            </div>
-          )}
+          {typing && <div style={{ marginBottom: '16px' }}><TypingDots /></div>}
         </div>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────
-// MAIN PAGE
-// ─────────────────────────────────────────────────────────────
+// ── TYPING DOTS ────────────────────────────────────────────────────────────
+function TypingDots() {
+  return (
+    <>
+      <style>{`.nq-ty{width:4px;height:4px;border-radius:50%;background:rgba(245,245,247,0.28);animation:nqtyb 1.1s infinite;display:inline-block;}.nq-ty:nth-child(2){animation-delay:.18s}.nq-ty:nth-child(3){animation-delay:.36s}@keyframes nqtyb{0%,70%,100%{transform:translateY(0)}35%{transform:translateY(-4px)}}`}</style>
+      <div style={{ display: 'flex', gap: '4px', padding: '6px 2px' }}>
+        <div className="nq-ty" /><div className="nq-ty" /><div className="nq-ty" />
+      </div>
+    </>
+  );
+}
+
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────────
+function useScrollReveal() {
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `.nq-sr{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}.nq-sr.nq-vis{opacity:1;transform:none}.nq-d1{transition-delay:.1s}.nq-d2{transition-delay:.2s}.nq-d3{transition-delay:.3s}.nq-d4{transition-delay:.4s}`;
+    document.head.appendChild(style);
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('nq-vis'); io.unobserve(e.target); } }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.nq-sr').forEach((el) => io.observe(el));
+    return () => { io.disconnect(); document.head.removeChild(style); };
+  }, []);
+}
+
+// ── MAIN PAGE ──────────────────────────────────────────────────────────────
 export default function NiquoPage() {
   const canvasRef = useRef(null);
   const heroRef   = useRef(null);
   useNeuralCanvas(canvasRef, heroRef);
+  useScrollReveal();
 
-  const TICKER_ITEMS = [
-    'WhatsApp','HubSpot','Salesforce','Calendly','Slack',
-    'Zoom','Google Ads','Meta Ads','Interakt','Wati','Yellow.ai',
-  ];
+  // ── Shared style helpers ──
+  const section = (bg, extra = {}) => ({
+    background: bg, padding: '120px 44px',
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    textAlign: 'center', position: 'relative', overflow: 'hidden',
+    ...extra,
+  });
+
+  const eyebrow = { fontSize: '14px', fontWeight: 400, color: C.gray, marginBottom: '12px', letterSpacing: '-0.1px', fontFamily: C.sf };
+  const bigH    = (size = 'clamp(40px,6vw,80px)') => ({ fontFamily: C.sf, fontSize: size, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1.05, color: C.white, maxWidth: '800px', textAlign: 'center' });
+  const subText = { fontFamily: C.sf, fontSize: 'clamp(17px,2vw,24px)', fontWeight: 300, color: C.gray, maxWidth: '560px', marginTop: '16px', lineHeight: 1.5, letterSpacing: '-0.01em', textAlign: 'center' };
 
   const FEATURES = [
-    {
-      color: '#2997ff',
-      svg: <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#2997ff" strokeWidth="1.5"/><path d="M16 24h16M24 16v16" stroke="#2997ff" strokeWidth="1.5" strokeLinecap="round"/></svg>,
-      title: 'Reads any business in 60s',
-      desc:  'Paste a URL. Niquo learns your product, pricing, and pitch — and deploys as your best rep, instantly.',
-    },
-    {
-      color: '#30d158',
-      svg: <svg viewBox="0 0 48 48" fill="none"><path d="M8 24c0-8.837 7.163-16 16-16s16 7.163 16 16-7.163 16-16 16" stroke="#30d158" strokeWidth="1.5" strokeLinecap="round"/><path d="M24 32l-6-4 6-4 6 4-6 4z" stroke="#30d158" strokeWidth="1.5" strokeLinejoin="round"/></svg>,
-      title: 'Handles every objection',
-      desc:  'Price, skeptics, competitors, ghosts — calibrated responses for every scenario, specific to your business.',
-    },
-    {
-      color: '#ff9f0a',
-      svg: <svg viewBox="0 0 48 48" fill="none"><path d="M24 8v8M24 32v8M8 24h8M32 24h8" stroke="#ff9f0a" strokeWidth="1.5" strokeLinecap="round"/><circle cx="24" cy="24" r="6" stroke="#ff9f0a" strokeWidth="1.5"/></svg>,
-      title: 'Multilingual by default',
-      desc:  'Hindi, Tamil, Kannada, Hinglish — Niquo mirrors the exact language and tone your lead uses.',
-    },
-    {
-      color: '#bf5af2',
-      svg: <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="14" width="32" height="20" rx="4" stroke="#bf5af2" strokeWidth="1.5"/><path d="M16 28l4-4 4 4 4-8 4 8" stroke="#bf5af2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-      title: 'WhatsApp · Chat · Calls',
-      desc:  'One Niquo, every channel. Conversations sync to your CRM automatically.',
-    },
-    {
-      color: '#ff375f',
-      svg: <svg viewBox="0 0 48 48" fill="none"><path d="M24 8c8.837 0 16 7.163 16 16s-7.163 16-16 16S8 32.837 8 24" stroke="#ff375f" strokeWidth="1.5" strokeLinecap="round"/><path d="M24 16v8l6 4" stroke="#ff375f" strokeWidth="1.5" strokeLinecap="round"/></svg>,
-      title: 'Auto follow-up',
-      desc:  'No more cold leads going silent. Niquo follows up every ghost at exactly the right time.',
-    },
-    {
-      color: '#64d2ff',
-      svg: <svg viewBox="0 0 48 48" fill="none"><path d="M12 36V20M20 36V12M28 36V24M36 36V16" stroke="#64d2ff" strokeWidth="1.5" strokeLinecap="round"/></svg>,
-      title: 'CRM + calendar sync',
-      desc:  'Hot leads logged, meetings booked, pipeline always fresh — zero manual work from your team.',
-    },
+    { color: '#2997ff', title: 'Reads any business in 60s',    desc: 'Paste a URL. Niquo learns your product, pricing, and pitch — and deploys as your best rep, instantly.' },
+    { color: '#30d158', title: 'Handles every objection',       desc: 'Price, skeptics, competitors, ghosts — calibrated responses for every scenario, specific to your business.' },
+    { color: '#ff9f0a', title: 'Multilingual by default',       desc: 'Hindi, Tamil, Kannada, Hinglish — Niquo mirrors the exact language and tone your lead uses.' },
+    { color: '#bf5af2', title: 'WhatsApp · Chat · Calls',       desc: 'One Niquo, every channel. Conversations sync to your CRM automatically.' },
+    { color: '#ff375f', title: 'Auto follow-up',                desc: 'No more cold leads going silent. Niquo follows up every ghost at exactly the right time.' },
+    { color: '#64d2ff', title: 'CRM + calendar sync',           desc: 'Hot leads logged, meetings booked, pipeline always fresh — zero manual work from your team.' },
   ];
 
-  const HOW_STEPS = [
-    { n: '01', t: 'Share your URL',        d: 'Niquo reads your site — product, pricing, tone — and builds your agent from scratch.' },
-    { n: '02', t: 'We configure',          d: 'Objection playbooks, qualification rules, follow-up cadences — all tuned to your business.' },
-    { n: '03', t: 'Go live',               d: 'Niquo deploys on WhatsApp, chat, or calls. No long contracts, no engineering needed.' },
-    { n: '04', t: 'You only close',        d: 'Hot leads land in your CRM. Your team talks only to people ready to buy.' },
+  const HOW = [
+    { n: '01', t: 'Share your URL',       d: 'Niquo reads your site — product, pricing, tone — and builds your agent from scratch.' },
+    { n: '02', t: 'We configure',         d: 'Objection playbooks, qualification rules, follow-up cadences — all tuned to your business.' },
+    { n: '03', t: 'Go live',              d: 'Niquo deploys on WhatsApp, chat, or calls. No long contracts, no engineering needed.' },
+    { n: '04', t: 'You only close',       d: 'Hot leads land in your CRM. Your team talks only to people ready to buy.' },
   ];
+
+  const TICKER = ['WhatsApp','HubSpot','Salesforce','Calendly','Slack','Zoom','Google Ads','Meta Ads','Interakt','Wati','Yellow.ai'];
 
   return (
     <>
+      {/* Fonts only — no layout CSS */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
-
         html { scroll-behavior: smooth; }
-        body:has(#niquo-root) { background: #000 !important; overflow-x: hidden; }
-
-        /* ALL styles scoped to #niquo-root — beats Tailwind specificity */
-        #niquo-root {
-          --bg:   #000;
-          --bg2:  #0a0a0a;
-          --bg3:  #111;
-          --bg4:  #1a1a1a;
-          --ow:   #f5f5f7;
-          --m1:   rgba(245,245,247,0.56);
-          --m2:   rgba(245,245,247,0.28);
-          --m3:   rgba(245,245,247,0.1);
-          --m4:   rgba(245,245,247,0.05);
-          --b1:   rgba(245,245,247,0.1);
-          --b2:   rgba(245,245,247,0.18);
-          --brand:'Comfortaa',sans-serif;
-          --sf:   -apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
-          display: block;
-          background: #000 !important;
-          color: #f5f5f7 !important;
-          font-family: -apple-system,'SF Pro Display','Helvetica Neue',sans-serif !important;
-          -webkit-font-smoothing: antialiased;
-          overflow-x: hidden;
-          line-height: 1.6;
-        }
-        #niquo-root *, #niquo-root *::before, #niquo-root *::after {
-          box-sizing: border-box;
-        }
-        /* Kill Tailwind's highlight/mark styles inside our page */
-        #niquo-root mark, #niquo-root em, #niquo-root strong {
-          background: none !important;
-          background-color: transparent !important;
-          color: inherit;
-          padding: 0;
-        }
-
-        /* ── NAV ── */
-        #niquo-root .np-nav {
-          height: 52px;
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 0 44px;
-          background: rgba(0,0,0,0.8);
-          backdrop-filter: saturate(180%) blur(20px);
-          border-bottom: 0.5px solid var(--b1);
-          position: sticky; top: 0; z-index: 100;
-        }
-        #niquo-root .np-logo {
-          font-family: var(--brand);
-          font-size: 18px; font-weight: 300;
-          color: var(--ow); letter-spacing: 2px; text-decoration: none;
-        }
-        #niquo-root .np-nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
-        #niquo-root .np-nav-links a {
-          font-size: 12px; color: var(--m1); text-decoration: none;
-          transition: color .2s; letter-spacing: .2px;
-        }
-        #niquo-root .np-nav-links a:hover { color: var(--ow); }
-        #niquo-root .np-nav-cta {
-          font-size: 12px; color: var(--ow);
-          background: rgba(255,255,255,0.1);
-          border: 0.5px solid var(--b2);
-          padding: 6px 16px; border-radius: 20px;
-          cursor: pointer; text-decoration: none; transition: background .2s;
-        }
-        #niquo-root .np-nav-cta:hover { background: rgba(255,255,255,0.18); }
-        #niquo-root .np-nav-back {
-          font-size: 12px; color: var(--m2); text-decoration: none;
-          display: flex; align-items: center; gap: 4px; transition: color .2s;
-        }
-        #niquo-root .np-nav-back:hover { color: var(--m1); }
-
-        /* ── HERO ── */
-        #niquo-root .np-hero {
-          position: relative; min-height: 100vh;
-          display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          text-align: center; padding: 80px 44px 60px;
-          overflow: hidden; background: var(--bg);
-        }
-        #niquo-root .np-hero::before {
-          content: ''; position: absolute; inset: 0;
-          background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(80,80,120,0.1) 0%, transparent 70%);
-          pointer-events: none;
-        }
-        #niquo-root .np-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-        #niquo-root .np-hero-fade {
-          position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-          background: linear-gradient(transparent, var(--bg));
-          pointer-events: none; z-index: 1;
-        }
-        #niquo-root .np-hero-content { position: relative; z-index: 2; }
-        #niquo-root .np-hero-ey {
-          font-size: 17px; font-weight: 400; color: #6e6e73;
-          letter-spacing: -.2px; margin-bottom: 10px;
-        }
-        #niquo-root .np-hero-h1 {
-          font-size: clamp(48px, 8vw, 96px);
-          font-weight: 700; letter-spacing: -.03em; line-height: 1.05;
-          color: var(--ow); margin-bottom: 10px;
-        }
-        #niquo-root .np-hero-h1 .np-grad {
-          background: linear-gradient(135deg, #f5f5f7 0%, #8a8a8e 100%);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        #niquo-root .np-hero-sub {
-          font-size: clamp(19px, 2.5vw, 28px); font-weight: 300;
-          color: #6e6e73; letter-spacing: -.02em; line-height: 1.4;
-          margin-bottom: 40px; max-width: 620px;
-        }
-        #niquo-root .np-hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        #niquo-root .np-btn-blue {
-          background: #0071e3; color: #fff;
-          font-size: 17px; font-weight: 400;
-          padding: 12px 26px; border-radius: 980px;
-          border: none; cursor: pointer; text-decoration: none;
-          transition: background .2s; display: inline-block; letter-spacing: -.01em;
-        }
-        #niquo-root .np-btn-blue:hover { background: #0077ed; }
-        #niquo-root .np-btn-link {
-          font-size: 17px; font-weight: 400; color: #2997ff;
-          text-decoration: none; display: inline-flex;
-          align-items: center; gap: 4px; transition: opacity .2s; letter-spacing: -.01em;
-        }
-        #niquo-root .np-btn-link:hover { opacity: .8; }
-
-        /* Phone in hero */
-        #niquo-root .np-phone-wrap { margin-top: 72px; position: relative; display: inline-block; }
-        #niquo-root .np-phone {
-          width: 280px; height: 560px;
-          background: linear-gradient(160deg,#1c1c1e 0%,#0a0a0a 100%);
-          border-radius: 46px;
-          border: 1.5px solid rgba(255,255,255,0.15);
-          box-shadow: 0 60px 120px rgba(0,0,0,0.8),
-                      0 0 0 .5px rgba(255,255,255,0.05),
-                      inset 0 0 0 1px rgba(255,255,255,0.08);
-          overflow: hidden; position: relative;
-        }
-        #niquo-root .np-notch {
-          width: 100px; height: 28px; background: #000;
-          border-radius: 0 0 20px 20px; margin: 0 auto; position: relative; z-index: 2;
-        }
-        #niquo-root .np-phone-screen {
-          position: absolute; inset: 0;
-          padding: 36px 16px 20px;
-          display: flex; flex-direction: column;
-        }
-        #niquo-root .np-ps-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 4px; }
-        #niquo-root .np-ps-time { font-size: 13px; font-weight: 600; color: var(--ow); }
-        #niquo-root .np-ps-bars { display: flex; gap: 5px; align-items: flex-end; }
-        #niquo-root .np-ps-bar  { width: 3px; border-radius: 1px; background: var(--ow); }
-        #niquo-root .np-wa-hdr  {
-          display: flex; align-items: center; gap: 10px;
-          padding: 10px 0; border-bottom: .5px solid rgba(255,255,255,0.08); margin-bottom: 16px;
-        }
-        #niquo-root .np-wa-av {
-          width: 36px; height: 36px; border-radius: 50%;
-          background: linear-gradient(135deg,#25d366,#128c7e);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0;
-        }
-        #niquo-root .np-wa-name   { font-size: 14px; font-weight: 500; color: var(--ow); }
-        #niquo-root .np-wa-status { font-size: 11px; color: #25d366; }
-        #niquo-root .np-chat-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; }
-        #niquo-root .np-chat-them {
-          background: #1c1c1e; color: var(--ow);
-          padding: 8px 12px; border-radius: 4px 12px 12px 12px;
-          font-size: 12px; line-height: 1.45; align-self: flex-start; max-width: 80%;
-        }
-        #niquo-root .np-chat-us {
-          background: #0b5d2e; color: var(--ow);
-          padding: 8px 12px; border-radius: 12px 12px 4px 12px;
-          font-size: 12px; line-height: 1.45; align-self: flex-end; max-width: 80%;
-        }
-        #niquo-root .np-chat-time { font-size: 9px; color: rgba(245,245,247,.35); margin-top: 2px; text-align: right; }
-        #niquo-root .np-phone-glow {
-          position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-          width: 300px; height: 200px;
-          background: radial-gradient(ellipse,rgba(37,211,102,.15) 0%,transparent 70%);
-          pointer-events: none;
-        }
-
-        /* ── TICKER ── */
-        #niquo-root .np-ticker {
-          border-top: .5px solid var(--b1); border-bottom: .5px solid var(--b1);
-          padding: 13px 0; overflow: hidden; background: var(--bg2);
-        }
-        #niquo-root .np-ticker-track {
-          display: flex; gap: 60px; align-items: center;
-          animation: nptick 28s linear infinite; width: max-content;
-        }
-        @keyframes nptick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        #niquo-root .np-ticker-item {
-          font-size: 11px; font-weight: 300; color: var(--m2);
-          letter-spacing: 2.2px; text-transform: uppercase; white-space: nowrap;
-        }
-        #niquo-root .np-ticker-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--m2); flex-shrink: 0; }
-
-        /* ── SECTION BASE ── */
-        #niquo-root .np-section {
-          padding: 120px 44px;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          text-align: center; position: relative; overflow: hidden;
-        }
-
-        /* ── TAGLINE ── */
-        #niquo-root .np-tag-ey   { font-size: 14px; font-weight: 400; color: #6e6e73; margin-bottom: 12px; letter-spacing: -.1px; }
-        #niquo-root .np-tag-h    { font-size: clamp(40px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); max-width: 800px; }
-        #niquo-root .np-tag-h em { font-style: normal; color: #6e6e73; }
-        #niquo-root .np-tag-sub  { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 560px; margin-top: 16px; line-height: 1.5; letter-spacing: -.01em; }
-
-        /* ── FEATURES ── */
-        #niquo-root .np-feat-h {
-          font-size: clamp(32px,5vw,64px); font-weight: 700;
-          letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 80px;
-        }
-        #niquo-root .np-feat-grid {
-          display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
-          background: var(--b1); border-radius: 18px; overflow: hidden;
-          max-width: 960px; width: 100%; border: .5px solid var(--b1);
-        }
-        #niquo-root .np-feat-card {
-          background: var(--bg3); padding: 40px 36px;
-          text-align: left; transition: background .25s;
-        }
-        #niquo-root .np-feat-card:hover { background: var(--bg4); }
-        #niquo-root .np-feat-icon { width: 48px; height: 48px; margin-bottom: 20px; }
-        #niquo-root .np-feat-icon svg { width: 100%; height: 100%; }
-        #niquo-root .np-feat-title { font-size: 19px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; line-height: 1.2; }
-        #niquo-root .np-feat-desc  { font-size: 14px; font-weight: 300; color: #6e6e73; line-height: 1.6; letter-spacing: -.01em; }
-
-        /* ── DEMO ── */
-        #niquo-root .np-demo-h   { font-size: clamp(36px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
-        #niquo-root .np-demo-sub { font-size: 17px; font-weight: 300; color: #6e6e73; max-width: 540px; margin: 0 auto 60px; line-height: 1.55; letter-spacing: -.01em; }
-
-        #niquo-root .np-demo-shell {
-          max-width: 900px; margin: 0 auto;
-          background: var(--bg2); border: .5px solid var(--b1);
-          border-radius: 18px; overflow: hidden; text-align: left;
-        }
-        #niquo-root .np-demo-chrome {
-          background: var(--bg3); border-bottom: .5px solid var(--b1);
-          padding: 14px 20px; display: flex; align-items: center; gap: 12px;
-        }
-        #niquo-root .np-dc-dots { display: flex; gap: 6px; }
-        #niquo-root .np-dc-dot  { width: 12px; height: 12px; border-radius: 50%; }
-        #niquo-root .np-d1 { background: #ff5f57; } .np-d2 { background: #febc2e; } .np-d3 { background: #28c840; }
-        #niquo-root .np-dc-url {
-          flex: 1; font-size: 12px; font-weight: 300; color: var(--m2);
-          background: var(--m4); border: .5px solid var(--b1);
-          border-radius: 6px; padding: 5px 14px; letter-spacing: .2px;
-        }
-        #niquo-root .np-demo-split { display: grid; grid-template-columns: 220px 1fr; min-height: 480px; }
-        #niquo-root .np-demo-ctrl  {
-          border-right: .5px solid var(--b1); padding: 28px 22px;
-          display: flex; flex-direction: column; gap: 18px;
-        }
-        #niquo-root .np-ctrl-lbl { font-size: 10px; font-weight: 400; color: var(--m2); letter-spacing: 1.8px; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        #niquo-root .np-ctrl-inp {
-          width: 100%; background: var(--m4); border: .5px solid var(--b1);
-          border-radius: 8px; padding: 10px 14px; color: var(--ow);
-          font-family: var(--sf); font-size: 13px; font-weight: 300; outline: none; transition: border-color .2s;
-        }
-        #niquo-root .np-ctrl-inp:focus { border-color: var(--b2); }
-        #niquo-root .np-ctrl-inp::placeholder { color: var(--m2); }
-        #niquo-root .np-ctrl-run {
-          width: 100%; background: #0071e3; color: #fff;
-          font-family: var(--sf); font-size: 13px; font-weight: 400;
-          padding: 10px; border-radius: 8px; border: none; cursor: pointer;
-          transition: background .2s; letter-spacing: -.01em;
-        }
-        #niquo-root .np-ctrl-run:hover:not(:disabled) { background: #0077ed; }
-        #niquo-root .np-ctrl-run:disabled { opacity: .45; cursor: not-allowed; }
-        #niquo-root .np-ctrl-div {
-          display: flex; align-items: center; gap: 8px;
-          color: var(--m2); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-        }
-        #niquo-root .np-ctrl-div::before, .np-ctrl-div::after { content: ''; flex: 1; height: .5px; background: var(--b1); }
-        #niquo-root .np-scen-list { display: flex; flex-direction: column; gap: 5px; }
-        #niquo-root .np-scen-btn {
-          background: transparent; border: .5px solid var(--b1);
-          border-radius: 6px; padding: 8px 12px; color: var(--m1);
-          font-family: var(--sf); font-size: 12px; font-weight: 300;
-          cursor: pointer; text-align: left; transition: all .2s; letter-spacing: -.01em;
-        }
-        #niquo-root .np-scen-btn:hover:not(:disabled) { background: var(--m4); border-color: var(--b2); color: var(--ow); }
-        #niquo-root .np-scen-btn:disabled { opacity: .35; cursor: not-allowed; }
-        #niquo-root .np-cbiz { font-size: 10px; color: var(--m2); line-height: 1.7; letter-spacing: .2px; }
-        #niquo-root .np-cbiz span { color: var(--m1); }
-        #niquo-root .np-derr { font-size: 11px; color: rgba(255,80,80,.8); line-height: 1.5; }
-
-        #niquo-root .np-demo-feed { padding: 28px 22px; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; }
-        #niquo-root .np-feed-empty {
-          flex: 1; display: flex; align-items: center; justify-content: center;
-          font-size: 13px; color: var(--m2); text-align: center; line-height: 2; font-weight: 300;
-        }
-        #niquo-root .np-feed-loading {
-          flex: 1; display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          gap: 14px; color: var(--m2); font-size: 12px; font-weight: 300;
-        }
-        #niquo-root .np-msg-grp { margin-bottom: 16px; animation: np-mfade .3s ease both; }
-        @keyframes np-mfade { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
-        #niquo-root .np-msg-who { font-size: 9px; font-weight: 500; letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 5px; }
-        #niquo-root .np-msg-who.p { color: rgba(255,200,80,.55); }
-        #niquo-root .np-msg-who.n { color: rgba(120,180,255,.6); }
-        #niquo-root .np-msg-bub {
-          display: inline-block; max-width: 88%;
-          padding: 10px 14px; border-radius: 4px 10px 10px 10px;
-          font-size: 13px; font-weight: 300; line-height: 1.6; letter-spacing: -.01em;
-        }
-        #niquo-root .np-msg-bub.p { background: rgba(255,200,80,.06); border: .5px solid rgba(255,200,80,.1);  color: var(--ow); }
-        #niquo-root .np-msg-bub.n { background: rgba(120,180,255,.06); border: .5px solid rgba(120,180,255,.1); color: var(--ow); }
-        #niquo-root .np-trow { display: flex; gap: 4px; padding: 10px 14px; margin-bottom: 16px; }
-        #niquo-root .np-ty   { width: 4px; height: 4px; border-radius: 50%; background: var(--m2); animation: np-tyb 1.1s infinite; }
-        #niquo-root .np-ty:nth-child(2){ animation-delay:.18s } .np-ty:nth-child(3){ animation-delay:.36s }
-        @keyframes np-tyb { 0%,70%,100%{transform:translateY(0)} 35%{transform:translateY(-4px)} }
-
-        /* ── HOW ── */
-        #niquo-root .np-how-h { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 80px; }
-        #niquo-root .np-how-steps {
-          display: grid; grid-template-columns: repeat(4,1fr);
-          max-width: 960px; width: 100%;
-          border-top: .5px solid var(--b1);
-        }
-        #niquo-root .np-how-step { padding: 44px 28px 0; border-right: .5px solid var(--b1); text-align: left; }
-        #niquo-root .np-how-step:last-child { border-right: none; }
-        #niquo-root .np-hs-n {
-          font-size: clamp(40px,5vw,64px); font-weight: 700;
-          letter-spacing: -.04em; color: #1d1d1f;
-          -webkit-text-stroke: 1px rgba(245,245,247,0.15);
-          line-height: 1; margin-bottom: 16px; display: block;
-        }
-        #niquo-root .np-hs-t { font-size: 17px; font-weight: 600; color: var(--ow); letter-spacing: -.02em; margin-bottom: 8px; }
-        #niquo-root .np-hs-d { font-size: 13px; font-weight: 300; color: #6e6e73; line-height: 1.65; letter-spacing: -.01em; }
-
-        /* ── PRICING ── */
-        #niquo-root .np-price-h   { font-size: clamp(32px,5vw,64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 16px; }
-        #niquo-root .np-price-sub { font-size: 17px; font-weight: 300; color: #6e6e73; margin-bottom: 64px; letter-spacing: -.01em; }
-        #niquo-root .np-price-grid {
-          display: grid; grid-template-columns: 1fr 1fr;
-          max-width: 760px; width: 100%;
-          gap: 1px; background: var(--b1);
-          border-radius: 18px; overflow: hidden; border: .5px solid var(--b1);
-        }
-        #niquo-root .np-pplan    { background: var(--bg2); padding: 44px 40px; text-align: left; }
-        #niquo-root .np-pplan.hi { background: var(--bg3); }
-        #niquo-root .np-pp-tag   { font-size: 12px; font-weight: 500; color: #6e6e73; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 16px; display: block; }
-        #niquo-root .np-pp-amt   { font-size: clamp(36px,5vw,56px); font-weight: 700; letter-spacing: -.04em; color: var(--ow); line-height: 1; margin-bottom: 4px; }
-        #niquo-root .np-pp-per   { font-size: 14px; font-weight: 300; color: #6e6e73; margin-bottom: 28px; display: block; }
-        #niquo-root .np-pp-line  { height: .5px; background: var(--b1); margin-bottom: 24px; }
-        #niquo-root .np-pp-feats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-        #niquo-root .np-pp-f     { font-size: 14px; font-weight: 300; color: #86868b; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
-        #niquo-root .np-pp-f::before { content:'✓'; color:#30d158; font-size:12px; margin-top:2px; flex-shrink:0; }
-        #niquo-root .np-pp-btn {
-          display: inline-block; background: #0071e3; color: #fff;
-          font-size: 14px; font-weight: 400; padding: 10px 22px;
-          border-radius: 980px; border: none; cursor: pointer;
-          text-decoration: none; transition: background .2s; letter-spacing: -.01em;
-        }
-        #niquo-root .np-pp-btn:hover { background: #0077ed; }
-        #niquo-root .np-pp-btn.ghost { background: transparent; color: #2997ff; border: .5px solid rgba(41,151,255,.4); }
-        #niquo-root .np-pp-btn.ghost:hover { background: rgba(41,151,255,.08); }
-        #niquo-root .np-pp-note { font-size: 12px; color: #6e6e73; margin-top: 12px; line-height: 1.5; }
-
-        /* ── FINAL CTA ── */
-        #niquo-root .np-cta-h   { font-size: clamp(36px,6vw,80px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; color: var(--ow); margin-bottom: 12px; }
-        #niquo-root .np-cta-sub { font-size: clamp(17px,2vw,24px); font-weight: 300; color: #6e6e73; max-width: 500px; margin: 0 auto 40px; line-height: 1.5; letter-spacing: -.01em; }
-        #niquo-root .np-cta-note { margin-top: 20px; font-size: 13px; color: #6e6e73; }
-
-        /* ── FOOTER ── */
-        #niquo-root .np-footer {
-          background: var(--bg2); border-top: .5px solid var(--b1);
-          padding: 20px 44px; display: flex; align-items: center; justify-content: space-between;
-        }
-        #niquo-root .np-fright { display: flex; gap: 28px; }
-        #niquo-root .np-flink  { font-size: 12px; color: #6e6e73; text-decoration: none; transition: color .2s; }
-        #niquo-root .np-flink:hover { color: var(--ow); }
-
-        /* ── SCROLL REVEAL ── */
-        #niquo-root .np-sr {
-          opacity: 0; transform: translateY(24px);
-          transition: opacity .8s cubic-bezier(.25,.46,.45,.94), transform .8s cubic-bezier(.25,.46,.45,.94);
-        }
-        #niquo-root .np-sr.np-vis { opacity: 1; transform: none; }
-        #niquo-root .np-d1 { transition-delay: .1s; } .np-d2 { transition-delay: .2s; }
-        #niquo-root .np-d3 { transition-delay: .3s; } .np-d4 { transition-delay: .4s; }
-
-        /* ── RESPONSIVE ── */
-        @media(max-width: 768px) {
-          #niquo-root .np-nav { padding: 0 20px; }
-          #niquo-root .np-nav-links li:not(:last-child) { display: none; }
-          #niquo-root .np-hero { padding: 80px 20px 60px; }
-          #niquo-root .np-section { padding: 80px 20px; }
-          #niquo-root .np-feat-grid { grid-template-columns: 1fr; }
-          #niquo-root .np-how-steps { grid-template-columns: 1fr 1fr; }
-          #niquo-root .np-how-step { border-right: none; border-bottom: .5px solid var(--b1); padding: 28px 0; }
-          #niquo-root .np-demo-split { grid-template-columns: 1fr; }
-          #niquo-root .np-demo-ctrl { border-right: none; border-bottom: .5px solid var(--b1); }
-          #niquo-root .np-price-grid { grid-template-columns: 1fr; }
-          #niquo-root .np-footer { padding: 24px 20px; flex-direction: column; gap: 16px; }
-        }
+        body { background: #000 !important; }
+        @keyframes nqtick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        @keyframes nqpulse { 0%,100%{opacity:1;box-shadow:0 0 6px #30d158} 50%{opacity:.3;box-shadow:0 0 2px #30d158} }
       `}</style>
 
-      <div id="niquo-root">
-
       {/* ── NAV ── */}
-      <nav className="np-nav">
-        <Link href="/" className="np-nav-back">‹ Unico Studios</Link>
-        <Link href="#top" className="np-logo">niquo</Link>
-        <ul className="np-nav-links">
-          <li><a href="#demo">Demo</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#demo" className="np-nav-cta">Try free</a></li>
-        </ul>
+      <nav style={{ height: '52px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 44px', background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(20px)', borderBottom: '0.5px solid rgba(245,245,247,0.1)', position: 'sticky', top: 0, zIndex: 100 }}>
+        <Link href="/" style={{ fontSize: '12px', color: 'rgba(245,245,247,0.28)', textDecoration: 'none', fontFamily: C.sf }}>‹ Unico Studios</Link>
+        <Link href="#top" style={{ fontFamily: C.brand, fontSize: '18px', fontWeight: 300, color: C.white, letterSpacing: '2px', textDecoration: 'none' }}>niquo</Link>
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+          {['#demo','#features','#pricing'].map((h, i) => (
+            <a key={i} href={h} style={{ fontSize: '12px', color: 'rgba(245,245,247,0.56)', textDecoration: 'none', fontFamily: C.sf }}>
+              {['Demo','Features','Pricing'][i]}
+            </a>
+          ))}
+          <a href="#demo" style={{ fontSize: '12px', color: C.white, background: 'rgba(255,255,255,0.1)', border: '0.5px solid rgba(245,245,247,0.18)', padding: '6px 16px', borderRadius: '20px', textDecoration: 'none', fontFamily: C.sf }}>
+            Try free
+          </a>
+        </div>
       </nav>
 
       {/* ── HERO ── */}
-      <section className="np-hero" id="top" ref={heroRef}>
-        <canvas ref={canvasRef} />
-        <div className="np-hero-fade" />
-        <div className="np-hero-content">
-          <p className="np-hero-ey">Introducing Niquo</p>
-          <h1 className="np-hero-h1">
+      <section id="top" ref={heroRef} style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 44px 60px', overflow: 'hidden', background: C.black }}>
+        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px', background: `linear-gradient(transparent, ${C.black})`, pointerEvents: 'none', zIndex: 1 }} />
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <p className="nq-sr" style={{ fontSize: '17px', fontWeight: 400, color: C.gray, letterSpacing: '-0.2px', marginBottom: '10px', fontFamily: C.sf }}>Introducing Niquo</p>
+          <h1 className="nq-sr nq-d1" style={{ fontFamily: C.sf, fontSize: 'clamp(48px,8vw,96px)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.05, color: C.white, marginBottom: '10px' }}>
             Your AI sales rep.<br />
-            <span className="np-grad">Always on.</span>
+            <span style={{ background: 'linear-gradient(135deg,#f5f5f7 0%,#8a8a8e 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Always on.</span>
           </h1>
-          <p className="np-hero-sub">
+          <p className="nq-sr nq-d2" style={{ fontFamily: C.sf, fontSize: 'clamp(19px,2.5vw,28px)', fontWeight: 300, color: C.gray, letterSpacing: '-0.02em', lineHeight: 1.4, marginBottom: '40px', maxWidth: '620px' }}>
             Niquo reads any business in 60 seconds and becomes its salesperson — handling every lead on WhatsApp, chat, and calls.
           </p>
-          <div className="np-hero-actions">
-            <a href="#demo" className="np-btn-blue">Watch the demo</a>
-            <a href="#features" className="np-btn-link">Learn more ›</a>
+          <div className="nq-sr nq-d3" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="#demo" style={{ background: C.blue, color: C.white, fontSize: '17px', fontWeight: 400, padding: '12px 26px', borderRadius: '980px', border: 'none', cursor: 'pointer', textDecoration: 'none', fontFamily: C.sf, letterSpacing: '-0.01em', display: 'inline-block' }}>Watch the demo</a>
+            <a href="#features" style={{ fontSize: '17px', fontWeight: 400, color: C.blue2, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: C.sf, letterSpacing: '-0.01em' }}>Learn more ›</a>
           </div>
 
           {/* Phone mockup */}
-          <div className="np-phone-wrap">
-            <div className="np-phone">
-              <div className="np-notch" />
-              <div className="np-phone-screen">
-                <div className="np-ps-status">
-                  <span className="np-ps-time">9:41</span>
-                  <div className="np-ps-bars">
-                    {[6,9,12,9].map((h,i) => (
-                      <div key={i} className="np-ps-bar" style={{ height: `${h}px` }} />
-                    ))}
+          <div className="nq-sr nq-d4" style={{ marginTop: '72px', position: 'relative', display: 'inline-block' }}>
+            <div style={{ width: '280px', height: '560px', background: 'linear-gradient(160deg,#1c1c1e 0%,#0a0a0a 100%)', borderRadius: '46px', border: '1.5px solid rgba(255,255,255,0.15)', boxShadow: '0 60px 120px rgba(0,0,0,0.8),inset 0 0 0 1px rgba(255,255,255,0.08)', overflow: 'hidden', position: 'relative' }}>
+              <div style={{ width: '100px', height: '28px', background: '#000', borderRadius: '0 0 20px 20px', margin: '0 auto', position: 'relative', zIndex: 2 }} />
+              <div style={{ position: 'absolute', inset: 0, padding: '36px 16px 20px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', padding: '0 4px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: C.white, fontFamily: C.sf }}>9:41</span>
+                  <div style={{ display: 'flex', gap: '5px', alignItems: 'flex-end' }}>
+                    {[6,9,12,9].map((h,i) => <div key={i} style={{ width: '3px', height: `${h}px`, borderRadius: '1px', background: C.white }} />)}
                   </div>
                 </div>
-                <div className="np-wa-hdr">
-                  <div className="np-wa-av">B</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0', borderBottom: '0.5px solid rgba(255,255,255,0.08)', marginBottom: '16px' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg,#25d366,#128c7e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 600, color: '#fff', flexShrink: 0, fontFamily: C.sf }}>B</div>
                   <div>
-                    <div className="np-wa-name">Bhive Workspace</div>
-                    <div className="np-wa-status">● Niquo is online</div>
+                    <div style={{ fontSize: '14px', fontWeight: 500, color: C.white, fontFamily: C.sf }}>Bhive Workspace</div>
+                    <div style={{ fontSize: '11px', color: C.wa, fontFamily: C.sf }}>● Niquo is online</div>
                   </div>
                 </div>
-                <div className="np-chat-area">
-                  <div className="np-chat-them">Hi, looking for coworking in Koramangala</div>
-                  <div className="np-chat-us">Hey! We have a great space there 🙌 Dedicated desk or hot desk?<div className="np-chat-time">✓✓ 9:41</div></div>
-                  <div className="np-chat-them">Hot desk, maybe 10 days a month</div>
-                  <div className="np-chat-us">Perfect — that's our Day Pass at ₹499/day. Want me to check this week's availability? 📅<div className="np-chat-time">✓✓ 9:41</div></div>
+                <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'flex-end' }}>
+                  {[
+                    { side: 'them', t: 'Hi, looking for coworking in Koramangala' },
+                    { side: 'us',   t: 'Hey! Great space right there 🙌 Dedicated or hot desk?' },
+                    { side: 'them', t: 'Hot desk, 10 days a month' },
+                    { side: 'us',   t: 'Perfect — Day Pass at ₹499/day. Check this week? 📅' },
+                  ].map((m, i) => (
+                    <div key={i} style={{ alignSelf: m.side === 'them' ? 'flex-start' : 'flex-end', background: m.side === 'them' ? '#1c1c1e' : '#0b5d2e', color: C.white, padding: '8px 12px', borderRadius: m.side === 'them' ? '4px 12px 12px 12px' : '12px 12px 4px 12px', fontSize: '12px', lineHeight: 1.45, maxWidth: '80%', fontFamily: C.sf }}>
+                      {m.t}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="np-phone-glow" />
+            <div style={{ position: 'absolute', bottom: '-40px', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '200px', background: 'radial-gradient(ellipse,rgba(37,211,102,0.15) 0%,transparent 70%)', pointerEvents: 'none' }} />
           </div>
         </div>
       </section>
 
       {/* ── TICKER ── */}
-      <div className="np-ticker">
-        <div className="np-ticker-track">
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i} className="np-ticker-item">{item}</span>
+      <div style={{ borderTop: '0.5px solid rgba(245,245,247,0.1)', borderBottom: '0.5px solid rgba(245,245,247,0.1)', padding: '13px 0', overflow: 'hidden', background: C.black2 }}>
+        <div style={{ display: 'flex', gap: '60px', alignItems: 'center', animation: 'nqtick 28s linear infinite', width: 'max-content' }}>
+          {[...TICKER, ...TICKER].map((item, i) => (
+            <span key={i} style={{ fontSize: '11px', fontWeight: 300, color: 'rgba(245,245,247,0.28)', letterSpacing: '2.2px', textTransform: 'uppercase', whiteSpace: 'nowrap', fontFamily: C.sf }}>{item}</span>
           ))}
         </div>
       </div>
 
       {/* ── TAGLINE 1 ── */}
-      <section className="np-section" style={{ background: '#000' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'12px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>The problem</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(40px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', maxWidth:'800px', textAlign:'center' }}>
+      <section style={section(C.black)}>
+        <p className="nq-sr" style={eyebrow}>The problem</p>
+        <h2 className="nq-sr nq-d1" style={bigH()}>
           Leads come in.<br />
-          <span style={{ color:'#6e6e73', fontStyle:'normal' }}>Nobody responds fast enough.</span><br />
+          <span style={{ color: C.gray }}>Nobody responds fast enough.</span><br />
           Revenue disappears.
         </h2>
-        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'560px', marginTop:'16px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
-          The average response time to an inbound lead is 47 hours. Niquo responds in seconds.
-        </p>
+        <p className="nq-sr nq-d2" style={subText}>The average response time to an inbound lead is 47 hours. Niquo responds in seconds.</p>
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="np-section" id="features" style={{ background: '#0a0a0a' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>Capabilities</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'80px', textAlign:'center' }}>Not a chatbot.<br />A closer.</h2>
-        <div className="np-feat-grid np-sr np-d2">
+      <section id="features" style={section(C.black2)}>
+        <p className="nq-sr" style={eyebrow}>Capabilities</p>
+        <h2 className="nq-sr nq-d1" style={{ ...bigH('clamp(32px,5vw,64px)'), marginBottom: '80px' }}>Not a chatbot.<br />A closer.</h2>
+        <div className="nq-sr nq-d2" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1px', background: 'rgba(245,245,247,0.1)', borderRadius: '18px', overflow: 'hidden', border: '0.5px solid rgba(245,245,247,0.1)', maxWidth: '960px', width: '100%' }}>
           {FEATURES.map((f) => (
-            <div key={f.title} className="np-feat-card">
-              <div className="np-feat-icon">{f.svg}</div>
-              <div className="np-feat-title">{f.title}</div>
-              <p className="np-feat-desc">{f.desc}</p>
+            <div key={f.title} style={{ background: C.black3, padding: '40px 36px', textAlign: 'left' }}>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: f.color, marginBottom: '20px', boxShadow: `0 0 12px ${f.color}` }} />
+              <div style={{ fontSize: '19px', fontWeight: 600, color: C.white, letterSpacing: '-0.02em', marginBottom: '8px', lineHeight: 1.2, fontFamily: C.sf }}>{f.title}</div>
+              <p style={{ fontSize: '14px', fontWeight: 300, color: C.gray, lineHeight: 1.6, letterSpacing: '-0.01em', fontFamily: C.sf }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── TAGLINE 2 ── */}
-      <section className="np-section" style={{ background: '#000' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'12px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>The result</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(40px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', maxWidth:'800px', textAlign:'center' }}>
+      <section style={section(C.black)}>
+        <p className="nq-sr" style={eyebrow}>The result</p>
+        <h2 className="nq-sr nq-d1" style={bigH()}>
           Your team only talks<br />to people<br />
-          <span style={{ color:'#6e6e73', fontStyle:'normal' }}>ready to buy.</span>
+          <span style={{ color: C.gray }}>ready to buy.</span>
         </h2>
-        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'560px', marginTop:'16px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
-          Niquo qualifies every lead before it reaches you. No more chasing. Only closing.
-        </p>
+        <p className="nq-sr nq-d2" style={subText}>Niquo qualifies every lead before it reaches you. No more chasing. Only closing.</p>
       </section>
 
       {/* ── DEMO ── */}
-      <section className="np-section" id="demo" style={{ background: '#000' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Live demo</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(36px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'12px', textAlign:'center' }}>Watch Niquo sell your business.</h2>
-        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'17px', fontWeight:300, color:'#6e6e73', maxWidth:'540px', margin:'0 auto 60px', lineHeight:1.55, letterSpacing:'-0.01em', textAlign:'center' }}>
+      <section id="demo" style={section(C.black)}>
+        <p className="nq-sr" style={eyebrow}>Live demo</p>
+        <h2 className="nq-sr nq-d1" style={{ ...bigH('clamp(36px,5vw,64px)'), marginBottom: '12px' }}>Watch Niquo sell your business.</h2>
+        <p className="nq-sr nq-d2" style={{ fontFamily: C.sf, fontSize: '17px', fontWeight: 300, color: C.gray, maxWidth: '540px', margin: '0 auto 60px', lineHeight: 1.55, letterSpacing: '-0.01em', textAlign: 'center' }}>
           Paste any URL. Niquo reads the business and runs a full sales simulation — acting as that company's salesperson. Both sides. Automatically.
         </p>
-        <div className="np-sr np-d3" style={{ width: '100%' }}>
+        <div className="nq-sr nq-d3" style={{ width: '100%', maxWidth: '900px' }}>
           <DemoFeed />
         </div>
       </section>
 
       {/* ── HOW ── */}
-      <section className="np-section" style={{ background: '#0a0a0a' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>The process</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'80px', textAlign:'center' }}>From URL to live agent.</h2>
-        <div className="np-how-steps">
-          {HOW_STEPS.map((s, i) => (
-            <div key={s.n} className={`np-how-step np-sr np-d${i+1}`}>
-              <span className="np-hs-n">{s.n}</span>
-              <div className="np-hs-t">{s.t}</div>
-              <p className="np-hs-d">{s.d}</p>
+      <section style={section(C.black2)}>
+        <p className="nq-sr" style={eyebrow}>The process</p>
+        <h2 className="nq-sr nq-d1" style={{ ...bigH('clamp(32px,5vw,64px)'), marginBottom: '80px' }}>From URL to live agent.</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', maxWidth: '960px', width: '100%', borderTop: '0.5px solid rgba(245,245,247,0.1)' }}>
+          {HOW.map((s, i) => (
+            <div key={s.n} className={`nq-sr nq-d${i + 1}`} style={{ padding: '44px 28px 0', borderRight: i < 3 ? '0.5px solid rgba(245,245,247,0.1)' : 'none', textAlign: 'left' }}>
+              <span style={{ fontSize: 'clamp(40px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.04em', color: 'rgba(245,245,247,0.08)', lineHeight: 1, marginBottom: '16px', display: 'block', fontFamily: C.sf }}>{s.n}</span>
+              <div style={{ fontSize: '17px', fontWeight: 600, color: C.white, letterSpacing: '-0.02em', marginBottom: '8px', fontFamily: C.sf }}>{s.t}</div>
+              <p style={{ fontSize: '13px', fontWeight: 300, color: C.gray, lineHeight: 1.65, letterSpacing: '-0.01em', fontFamily: C.sf }}>{s.d}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── PRICING ── */}
-      <section className="np-section" id="pricing" style={{ background: '#000' }}>
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Pricing</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'16px', textAlign:'center' }}>Less than one bad hire.</h2>
-        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'17px', fontWeight:300, color:'#6e6e73', marginBottom:'64px', letterSpacing:'-0.01em', textAlign:'center' }}>No setup fees. No long-term contracts. Try the demo free.</p>
-        <div className="np-price-grid np-sr np-d3">
-          <div className="np-pplan">
-            <span className="np-pp-tag">Starter</span>
-            <div className="np-pp-amt">₹4,999</div>
-            <span className="np-pp-per">per month</span>
-            <div className="np-pp-line" />
-            <div className="np-pp-feats">
-              <div className="np-pp-f">1 channel (WhatsApp or chat)</div>
-              <div className="np-pp-f">Full Niquo simulation demo</div>
-              <div className="np-pp-f">Objection handling included</div>
-              <div className="np-pp-f">500 conversations / month</div>
-              <div className="np-pp-f">Email support</div>
+      <section id="pricing" style={section(C.black)}>
+        <p className="nq-sr" style={eyebrow}>Pricing</p>
+        <h2 className="nq-sr nq-d1" style={{ ...bigH('clamp(32px,5vw,64px)'), marginBottom: '16px' }}>Less than one bad hire.</h2>
+        <p className="nq-sr nq-d2" style={{ fontFamily: C.sf, fontSize: '17px', fontWeight: 300, color: C.gray, marginBottom: '64px', letterSpacing: '-0.01em' }}>No setup fees. No long-term contracts. Try the demo free.</p>
+        <div className="nq-sr nq-d3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', maxWidth: '760px', width: '100%', gap: '1px', background: 'rgba(245,245,247,0.1)', borderRadius: '18px', overflow: 'hidden', border: '0.5px solid rgba(245,245,247,0.1)' }}>
+          {[
+            { tag: 'Starter', amt: '₹4,999', per: 'per month', feats: ['1 channel (WhatsApp or chat)','Full Niquo simulation demo','Objection handling included','500 conversations / month','Email support'], cta: 'Try free demo', href: '#demo', ghost: true, note: 'No signup needed to try.' },
+            { tag: 'Growth',  amt: 'Custom',  per: 'talk to us', feats: ['All channels — WhatsApp, chat, calls','CRM + calendar integration','Custom qualification playbooks','Unlimited conversations','Dedicated onboarding support'], cta: 'Talk to the team', href: 'https://unicostudios.in', ghost: false, note: 'For teams doing serious volume.' },
+          ].map((p, i) => (
+            <div key={i} style={{ background: i === 0 ? C.black2 : C.black3, padding: '44px 40px', textAlign: 'left' }}>
+              <span style={{ fontSize: '12px', fontWeight: 500, color: C.gray, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '16px', display: 'block', fontFamily: C.sf }}>{p.tag}</span>
+              <div style={{ fontFamily: C.sf, fontSize: 'clamp(36px,5vw,56px)', fontWeight: 700, letterSpacing: '-0.04em', color: C.white, lineHeight: 1, marginBottom: '4px' }}>{p.amt}</div>
+              <span style={{ fontSize: '14px', fontWeight: 300, color: C.gray, marginBottom: '28px', display: 'block', fontFamily: C.sf }}>{p.per}</span>
+              <div style={{ height: '0.5px', background: 'rgba(245,245,247,0.1)', marginBottom: '24px' }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '32px' }}>
+                {p.feats.map((f) => (
+                  <div key={f} style={{ fontSize: '14px', fontWeight: 300, color: '#86868b', display: 'flex', alignItems: 'flex-start', gap: '8px', lineHeight: 1.5, fontFamily: C.sf }}>
+                    <span style={{ color: C.green, fontSize: '12px', marginTop: '2px', flexShrink: 0 }}>✓</span>{f}
+                  </div>
+                ))}
+              </div>
+              <a href={p.href} style={{ display: 'inline-block', background: p.ghost ? 'transparent' : C.blue, color: p.ghost ? C.blue2 : C.white, fontSize: '14px', fontWeight: 400, padding: '10px 22px', borderRadius: '980px', border: p.ghost ? `0.5px solid rgba(41,151,255,0.4)` : 'none', textDecoration: 'none', fontFamily: C.sf, letterSpacing: '-0.01em' }}>{p.cta}</a>
+              <p style={{ fontSize: '12px', color: C.gray, marginTop: '12px', lineHeight: 1.5, fontFamily: C.sf }}>{p.note}</p>
             </div>
-            <a href="#demo" className="np-pp-btn ghost">Try free demo</a>
-            <p className="np-pp-note">No signup needed to try.</p>
-          </div>
-          <div className="np-pplan hi">
-            <span className="np-pp-tag">Growth</span>
-            <div className="np-pp-amt">Custom</div>
-            <span className="np-pp-per">talk to us</span>
-            <div className="np-pp-line" />
-            <div className="np-pp-feats">
-              <div className="np-pp-f">All channels — WhatsApp, chat, calls</div>
-              <div className="np-pp-f">CRM + calendar integration</div>
-              <div className="np-pp-f">Custom qualification playbooks</div>
-              <div className="np-pp-f">Unlimited conversations</div>
-              <div className="np-pp-f">Dedicated onboarding support</div>
-            </div>
-            <a href="https://unicostudios.in" className="np-pp-btn">Talk to the team</a>
-            <p className="np-pp-note">For teams doing serious volume.</p>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="np-section" style={{ background: '#000', position: 'relative' }}>
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 60% 50% at 50% 80%, rgba(80,80,120,0.08) 0%, transparent 70%)', pointerEvents:'none' }} />
-        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Get started today</p>
-        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(36px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'12px', textAlign:'center' }}>Your leads deserve<br />a better answer.</h2>
-        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'500px', margin:'0 auto 40px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
-          Try Niquo free. Paste your URL. See it sell your business in 60 seconds.
-        </p>
-        <div className="np-sr np-d3" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a href="#demo" className="np-btn-blue">Watch the demo</a>
-          <a href="https://unicostudios.in" className="np-btn-link">Talk to the team ›</a>
+      <section style={{ ...section(C.black), minHeight: '70vh' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 50% at 50% 80%,rgba(80,80,120,0.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
+        <p className="nq-sr" style={eyebrow}>Get started today</p>
+        <h2 className="nq-sr nq-d1" style={bigH('clamp(36px,6vw,80px)')}>Your leads deserve<br />a better answer.</h2>
+        <p className="nq-sr nq-d2" style={{ ...subText, marginBottom: '40px', marginTop: '12px' }}>Try Niquo free. Paste your URL. See it sell your business in 60 seconds.</p>
+        <div className="nq-sr nq-d3" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="#demo" style={{ background: C.blue, color: C.white, fontSize: '17px', fontWeight: 400, padding: '13px 28px', borderRadius: '980px', textDecoration: 'none', fontFamily: C.sf, letterSpacing: '-0.01em', display: 'inline-block' }}>Watch the demo</a>
+          <a href="https://unicostudios.in" style={{ fontSize: '17px', fontWeight: 400, color: C.blue2, textDecoration: 'none', fontFamily: C.sf, letterSpacing: '-0.01em' }}>Talk to the team ›</a>
         </div>
-        <p className="np-cta-note np-sr np-d4">
-          Starting from ₹4,999/month · Built by Unico Studios, Bangalore · India
-        </p>
+        <p className="nq-sr nq-d4" style={{ marginTop: '24px', fontSize: '13px', color: C.gray, fontFamily: C.sf }}>Starting from ₹4,999/month · Built by Unico Studios, Bangalore · India</p>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="np-footer">
-        <Link href="/" className="np-logo">niquo</Link>
-        <div className="np-fright">
-          <a href="https://unicostudios.in" className="np-flink">Unico Studios</a>
-          <a href="#"                        className="np-flink">Privacy</a>
-          <a href="#"                        className="np-flink">Contact</a>
-          <span className="np-flink">© 2026</span>
+      <footer style={{ background: C.black2, borderTop: '0.5px solid rgba(245,245,247,0.1)', padding: '20px 44px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Link href="/" style={{ fontFamily: C.brand, fontSize: '17px', fontWeight: 300, color: C.white, letterSpacing: '2px', textDecoration: 'none' }}>niquo</Link>
+        <div style={{ display: 'flex', gap: '28px' }}>
+          {[['Unico Studios','https://unicostudios.in'],['© 2026','#']].map(([label, href]) => (
+            <a key={label} href={href} style={{ fontSize: '12px', color: C.gray, textDecoration: 'none', fontFamily: C.sf }}>{label}</a>
+          ))}
         </div>
       </footer>
-
-      </div>{/* end #niquo-root */}
-
-      {/* ── SCROLL REVEAL INIT ── */}
-      <ScrollReveal />
     </>
   );
-}
-
-// Scroll reveal as a client component side-effect
-function ScrollReveal() {
-  useEffect(() => {
-    const root = document.getElementById('niquo-root');
-    const els = root ? root.querySelectorAll('.np-sr') : document.querySelectorAll('.np-sr');
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('np-vis'); io.unobserve(e.target); } }),
-      { threshold: 0.1 }
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-  return null;
 }
