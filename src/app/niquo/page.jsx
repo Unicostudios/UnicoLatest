@@ -857,20 +857,22 @@ export default function NiquoPage() {
       </div>
 
       {/* ── TAGLINE 1 ── */}
-      <section className="np-section" style={{ background: 'var(--bg)' }}>
-        <p className="np-tag-ey np-sr">The problem</p>
-        <h2 className="np-tag-h np-sr np-d1">
-          Leads come in.<br /><em>Nobody responds fast enough.</em><br />Revenue disappears.
+      <section className="np-section" style={{ background: '#000' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'12px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>The problem</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(40px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', maxWidth:'800px', textAlign:'center' }}>
+          Leads come in.<br />
+          <span style={{ color:'#6e6e73', fontStyle:'normal' }}>Nobody responds fast enough.</span><br />
+          Revenue disappears.
         </h2>
-        <p className="np-tag-sub np-sr np-d2">
+        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'560px', marginTop:'16px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
           The average response time to an inbound lead is 47 hours. Niquo responds in seconds.
         </p>
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="np-section" id="features" style={{ background: 'var(--bg2)' }}>
-        <p className="np-tag-ey np-sr">Capabilities</p>
-        <h2 className="np-feat-h np-sr np-d1">Not a chatbot.<br />A closer.</h2>
+      <section className="np-section" id="features" style={{ background: '#0a0a0a' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>Capabilities</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'80px', textAlign:'center' }}>Not a chatbot.<br />A closer.</h2>
         <div className="np-feat-grid np-sr np-d2">
           {FEATURES.map((f) => (
             <div key={f.title} className="np-feat-card">
@@ -883,21 +885,22 @@ export default function NiquoPage() {
       </section>
 
       {/* ── TAGLINE 2 ── */}
-      <section className="np-section" style={{ background: 'var(--bg)' }}>
-        <p className="np-tag-ey np-sr">The result</p>
-        <h2 className="np-tag-h np-sr np-d1">
-          Your team only talks<br />to people<br /><em>ready to buy.</em>
+      <section className="np-section" style={{ background: '#000' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'12px', letterSpacing:'-0.1px', fontFamily:'var(--sf)' }}>The result</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(40px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', maxWidth:'800px', textAlign:'center' }}>
+          Your team only talks<br />to people<br />
+          <span style={{ color:'#6e6e73', fontStyle:'normal' }}>ready to buy.</span>
         </h2>
-        <p className="np-tag-sub np-sr np-d2">
+        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'560px', marginTop:'16px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
           Niquo qualifies every lead before it reaches you. No more chasing. Only closing.
         </p>
       </section>
 
       {/* ── DEMO ── */}
-      <section className="np-section" id="demo" style={{ background: 'var(--bg)' }}>
-        <p className="np-tag-ey np-sr">Live demo</p>
-        <h2 className="np-demo-h np-sr np-d1">Watch Niquo sell your business.</h2>
-        <p className="np-demo-sub np-sr np-d2">
+      <section className="np-section" id="demo" style={{ background: '#000' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Live demo</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(36px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'12px', textAlign:'center' }}>Watch Niquo sell your business.</h2>
+        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'17px', fontWeight:300, color:'#6e6e73', maxWidth:'540px', margin:'0 auto 60px', lineHeight:1.55, letterSpacing:'-0.01em', textAlign:'center' }}>
           Paste any URL. Niquo reads the business and runs a full sales simulation — acting as that company's salesperson. Both sides. Automatically.
         </p>
         <div className="np-sr np-d3" style={{ width: '100%' }}>
@@ -906,9 +909,9 @@ export default function NiquoPage() {
       </section>
 
       {/* ── HOW ── */}
-      <section className="np-section" style={{ background: 'var(--bg2)' }}>
-        <p className="np-tag-ey np-sr">The process</p>
-        <h2 className="np-how-h np-sr np-d1">From URL to live agent.</h2>
+      <section className="np-section" style={{ background: '#0a0a0a' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>The process</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'80px', textAlign:'center' }}>From URL to live agent.</h2>
         <div className="np-how-steps">
           {HOW_STEPS.map((s, i) => (
             <div key={s.n} className={`np-how-step np-sr np-d${i+1}`}>
@@ -921,10 +924,10 @@ export default function NiquoPage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section className="np-section" id="pricing" style={{ background: 'var(--bg)' }}>
-        <p className="np-tag-ey np-sr">Pricing</p>
-        <h2 className="np-price-h np-sr np-d1">Less than one bad hire.</h2>
-        <p className="np-price-sub np-sr np-d2">No setup fees. No long-term contracts. Try the demo free.</p>
+      <section className="np-section" id="pricing" style={{ background: '#000' }}>
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Pricing</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(32px,5vw,64px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'16px', textAlign:'center' }}>Less than one bad hire.</h2>
+        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'17px', fontWeight:300, color:'#6e6e73', marginBottom:'64px', letterSpacing:'-0.01em', textAlign:'center' }}>No setup fees. No long-term contracts. Try the demo free.</p>
         <div className="np-price-grid np-sr np-d3">
           <div className="np-pplan">
             <span className="np-pp-tag">Starter</span>
@@ -960,15 +963,11 @@ export default function NiquoPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="np-section" style={{ background: 'var(--bg)', position: 'relative' }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse 60% 50% at 50% 80%, rgba(80,80,120,0.08) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <p className="np-tag-ey np-sr">Get started today</p>
-        <h2 className="np-cta-h np-sr np-d1">Your leads deserve<br />a better answer.</h2>
-        <p className="np-cta-sub np-sr np-d2">
+      <section className="np-section" style={{ background: '#000', position: 'relative' }}>
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 60% 50% at 50% 80%, rgba(80,80,120,0.08) 0%, transparent 70%)', pointerEvents:'none' }} />
+        <p className="np-sr" style={{ fontSize:'14px', fontWeight:400, color:'#6e6e73', marginBottom:'8px', fontFamily:'var(--sf)' }}>Get started today</p>
+        <h2 className="np-sr np-d1" style={{ fontFamily:'var(--sf)', fontSize:'clamp(36px,6vw,80px)', fontWeight:700, letterSpacing:'-0.04em', lineHeight:1.05, color:'#f5f5f7', marginBottom:'12px', textAlign:'center' }}>Your leads deserve<br />a better answer.</h2>
+        <p className="np-sr np-d2" style={{ fontFamily:'var(--sf)', fontSize:'clamp(17px,2vw,24px)', fontWeight:300, color:'#6e6e73', maxWidth:'500px', margin:'0 auto 40px', lineHeight:1.5, letterSpacing:'-0.01em', textAlign:'center' }}>
           Try Niquo free. Paste your URL. See it sell your business in 60 seconds.
         </p>
         <div className="np-sr np-d3" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
