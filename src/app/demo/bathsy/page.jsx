@@ -148,7 +148,8 @@ function LiveChat() {
   const msgsRef = useRef(null);
   const inputRef = useRef(null);
 
-  const GREETING = "Hey, Riya here from Bathsy. New flat or existing bathroom renovation?";
+  const GREETING_1 = "Hey, Riya here from Bathsy.";
+  const GREETING_2 = "Saw you were enquiring about a shower enclosure — new flat or renovation?";
 
   useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
@@ -194,9 +195,15 @@ function LiveChat() {
         <div style={{ textAlign: "center", marginBottom: 6 }}>
           <span style={{ background: "rgba(255,255,255,0.7)", fontSize: 11, color: "#666", padding: "3px 12px", borderRadius: 8 }}>Today</span>
         </div>
+        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 2 }}>
+          <div style={{ maxWidth: "78%", background: "#fff", borderRadius: "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
+            {GREETING_1}
+            <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888" }}>{timeStr}</div>
+          </div>
+        </div>
         <div style={{ display: "flex", justifyContent: "flex-start" }}>
           <div style={{ maxWidth: "78%", background: "#fff", borderRadius: "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
-            {GREETING}
+            {GREETING_2}
             <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888" }}>{timeStr}</div>
           </div>
         </div>
