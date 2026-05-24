@@ -219,11 +219,11 @@ function LiveChat() {
         </div>
 
         {messages.map((msg, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start", marginBottom: 2 }}>
-            <div style={{ maxWidth: "78%", background: msg.role === "user" ? "#dcf8c6" : "#fff", borderRadius: msg.role === "user" ? "10px 3px 10px 10px" : "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
+          <div key={i} style={{ display: "flex", justifyContent: msg.role === "assistant" ? "flex-end" : "flex-start", marginBottom: 2 }}>
+            <div style={{ maxWidth: "78%", background: msg.role === "assistant" ? "#dcf8c6" : "#fff", borderRadius: msg.role === "assistant" ? "10px 3px 10px 10px" : "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
               {(msg.content || "").split("\n").map((line, li) => <div key={li}>{line || "\u00a0"}</div>)}
               <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>
-                {timeStr}{msg.role === "user" && <span style={{ color: "#53bdeb" }}>✓✓</span>}
+                {timeStr}{msg.role === "user" && <span style={{ color: "#4fc3f7" }}>✓✓</span>}
               </div>
             </div>
           </div>
