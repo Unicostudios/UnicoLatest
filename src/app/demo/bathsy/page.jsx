@@ -174,7 +174,7 @@ function LiveChat() {
     try {
       const history = messages.filter(m => m.role === "user" || m.role === "assistant").map(m => ({ role: m.role === "assistant" ? "niquo" : "customer", content: m.content }));
       await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
-      const res = await fetch("https://niquo-bathsy-git-main-unico-studios-projects.vercel.app/api/niquo", {
+      const res = await fetch("/api/riya", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history, incomingMessage: msg }),
@@ -188,7 +188,6 @@ function LiveChat() {
   }
 
   const timeStr = new Date().getHours() + ":" + String(new Date().getMinutes()).padStart(2, "0");
-
 
   return (
     <div style={{ background: "#f0ebe3", borderRadius: 20, overflow: "hidden", border: "1px solid #d4c9bc", boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }}>
@@ -223,7 +222,7 @@ function LiveChat() {
             <div style={{ maxWidth: "78%", background: msg.role === "assistant" ? "#dcf8c6" : "#fff", borderRadius: msg.role === "assistant" ? "10px 3px 10px 10px" : "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
               {(msg.content || "").split("\n").map((line, li) => <div key={li}>{line || "\u00a0"}</div>)}
               <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>
-                {timeStr}{msg.role === "user" && <span style={{ color: "#4fc3f7" }}>✓✓</span>}
+                {timeStr}{msg.role === "assistant" && <span style={{ color: "#4fc3f7" }}>✓✓</span>}
               </div>
             </div>
           </div>
