@@ -5,22 +5,22 @@ import { useSearchParams, useRouter } from "next/navigation";
 const SECRET_KEY = "bathsy2025";
 
 const ANIMATED_CONVERSATION = [
-  { role: "out", text: "Hey Rahul, Riya here from Bathsy. I believe you are looking for a shower enclosure — is this for a new flat or an existing bathroom renovation?", delay: 0 },
-  { role: "in", text: "New flat. Just got possession last week.", delay: 3000 },
-  { role: "out", text: "Congratulations on the new flat. Whitefield has great layouts.\n\nWhat size is your shower area roughly — is it a corner space or against one wall?", delay: 6000 },
-  { role: "in", text: "Corner space I think. About 4x4 feet.", delay: 9500 },
-  { role: "out", text: "Perfect for an L-shape enclosure — that is our most popular for exactly that layout.\n\nFor a 4x4 corner you are looking at Rs.14,000-22,000 depending on the glass type. What look are you going for — open and bright, or more private?", delay: 12500 },
-  { role: "in", text: "What is the difference? And why such a range?", delay: 16500 },
-  { role: "out", text: "Three glass options:\n\nClear — open, bright, easiest to clean. Rs.599/sq.ft\nFrosted — privacy, softer look. Rs.665/sq.ft\nFluted — textured, very premium. Rs.849/sq.ft. Trending a lot right now.\n\nAll Saint-Gobain toughened glass — 5x stronger than regular. 10-year hardware warranty, 3-year glass warranty.", delay: 19000 },
-  { role: "in", text: "10 years warranty is good. How long does installation take?", delay: 24000 },
-  { role: "out", text: "Full process is 7-10 days:\n\n1. Free site visit — we measure your exact bathroom\n2. Custom quote in 24 hours\n3. Manufacturing — 5-7 days\n4. Installation — just 4-6 hours, no damage to tiles\n\nThe site visit is completely free, no commitment.", delay: 27000 },
-  { role: "in", text: "I am also getting quotes from 2 other vendors. What makes Bathsy different?", delay: 32000 },
-  { role: "out", text: "Makes sense to compare. One thing worth checking with them — what warranty do they give on hardware? We give 10 years, most give 7. Also check if their glass is Saint-Gobain.\n\nOur site visit is free — let us give you an exact quote to compare. Zero obligation.", delay: 35500 },
-  { role: "in", text: "OK fair enough. Can we schedule Thursday morning?", delay: 41000 },
-  { role: "out", text: "Thursday morning works.\n\nCan I get your flat number and tower? We will send a WhatsApp reminder Wednesday evening with our team member's contact.", delay: 44000 },
-  { role: "in", text: "Rahul Mehta. Prestige Shantiniketan, Tower B, Flat 1204.", delay: 48000 },
-  { role: "out", text: "Done, Rahul.\n\nSite visit confirmed — Thursday morning, Prestige Shantiniketan, Tower B, Flat 1204.\n\nYou will hear from us Wednesday evening. Looking forward to showing you the options in person.", delay: 51000 },
-  { role: "result", delay: 55000 },
+  { role: "out", text: "Hey Rahul, Riya here from Bathsy. New flat or existing bathroom renovation?", delay: 0 },
+  { role: "in", text: "New flat. Got possession last week.", delay: 3000 },
+  { role: "out", text: "Nice, congrats. Which area?", delay: 5500 },
+  { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 8000 },
+  { role: "out", text: "We've done a lot of work there actually. Good layouts.\n\nCorner bathroom or against one wall?", delay: 10500 },
+  { role: "in", text: "Corner. About 4x4 feet.", delay: 13500 },
+  { role: "out", text: "That's perfect for an L-shape. Most popular for exactly that size.\n\nFor 4x4 you're looking at roughly Rs.15,000-22,000 depending on the glass. Any preference — clear, frosted or fluted?", delay: 16000 },
+  { role: "in", text: "What's fluted?", delay: 20500 },
+  { role: "out", text: "Textured glass — looks very premium, boutique hotel kind of feel. Trending a lot right now.\n\nCosts a bit more but looks stunning.", delay: 23000 },
+  { role: "in", text: "I'm also checking with 2 other vendors.", delay: 27500 },
+  { role: "out", text: "Makes sense. Just check one thing with them — what warranty do they give on hardware?\n\nWe give 10 years. Most give 7.", delay: 30000 },
+  { role: "in", text: "Ok that's good. Can we do Thursday morning?", delay: 34500 },
+  { role: "out", text: "Thursday morning works. What's your flat number?", delay: 37000 },
+  { role: "in", text: "Tower B, Flat 1204.", delay: 40000 },
+  { role: "out", text: "Got it. See you Thursday morning at Prestige Shantiniketan, Tower B, 1204.\n\nI'll send a reminder Wednesday evening.", delay: 42500 },
+  { role: "result", delay: 46000 },
 ];
 
 function AnimatedDemo() {
@@ -142,7 +142,7 @@ function LiveChat() {
   const msgsRef = useRef(null);
   const inputRef = useRef(null);
 
-  const GREETING = "Hey, Riya here from Bathsy. I believe you are looking for a shower enclosure — is this for a new flat or an existing bathroom renovation?";
+  const GREETING = "Hey, Riya here from Bathsy. New flat or existing bathroom?";
 
   useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
