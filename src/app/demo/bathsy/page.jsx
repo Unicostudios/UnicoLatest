@@ -205,16 +205,16 @@ function LiveChat() {
         <div style={{ textAlign: "center", marginBottom: 6 }}>
           <span style={{ background: "rgba(255,255,255,0.7)", fontSize: 11, color: "#666", padding: "3px 12px", borderRadius: 8 }}>Today</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 2 }}>
-          <div style={{ maxWidth: "78%", background: "#fff", borderRadius: "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 2 }}>
+          <div style={{ maxWidth: "78%", background: "#dcf8c6", borderRadius: "10px 3px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
             {GREETING_1}
-            <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888" }}>{timeStr}</div>
+            <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>{timeStr}<span style={{ color: "#4fc3f7" }}>✓✓</span></div>
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
-          <div style={{ maxWidth: "78%", background: "#fff", borderRadius: "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 2 }}>
+          <div style={{ maxWidth: "78%", background: "#dcf8c6", borderRadius: "10px 3px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative" }}>
             {GREETING_2}
-            <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888" }}>{timeStr}</div>
+            <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>{timeStr}<span style={{ color: "#4fc3f7" }}>✓✓</span></div>
           </div>
         </div>
 
