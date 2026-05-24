@@ -149,7 +149,7 @@ function LiveChat() {
   const inputRef = useRef(null);
 
   const GREETING_1 = "Hey, Riya here from Bathsy.";
-  const GREETING_2 = "Saw you were enquiring about a shower enclosure — new flat or renovation?";
+  const GREETING_2 = "Saw you were enquiring about a shower enclosure, what exactly are you looking for?";
 
   useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
