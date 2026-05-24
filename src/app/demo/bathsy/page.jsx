@@ -5,19 +5,19 @@ import { useSearchParams, useRouter } from "next/navigation";
 const SECRET_KEY = "bathsy2025";
 
 const ANIMATED_CONVERSATION = [
-  { role: "out", text: "Hi Rahul! This is Priya from Bathsy 🚿\nSaw you were interested in a shower enclosure for your new flat in Whitefield. Quick question — is this for a new flat or an existing bathroom renovation?", delay: 0 },
+  { role: "out", text: "Hey Rahul, Riya here from Bathsy. Are you looking for a shower enclosure for your new flat in Whitefield?", delay: 0 },
   { role: "in", text: "New flat. Just got possession last week.", delay: 3000 },
-  { role: "out", text: "Congratulations! 🎉 Whitefield flats usually have great bathroom layouts.\n\nWhat size is your shower area roughly — do you know if it's a corner space or against one wall?", delay: 6000 },
+  { role: "out", text: "Congratulations!  Whitefield flats usually have great bathroom layouts.\n\nWhat size is your shower area roughly — do you know if it's a corner space or against one wall?", delay: 6000 },
   { role: "in", text: "Corner space I think. About 4x4 feet.", delay: 9500 },
   { role: "out", text: "Perfect for an L-shape enclosure — that's our most popular for exactly that layout.\n\nFor a 4x4 corner, you're looking at ₹14,000–₹22,000 depending on the glass type. What look are you going for — open and bright, or more private?", delay: 12500 },
   { role: "in", text: "What's the difference? And why such a range?", delay: 16500 },
   { role: "out", text: "Three glass options:\n\n• Clear — open, bright, easiest to clean. ₹599/sq.ft\n• Frosted — privacy, softer look. ₹665/sq.ft\n• Fluted — textured, very premium. ₹849/sq.ft. Trending a lot right now.\n\nAll Saint-Gobain toughened glass — 5x stronger than regular. 10-year hardware warranty, 3-year glass warranty.", delay: 19000 },
   { role: "in", text: "10 years warranty is good. How long does installation take?", delay: 24000 },
-  { role: "out", text: "Full process is 7–10 days:\n\n1️⃣ Free site visit — we measure your exact bathroom\n2️⃣ Custom quote in 24 hours\n3️⃣ Manufacturing — 5-7 days\n4️⃣ Installation — just 4-6 hours, no damage to tiles\n\nThe site visit is completely free, no commitment.", delay: 27000 },
+  { role: "out", text: "Full process is 7–10 days:\n\n1. Free site visit — we measure your exact bathroom\n2. Custom quote in 24 hours\n3. Manufacturing — 5-7 days\n4. Installation — just 4-6 hours, no damage to tiles\n\nThe site visit is completely free, no commitment.", delay: 27000 },
   { role: "in", text: "I'm also getting quotes from 2 other vendors. What makes Bathsy different?", delay: 32000 },
   { role: "out", text: "Honestly — compare us. Three things most others won't match:\n\n• Saint-Gobain glass exclusively (world's #1)\n• 10-year hardware warranty vs 7 years most competitors\n• Every piece custom-made for your exact bathroom — no standard sizes\n\nBut don't take my word for it. Let us come do the free site visit — you see the quality in person and get an exact quote. Zero obligation.", delay: 35500 },
   { role: "in", text: "OK fair enough. Can we schedule Thursday morning?", delay: 41000 },
-  { role: "out", text: "Thursday morning works perfectly ✅\n\nCan I get your flat number and tower? We'll send a WhatsApp reminder Wednesday evening with our team member's contact.", delay: 44000 },
+  { role: "out", text: "Thursday morning works perfectly \n\nCan I get your flat number and tower? We'll send a WhatsApp reminder Wednesday evening with our team member's contact.", delay: 44000 },
   { role: "in", text: "Rahul Mehta. Prestige Shantiniketan, Tower B, Flat 1204.", delay: 48000 },
   { role: "out", text: "Done, Rahul 🙌\n\nSite visit confirmed — Thursday morning, Prestige Shantiniketan, Tower B, Flat 1204.\n\nYou'll hear from us Wednesday evening. Looking forward to showing you the fluted glass with matte black hardware in person — it looks stunning in Whitefield interiors.", delay: 51000 },
   { role: "result", delay: 55000 },
@@ -105,7 +105,7 @@ function AnimatedDemo() {
         {!started && (
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 32, marginBottom: 12 }}>🚿</div>
+              <div style={{ fontSize: 32, marginBottom: 12 }}></div>
               <div style={{ fontSize: 13, color: "#666", marginBottom: 16, lineHeight: 1.5 }}>Watch Niquo handle a real<br />Bathsy lead — start to booked.</div>
               <button onClick={startDemo} style={{ background: "#128c7e", color: "#fff", border: "none", borderRadius: 100, padding: "10px 24px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                 ▶ Start demo
@@ -147,7 +147,7 @@ function AnimatedDemo() {
 
         {done && (
           <div style={{ background: "#fff", borderRadius: 10, padding: "12px 14px", margin: "8px 0", borderLeft: "3px solid #128c7e" }}>
-            <div style={{ fontWeight: 600, color: "#075e54", fontSize: 13, marginBottom: 4 }}>✅ Lead closed — site visit booked</div>
+            <div style={{ fontWeight: 600, color: "#075e54", fontSize: 13, marginBottom: 4 }}> Lead closed — site visit booked</div>
             <div style={{ fontSize: 12, color: "#555", lineHeight: 1.7 }}>
               Rahul Mehta · Prestige Shantiniketan, Tower B, Flat 1204<br />
               Thursday morning · Whitefield, Bangalore<br />
@@ -192,7 +192,7 @@ function LiveChat() {
   const msgsRef = useRef(null);
   const inputRef = useRef(null);
 
-  const GREETING = "Hi! This is Priya from Bathsy 🚿 How can I help you today?";
+  const GREETING = "Hey, Riya here from Bathsy. Are you looking for a shower enclosure for your home in Bangalore?";
 
   useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
