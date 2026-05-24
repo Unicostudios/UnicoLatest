@@ -5,30 +5,33 @@ import { useSearchParams, useRouter } from "next/navigation";
 const SECRET_KEY = "bathsy2025";
 
 const ANIMATED_CONVERSATION = [
-  { role: "out", text: "Hey Rahul, Riya here from Bathsy.", delay: 0 },
-  { role: "out2", text: "Saw you were enquiring about a shower enclosure, what exactly are you looking for?", delay: 1800 },
-  { role: "in", text: "New flat. Got possession in about 6-7 months.", delay: 5000 },
-  { role: "out", text: "Oh nice, which project?", delay: 7500 },
-  { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 10500 },
-  { role: "out", text: "Prestige Shantiniketan, that is exciting!", delay: 13000 },
-  { role: "out2", text: "First home?", delay: 14800 },
-  { role: "in", text: "Yes first home. Bangalore has been expensive but it is a good investment.", delay: 19000 },
-  { role: "out", text: "I swear the prices have gone so high, but it is also a great investment.", delay: 22500 },
-  { role: "in", text: "How much would a shower enclosure cost roughly?", delay: 27000 },
-  { role: "out", text: "We are into shower enclosures only.", delay: 30000 },
-  { role: "out2", text: "Typically starts from Rs.15,000 to Rs.20,000, completely depends on the glass type and size.", delay: 32000 },
-  { role: "in", text: "I am also checking with 2-3 other vendors.", delay: 36500 },
-  { role: "out", text: "Makes sense to check around.", delay: 39000 },
-  { role: "out2", text: "Just ask them one thing, what is the hardware warranty? We give 10 years, most give 7.", delay: 41000 },
-  { role: "in", text: "Ok that is a good point. What is the next step?", delay: 46000 },
-  { role: "out", text: "Why don't you come visit our experience centre at HRBR Layout?", delay: 49000 },
-  { role: "out2", text: "You can see all the glass options in person and plan things properly. If there are changes to make before the builder finishes, better to know now. Can actually save you money.", delay: 51000 },
-  { role: "in", text: "You are not going to push me for sales right?", delay: 56500 },
-  { role: "out", text: "No no not at all. I suggest this to a lot of customers, if I can help someone make a better decision why not.", delay: 59500 },
-  { role: "out2", text: "Tomorrow I would be in your shoes too and I would want someone to tell me the same :)", delay: 62000 },
-  { role: "in", text: "Haha fair enough. I will come this Saturday.", delay: 66500 },
-  { role: "out", text: "Perfect, see you Saturday!", delay: 69000 },
-  { role: "result", delay: 72000 },
+  { role: "out", text: "Hey Rahul, Riya here from Bathsy.", delay: 0, typing: 1200 },
+  { role: "out2", text: "Saw you were enquiring about a shower enclosure, what exactly are you looking for?", delay: 2500, typing: 2500 },
+  { role: "in", text: "New flat. Got possession in about 6-7 months.", delay: 8000 },
+  { role: "out", text: "Oh nice, which project?", delay: 11000, typing: 1500 },
+  { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 16000 },
+  { role: "out", text: "Prestige Shantiniketan, that is exciting!", delay: 19500, typing: 2000 },
+  { role: "out2", text: "First home?", delay: 22500, typing: 800 },
+  { role: "in", text: "Yes first home. Bangalore has been expensive but it is a good investment.", delay: 29000 },
+  { role: "out", text: "I swear the prices have gone so high, but it is also a great investment.", delay: 33500, typing: 3000 },
+  { role: "in", text: "How much would a shower enclosure cost roughly?", delay: 40000 },
+  { role: "out", text: "Typically starts from Rs.15,000 to Rs.20,000, completely depends on the glass type and size.", delay: 44500, typing: 3500 },
+  { role: "in", text: "I am also checking with 2-3 other vendors.", delay: 51000 },
+  { role: "out", text: "Makes sense to check around.", delay: 54000, typing: 1500 },
+  { role: "out2", text: "Just ask them one thing, what is the hardware warranty? We give 10 years, most give 7.", delay: 57000, typing: 3000 },
+  { role: "in", text: "Ok that is a good point. What is the next step?", delay: 64000 },
+  { role: "out", text: "Why don't you come visit our experience centre at HRBR Layout?", delay: 68000, typing: 2500 },
+  { role: "out2", text: "You can see all the glass options in person and plan things properly. If there are changes to make before the builder finishes, better to know now. Can actually save you money.", delay: 72000, typing: 5000 },
+  { role: "out3", text: "https://share.google/1ySxQCwcZuj01K0ST", delay: 79000, typing: 1000 },
+  { role: "in", text: "You are not going to push me for sales right?", delay: 85000 },
+  { role: "out", text: "No no not at all. I suggest this to a lot of customers, if I can help someone make a better decision why not.", delay: 89000, typing: 4000 },
+  { role: "out2", text: "Tomorrow I would be in your shoes too and I would want someone to tell me the same :)", delay: 95000, typing: 3500 },
+  { role: "in", text: "Haha fair enough. I will come this Saturday.", delay: 102000 },
+  { role: "out", text: "What time works for you on Saturday?", delay: 105500, typing: 2000 },
+  { role: "in", text: "Around 11am works.", delay: 111000 },
+  { role: "out", text: "Perfect, confirmed for Saturday 11am at our HRBR Layout experience centre.", delay: 114500, typing: 3000 },
+  { role: "out2", text: "See you then Rahul!", delay: 119500, typing: 1000 },
+  { role: "result", delay: 122000 },
 ];
 
 function AnimatedDemo() {
@@ -57,9 +60,9 @@ function AnimatedDemo() {
       i++;
       timerRef.current = setTimeout(() => {
         if (item.role === "result") { setDone(true); setTyping(false); return; }
-        if (item.role === "out" || item.role === "out2") {
+        if (item.role === "out" || item.role === "out2" || item.role === "out3") {
           setTyping(true);
-          const typingTime = item.role === "out2" ? 1000 : 1400;
+          const typingTime = item.typing || 1500;
           setTimeout(() => { setTyping(false); setMessages(prev => [...prev, {...item, role: "out"}]); next(); }, typingTime);
         } else { setMessages(prev => [...prev, item]); next(); }
       }, Math.max(wait, 300));
@@ -72,7 +75,11 @@ function AnimatedDemo() {
     setMessages([]); setDone(false); setTyping(false); setStarted(false);
   }
 
-  const timeStr = new Date().getHours() + ":" + String(new Date().getMinutes()).padStart(2, "0");
+  const baseTime = new Date();
+  function getMsgTime(index) {
+    const d = new Date(baseTime.getTime() + index * 45000);
+    return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+  }
 
   return (
     <div style={{ background: "#f0ebe3", borderRadius: 20, overflow: "hidden", border: "1px solid #d4c9bc", boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }}>
@@ -100,11 +107,11 @@ function AnimatedDemo() {
           </div>
         )}
         {messages.map((msg, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: msg.role === "out" ? "flex-start" : "flex-end", marginBottom: 2 }}>
-            <div style={{ maxWidth: "78%", background: msg.role === "out" ? "#fff" : "#dcf8c6", borderRadius: msg.role === "out" ? "3px 10px 10px 10px" : "10px 3px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative", animation: "fadein 0.3s ease" }}>
+          <div key={i} style={{ display: "flex", justifyContent: msg.role === "out" ? "flex-end" : "flex-start", marginBottom: 2 }}>
+            <div style={{ maxWidth: "78%", background: msg.role === "out" ? "#dcf8c6" : "#fff", borderRadius: msg.role === "out" ? "10px 3px 10px 10px" : "3px 10px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative", animation: "fadein 0.3s ease" }}>
               {msg.text.split("\n").map((line, li) => <div key={li}>{line || "\u00a0"}</div>)}
               <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>
-                {timeStr}{msg.role === "out" && <span style={{ color: "#53bdeb" }}>✓✓</span>}
+                {getMsgTime(i)}{msg.role === "out" && <span style={{ color: "#4fc3f7" }}>✓✓</span>}
               </div>
             </div>
           </div>
