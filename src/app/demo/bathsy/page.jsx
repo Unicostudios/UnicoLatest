@@ -7,7 +7,7 @@ const SECRET_KEY = "bathsy2025";
 const ANIMATED_CONVERSATION = [
   { role: "out", text: "Hey Rahul, Riya here from Bathsy.", delay: 0, typing: 1200 },
   { role: "out2", text: "Saw you were enquiring about a shower enclosure, what exactly are you looking for?", delay: 2500, typing: 2500 },
-  { role: "in", text: "New flat. Got possession in about 6-7 months.", delay: 8000 },
+  { role: "in", text: "New flat. Will get possession in about 6-7 months.", delay: 8000 },
   { role: "out", text: "Oh nice, which project?", delay: 11000, typing: 1500 },
   { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 16000 },
   { role: "out", text: "Prestige Shantiniketan, that is exciting!", delay: 19500, typing: 2000 },
