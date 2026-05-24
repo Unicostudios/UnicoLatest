@@ -10,26 +10,25 @@ const ANIMATED_CONVERSATION = [
   { role: "in", text: "New flat. Got possession in about 6-7 months.", delay: 5000 },
   { role: "out", text: "Oh nice, which project?", delay: 7500 },
   { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 10500 },
-  { role: "out", text: "Prestige Shantiniketan, good choice!", delay: 13000 },
+  { role: "out", text: "Prestige Shantiniketan, that is exciting!", delay: 13000 },
   { role: "out2", text: "First home?", delay: 14800 },
-  { role: "in", text: "Yes first home, Bangalore has been expensive but it is a good investment.", delay: 19000 },
+  { role: "in", text: "Yes first home. Bangalore has been expensive but it is a good investment.", delay: 19000 },
   { role: "out", text: "I swear the prices have gone so high, but it is also a great investment.", delay: 22500 },
-  { role: "out2", text: "2BHK in Sobha, that is exciting!", delay: 24500 },
-  { role: "in", text: "How much would a shower enclosure cost roughly?", delay: 29000 },
-  { role: "out", text: "We are into bathrooms only right now.", delay: 32000 },
-  { role: "out2", text: "Typically starts from Rs.15,000 to Rs.20,000, completely depends on the glass type and size.", delay: 34000 },
-  { role: "in", text: "I am also checking with 2-3 other vendors.", delay: 38500 },
-  { role: "out", text: "Makes sense to check around.", delay: 41000 },
-  { role: "out2", text: "Just ask them one thing, what is the hardware warranty? We give 10 years, most give 7.", delay: 43000 },
-  { role: "in", text: "Ok that is a good point. What is the next step?", delay: 48000 },
-  { role: "out", text: "Why don't you come visit our experience centre at HRBR Layout?", delay: 51000 },
-  { role: "out2", text: "You can see all the glass types in person and plan things properly. If there are any changes before the builder finishes, better to know now. Can actually save you money.", delay: 53000 },
-  { role: "in", text: "You are not going to push me for sales right?", delay: 58500 },
-  { role: "out", text: "No no not at all. I suggest this to a lot of customers, if I can help someone make a better decision why not.", delay: 61500 },
-  { role: "out2", text: "Tomorrow I would be in your shoes too and I would want someone to tell me the same :)", delay: 64000 },
-  { role: "in", text: "Haha fair enough. I will come this Saturday.", delay: 68500 },
-  { role: "out", text: "Perfect, see you Saturday!", delay: 71000 },
-  { role: "result", delay: 74000 },
+  { role: "in", text: "How much would a shower enclosure cost roughly?", delay: 27000 },
+  { role: "out", text: "We are into shower enclosures only.", delay: 30000 },
+  { role: "out2", text: "Typically starts from Rs.15,000 to Rs.20,000, completely depends on the glass type and size.", delay: 32000 },
+  { role: "in", text: "I am also checking with 2-3 other vendors.", delay: 36500 },
+  { role: "out", text: "Makes sense to check around.", delay: 39000 },
+  { role: "out2", text: "Just ask them one thing, what is the hardware warranty? We give 10 years, most give 7.", delay: 41000 },
+  { role: "in", text: "Ok that is a good point. What is the next step?", delay: 46000 },
+  { role: "out", text: "Why don't you come visit our experience centre at HRBR Layout?", delay: 49000 },
+  { role: "out2", text: "You can see all the glass options in person and plan things properly. If there are changes to make before the builder finishes, better to know now. Can actually save you money.", delay: 51000 },
+  { role: "in", text: "You are not going to push me for sales right?", delay: 56500 },
+  { role: "out", text: "No no not at all. I suggest this to a lot of customers, if I can help someone make a better decision why not.", delay: 59500 },
+  { role: "out2", text: "Tomorrow I would be in your shoes too and I would want someone to tell me the same :)", delay: 62000 },
+  { role: "in", text: "Haha fair enough. I will come this Saturday.", delay: 66500 },
+  { role: "out", text: "Perfect, see you Saturday!", delay: 69000 },
+  { role: "result", delay: 72000 },
 ];
 
 function AnimatedDemo() {
@@ -105,7 +104,7 @@ function AnimatedDemo() {
             <div style={{ maxWidth: "78%", background: msg.role === "out" ? "#fff" : "#dcf8c6", borderRadius: msg.role === "out" ? "3px 10px 10px 10px" : "10px 3px 10px 10px", padding: "8px 10px 20px", fontSize: 13, lineHeight: 1.55, color: "#111", position: "relative", animation: "fadein 0.3s ease" }}>
               {msg.text.split("\n").map((line, li) => <div key={li}>{line || "\u00a0"}</div>)}
               <div style={{ position: "absolute", bottom: 4, right: 8, fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 2 }}>
-                {timeStr}{msg.role !== "out" && <span style={{ color: "#53bdeb" }}>✓✓</span>}
+                {timeStr}{msg.role === "out" && <span style={{ color: "#53bdeb" }}>✓✓</span>}
               </div>
             </div>
           </div>
