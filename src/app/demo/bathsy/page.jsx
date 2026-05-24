@@ -5,22 +5,27 @@ import { useSearchParams, useRouter } from "next/navigation";
 const SECRET_KEY = "bathsy2025";
 
 const ANIMATED_CONVERSATION = [
-  { role: "out", text: "Hey Rahul, Riya here from Bathsy. New flat or existing bathroom renovation?", delay: 0 },
-  { role: "in", text: "New flat. Got possession last week.", delay: 3000 },
-  { role: "out", text: "Nice, congrats. Which area?", delay: 5500 },
-  { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 8000 },
-  { role: "out", text: "We've done a lot of work there actually. Good layouts.\n\nCorner bathroom or against one wall?", delay: 10500 },
-  { role: "in", text: "Corner. About 4x4 feet.", delay: 13500 },
-  { role: "out", text: "That's perfect for an L-shape. Most popular for exactly that size.\n\nFor 4x4 you're looking at roughly Rs.15,000-22,000 depending on the glass. Any preference — clear, frosted or fluted?", delay: 16000 },
-  { role: "in", text: "What's fluted?", delay: 20500 },
-  { role: "out", text: "Textured glass — looks very premium, boutique hotel kind of feel. Trending a lot right now.\n\nCosts a bit more but looks stunning.", delay: 23000 },
-  { role: "in", text: "I'm also checking with 2 other vendors.", delay: 27500 },
-  { role: "out", text: "Makes sense. Just check one thing with them — what warranty do they give on hardware?\n\nWe give 10 years. Most give 7.", delay: 30000 },
-  { role: "in", text: "Ok that's good. Can we do Thursday morning?", delay: 34500 },
-  { role: "out", text: "Thursday morning works. What's your flat number?", delay: 37000 },
-  { role: "in", text: "Tower B, Flat 1204.", delay: 40000 },
-  { role: "out", text: "Got it. See you Thursday morning at Prestige Shantiniketan, Tower B, 1204.\n\nI'll send a reminder Wednesday evening.", delay: 42500 },
-  { role: "result", delay: 46000 },
+  { role: "out", text: "Hey Rahul, Riya here from Bathsy.", delay: 0 },
+  { role: "out2", text: "Saw you were enquiring about a shower enclosure — new flat or renovation?", delay: 1800 },
+  { role: "in", text: "New flat. Got possession in about 6-7 months.", delay: 5000 },
+  { role: "out", text: "Oh nice, which project?", delay: 7500 },
+  { role: "in", text: "Prestige Shantiniketan, Whitefield.", delay: 10500 },
+  { role: "out", text: "Prestige Shantiniketan, good choice!", delay: 13000 },
+  { role: "out2", text: "We've actually done quite a few installations there. Great layouts.", delay: 14800 },
+  { role: "in", text: "Oh really, that's helpful to know. How much would it cost roughly?", delay: 19000 },
+  { role: "out", text: "Typically starts from Rs.15,000 to Rs.20,000, completely depends on the glass type and size.", delay: 22500 },
+  { role: "in", text: "I'm also checking with 2-3 other vendors.", delay: 26500 },
+  { role: "out", text: "Makes sense to check around.", delay: 29000 },
+  { role: "out2", text: "Just ask them one thing — what's the hardware warranty? We give 10 years, most give 7.", delay: 30800 },
+  { role: "in", text: "Ok that's a good point. What's the next step?", delay: 35500 },
+  { role: "out", text: "Why don't you come visit our experience centre at HRBR Layout?", delay: 38500 },
+  { role: "out2", text: "You can see all the glass types in person, plan it out properly. If there are any changes to make before the builder finishes, better to know now — can actually save you money.", delay: 40500 },
+  { role: "in", text: "You're not going to push me for sales right?", delay: 46000 },
+  { role: "out", text: "No no, not at all. I suggest this to a lot of customers — if I can help someone make a better decision, why not.", delay: 49500 },
+  { role: "out2", text: "Tomorrow I'd be in your shoes too and I'd want someone to tell me the same :)", delay: 52000 },
+  { role: "in", text: "Haha fair enough. I'll come this Saturday.", delay: 56500 },
+  { role: "out", text: "Perfect, see you Saturday! I'll be there.", delay: 59500 },
+  { role: "result", delay: 63000 },
 ];
 
 function AnimatedDemo() {
@@ -49,9 +54,10 @@ function AnimatedDemo() {
       i++;
       timerRef.current = setTimeout(() => {
         if (item.role === "result") { setDone(true); setTyping(false); return; }
-        if (item.role === "out") {
+        if (item.role === "out" || item.role === "out2") {
           setTyping(true);
-          setTimeout(() => { setTyping(false); setMessages(prev => [...prev, item]); next(); }, 1400);
+          const typingTime = item.role === "out2" ? 1000 : 1400;
+          setTimeout(() => { setTyping(false); setMessages(prev => [...prev, {...item, role: "out"}]); next(); }, typingTime);
         } else { setMessages(prev => [...prev, item]); next(); }
       }, Math.max(wait, 300));
     }
@@ -142,7 +148,7 @@ function LiveChat() {
   const msgsRef = useRef(null);
   const inputRef = useRef(null);
 
-  const GREETING = "Hey, Riya here from Bathsy. New flat or existing bathroom?";
+  const GREETING = "Hey, Riya here from Bathsy. New flat or existing bathroom renovation?";
 
   useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
@@ -156,6 +162,7 @@ function LiveChat() {
     setLoading(true);
     try {
       const history = messages.filter(m => m.role === "user" || m.role === "assistant").map(m => ({ role: m.role === "assistant" ? "niquo" : "customer", content: m.content }));
+      await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
       const res = await fetch("https://niquo-bathsy-git-main-unico-studios-projects.vercel.app/api/niquo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
