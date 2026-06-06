@@ -1,116 +1,62 @@
-'use client';
+"use client";
+import React from "react";
+import { motion } from "framer-motion";
+import Nav from "./NavComp";
 
-// PATH: src/app/components/Navbar.jsx
-// CHANGES FROM YOUR CURRENT VERSION:
-// 1. Added NiquoNavPill inline — pulsing green dot, links to /niquo
-// 2. Everything else is identical to your existing navbar
-// NOTE: If your Navbar has different classNames or structure,
-//       just copy the <NiquoNavPill /> section and drop it into your existing nav links
-
-import { useState } from 'react';
-import Link from 'next/link';
-
-// ── Niquo Nav Pill ─────────────────────────────────────────
-function NiquoNavPill() {
-  return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap');
-        @keyframes niquo-nav-pulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 6px #30d158; }
-          50%       { opacity: 0.35; box-shadow: 0 0 2px #30d158; }
-        }
-        .niquo-nav-pill {
-          display: inline-flex; align-items: center; gap: 7px;
-          background: #000; color: #f5f5f7 !important;
-          font-family: 'Comfortaa', sans-serif;
-          font-size: 12px; font-weight: 300; letter-spacing: 1.5px;
-          padding: 5px 13px; border-radius: 100px;
-          border: 0.5px solid rgba(255,255,255,0.18);
-          text-decoration: none !important;
-          transition: opacity 0.2s, border-color 0.2s;
-          white-space: nowrap;
-        }
-        .niquo-nav-pill:hover { opacity: 0.75; border-color: rgba(255,255,255,0.3); }
-        .niquo-nav-dot {
-          width: 6px; height: 6px; border-radius: 50%;
-          background: #30d158; box-shadow: 0 0 6px #30d158;
-          flex-shrink: 0;
-          animation: niquo-nav-pulse 2s infinite;
-        }
-      `}</style>
-      <Link href="/niquo" className="niquo-nav-pill">
-        <span className="niquo-nav-dot" />
-        niquo
-      </Link>
-    </>
-  );
-}
-
-// ── Main Navbar ────────────────────────────────────────────
-// This is a generic navbar — if your existing Navbar.jsx has
-// specific Tailwind classes or mobile menu logic, keep that
-// and just insert <NiquoNavPill /> into your nav links area.
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <style>{`
-        .unav {
-          position: sticky; top: 0; z-index: 100;
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 0 44px; height: 60px;
-          background: rgba(8,8,8,0.92);
-          backdrop-filter: blur(20px);
-          border-bottom: 0.5px solid rgba(255,255,255,0.07);
-        }
-        .unav-logo img { height: 28px; }
-        .unav-links {
-          display: flex; align-items: center; gap: 28px; list-style: none;
-        }
-        .unav-links a {
-          font-size: 13px; color: rgba(255,255,255,0.55);
-          text-decoration: none; transition: color 0.2s;
-          font-family: -apple-system, sans-serif;
-        }
-        .unav-links a:hover { color: #fff; }
-        .unav-cta {
-          font-size: 13px; color: #fff;
-          background: transparent; border: 0.5px solid rgba(255,255,255,0.18);
-          padding: 7px 18px; border-radius: 4px;
-          text-decoration: none; transition: background 0.2s;
-        }
-        .unav-cta:hover { background: rgba(255,255,255,0.08); }
-        @media(max-width: 768px) {
-          .unav { padding: 0 20px; }
-          .unav-links { display: none; }
-        }
-      `}</style>
-
-      <nav className="unav">
-        <Link href="/" className="unav-logo">
-          <img src="/assets/unicologo-white.png" alt="Unico Studios" />
-        </Link>
-
-        <ul className="unav-links">
-          <li><Link href="/#about">About</Link></li>
-          <li><Link href="/#services">Services</Link></li>
-          <li><Link href="/tools">Tools</Link></li>
-          {/* ← NIQUO PILL — the important addition */}
-          <li><NiquoNavPill /></li>
-          <li>
-            <a
-              href="https://calendly.com/unicostudioss/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="unav-cta"
-            >
-              Book a Call
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </>
-  );
-}
+    return (
+          <>
+                <div className="fixed w-full top-0 z-50 bg-black/30 backdrop-blur-2xl">
+                        <div className="py-5 ml-4 xs:ml-6 md:ml-10 w-fit">
+                                  <motion.a href="/">
+                                              <img
+                                                              src="/assets/unicologo-white.png"
+                                                              alt="Unico Studios"
+                                                              className="h-8 md:h-10 cursor-pointer"
+                                                            />
+                                  </motion.a>motion.a>
+                        </div>div>
+                        <div>
+                                  <Nav />
+                        </div>div>
+                </div>div>
+          
+            {/* WhatsApp button is OUTSIDE the navbar div so backdrop-blur
+                      does not break its fixed positioning */}
+                <a
+                          href="https://wa.me/918147057109?text=Hi%20Saurav%2C%20I%20saw%20Unico%20Studios%20and%20would%20like%20to%20discuss%20a%20project."
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                                      position: "fixed",
+                                      bottom: 24,
+                                      left: 24,
+                                      width: 52,
+                                      height: 52,
+                                      borderRadius: "50%",
+                                      background: "#25D366",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      boxShadow: "0 4px 24px rgba(37,211,102,0.35)",
+                                      zIndex: 9999,
+                                      transition: "transform 0.2s, box-shadow 0.2s",
+                                      textDecoration: "none",
+                          }}
+                          onMouseEnter={e => {
+                                      e.currentTarget.style.transform = "scale(1.1)";
+                                      e.currentTarget.style.boxShadow = "0 8px 32px rgba(37,211,102,0.5)";
+                          }}
+                          onMouseLeave={e => {
+                                      e.currentTarget.style.transform = "scale(1)";
+                                      e.currentTarget.style.boxShadow = "0 4px 24px rgba(37,211,102,0.35)";
+                          }}
+                          aria-label="Chat on WhatsApp"
+                        >
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                        </svg>svg>
+                </a>a>
+          </>>
+        );
+}</>
