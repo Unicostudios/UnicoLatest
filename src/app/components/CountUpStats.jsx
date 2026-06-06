@@ -1,102 +1,53 @@
-'use client';
+"use client";
+import React, { useEffect, useRef } from "react";
+import { animate, useInView } from "framer-motion";
 
-// PATH: src/app/components/CountUpStats.jsx
-// FIX: Stats were showing blank "+". Now uses hardcoded real numbers
-// with count-up animation. They ALWAYS show — never blank.
-
-import { useEffect, useRef, useState } from 'react';
-
-const STATS = [
-  { value: 15,  suffix: '+', label: 'Brands Transformed'  },
-  { value: 23,  suffix: '+', label: 'Projects Completed'   },
-  { value: 4,   suffix: '',  label: 'Countries Served'     },
-];
-
-function useCountUp(target, duration = 1800, start = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let startTime = null;
-    const step = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(ease * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [start, target, duration]);
-  return count;
-}
-
-function StatItem({ value, suffix, label, start }) {
-  const count = useCountUp(value, 1600, start);
+export default function CountUpStats() {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{
-        fontFamily: "'Syne', sans-serif",
-        fontSize: 'clamp(36px, 5vw, 56px)',
-        fontWeight: 700,
-        color: '#fff',
-        letterSpacing: '-0.03em',
-        lineHeight: 1,
-        marginBottom: '8px',
-      }}>
-        {count}{suffix}
-      </div>
-      <div style={{
-        fontSize: '13px',
-        fontWeight: 300,
-        color: '#444',
-        letterSpacing: '0.3px',
-        fontFamily: "'DM Sans', sans-serif",
-      }}>
-        {label}
+    <div className="mx-auto px-4 py-10 md:py-20 font-montserrat-regular bg-[#080808]">
+      <h2 className="mb-8 text-center text-white text-base md:text-xl">
+        TRANSFORMING BRANDS,{" "}
+        <span className="text-violet-500">DELIVERING REAL RESULTS</span>
+      </h2>
+      {/* ── MOBILE: horizontal row, all 3 stats side by side ── */}
+      <div className="flex flex-row items-center justify-center gap-0 text-white md:gap-10">
+        <Stat num={15} suffix="+" subheading1="Brands" subheading2="Transformed" />
+        <div className="h-10 w-[1px] bg-neutral-700 mx-3 md:h-20 md:mx-0" />
+        <Stat num={23} suffix="+" subheading1="Projects" subheading2="Completed" />
+        <div className="h-10 w-[1px] bg-neutral-700 mx-3 md:h-20 md:mx-0" />
+        <Stat num={4} suffix="+" subheading1="Countries" subheading2="Served" />
       </div>
     </div>
   );
 }
 
-export default function CountUpStats() {
-  const [started, setStarted] = useState(false);
+const Stat = ({ num, suffix, decimals = 0, subheading1, subheading2 }) => {
   const ref = useRef(null);
+  const isInView = useInView(ref);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setStarted(true); observer.disconnect(); } },
-      { threshold: 0.3 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+    if (!isInView) return;
+    animate(0, num, {
+      duration: 1,
+      onUpdate(value) {
+        if (!ref.current) return;
+        ref.current.textContent = value.toFixed(decimals);
+      },
+    });
+  }, [num, decimals, isInView]);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@300;400&display=swap');
-      `}</style>
-      <section
-        ref={ref}
-        style={{
-          background: '#080808',
-          padding: '64px 24px',
-          borderTop: '0.5px solid #111',
-          borderBottom: '0.5px solid #111',
-        }}
-      >
-        <div style={{
-          maxWidth: '700px',
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '40px',
-          alignItems: 'center',
-        }}>
-          {STATS.map((s, i) => (
-            <StatItem key={i} {...s} start={started} />
-          ))}
-        </div>
-      </section>
-    </>
+    <div className="flex flex-col items-center py-2 px-2 md:py-0 md:w-56">
+      <p className="mb-1 text-center text-3xl md:text-5xl font-montserrat-medium">
+        <span ref={ref}></span>
+        {suffix}
+      </p>
+      <p className="text-center text-neutral-300 text-[10px] md:text-sm leading-tight">
+        {subheading1}
+      </p>
+      <p className="text-center text-neutral-500 text-[10px] md:text-sm leading-tight">
+        {subheading2}
+      </p>
+    </div>
   );
-}
+};
