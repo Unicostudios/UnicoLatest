@@ -60,7 +60,7 @@ export default function Contact() {
         </div>
         <div>
           <p className="font-montserrat-medium text-lg">Our Address:</p>
-          <p>Bangalore, Karnataka, India</p>
+          <p>Mysore, Karnataka, India</p>
         </div>
         <div className="flex text-3xl gap-2">
           <a
