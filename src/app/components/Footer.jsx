@@ -63,7 +63,7 @@ export const Footer = ({ theme }) => {
                   href: "mailto:contact@unicostudios.in",
                 },
                 {
-                  title: "Bangalore, India",
+                  title: "Mysore, India",
                   href: "#",
                 },
               ]}
@@ -97,7 +97,7 @@ const LogoColumn = ({ theme }) => {
       </div>
       <p className="mt-3 inline-block text-[10px] xxs2:text-xs pr-5 leading-relaxed">
         India's First AI-Powered<br />Growth Agency.<br />
-        Built in Bangalore.
+        Built in Mysore.
       </p>
 
       {/* WhatsApp CTA in footer */}
@@ -132,7 +132,7 @@ const GenericColumn = ({ title, links }) => {
     <div className="col-span-6 space-y-2 text-xs xxs2:text-sm md:col-span-2">
       <span className="block font-montserrat-bold uppercase">{title}</span>
       {links.map((l) =>
-        l.title === "Bangalore, India" ? (
+        l.title === "Mysore, India" ? (
           <div key={l.title} className="flex items-center break-all gap-1.5">
             {l.Icon && <l.Icon />}
             {l.title}
