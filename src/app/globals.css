@@ -76,3 +76,62 @@ html {
   src: url("/fonts/Montserrat-Light.ttf") format("truetype");
   font-display: swap;
 }
+
+/* ===========================================================
+   2026 redesign — scoped design system
+   Applied via <div className="u2026"> on every rebuilt page
+   (home, about, services, work, contact, case studies) so the
+   legacy dark theme above stays untouched for blog / old pages.
+=========================================================== */
+.u2026 {
+  --ac: oklch(0.5 0.22 274);
+  --dur: 1;
+  --ink: oklch(0.22 0.012 285);
+  --ink-soft: oklch(0.42 0.01 285);
+  --ink-softer: oklch(0.46 0.01 285);
+  --ink-mute: oklch(0.5 0.01 285);
+  --paper: oklch(0.975 0.002 285);
+  --paper-card: oklch(1 0 0);
+  --line: oklch(0.22 0.012 285 / 0.1);
+  --font-bricolage: "Bricolage Grotesque";
+  --font-instrument: "Instrument Sans";
+  --font-plexmono: "IBM Plex Mono";
+  --font-space-grotesk: "Space Grotesk";
+  --font-g-montserrat: "Montserrat";
+  --font-manrope: "Manrope";
+  --font-archivo: "Archivo";
+  --font-urbanist: "Urbanist";
+  --font-cormorant: "Cormorant Garamond";
+  --font-alex-brush: "Alex Brush";
+  --font-blinker: "Blinker";
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-instrument), system-ui, sans-serif;
+  overflow-x: hidden;
+  cursor: auto;
+}
+.u2026 a { color: var(--ink); text-decoration: none; }
+.u2026 a:hover { color: var(--ac); }
+.u2026 ::selection { background: var(--ac); color: var(--paper); }
+.u2026 * { box-sizing: border-box; }
+
+@keyframes uCurtainL { 0%, 58% { transform: translateX(0); } 100% { transform: translateX(-101%); } }
+@keyframes uCurtainR { 0%, 58% { transform: translateX(0); } 100% { transform: translateX(101%); } }
+@keyframes uLoadOut { 0%, 92% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; } }
+@keyframes uCount { from { transform: translateY(0); } to { transform: translateY(-90.909%); } }
+@keyframes uMarkSpin { 0% { transform: rotate(0deg) scale(1); } 70% { transform: rotate(340deg) scale(1); } 100% { transform: rotate(360deg) scale(14); opacity: 0; } }
+@keyframes uWordCycle { 0%, 18% { transform: translateY(0); } 25%, 43% { transform: translateY(-25%); } 50%, 68% { transform: translateY(-50%); } 75%, 93% { transform: translateY(-75%); } 100% { transform: translateY(0); } }
+@keyframes uRise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes uTicker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes uTickerBack { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes uPulse { 0% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.25); } 100% { opacity: 0.5; transform: scale(1); } }
+@keyframes uNudge { 0% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(9px); opacity: 1; } 100% { transform: translateY(0); opacity: 0.4; } }
+@keyframes csRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes csWipe { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .u2026 *, .u2026 *::before, .u2026 *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

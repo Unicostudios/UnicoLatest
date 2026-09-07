@@ -3,15 +3,15 @@ import Services from "./Services";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Digital Marketing Services in India | Unico Studios",
+  title: "Services — Brand Identity, Websites & SaaS | Unico Studios",
   description:
-    "Discover top-notch digital marketing services at Unico Studios. From SEO and paid ads to social media management and website development, we deliver results-driven solutions.",
+    "Three things, done properly: brand identity, websites and SaaS product design. Take one or take all three — most projects grow into all of them.",
   keywords:
-    "digital marketing services, SEO services India, social media marketing, paid ads services, website development India",
+    "brand identity services, website design services India, SaaS product design, design studio services, Unico Studios",
   openGraph: {
-    title: "Digital Marketing Services in India | Unico Studios",
+    title: "Services — Brand Identity, Websites & SaaS | Unico Studios",
     description:
-      "Discover top-notch digital marketing services at Unico Studios. From SEO and paid ads to social media management and website development, we deliver results-driven solutions.",
+      "Three things, done properly: brand identity, websites and SaaS product design.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

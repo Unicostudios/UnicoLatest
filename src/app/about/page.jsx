@@ -1,17 +1,15 @@
-import React from "react";
 import About from "./About";
-import Script from "next/script";
 
 export const metadata = {
-  title: "About Us | Unico Studios - Your Digital Marketing Experts",
+  title: "About Us — Unico Studios",
   description:
-    "Learn more about Unico Studios, a results-driven digital marketing agency. Discover our mission, vision, and expertise in SEO, paid ads, social media, and web development.",
+    "Unico Studios is a Bangalore-based brand and product design studio. One team ships identity, websites and product interfaces for founders across Bangalore, Mumbai, Dubai and Singapore.",
   keywords:
-    "about Unico Studios, digital marketing agency India, SEO experts, social media services, website development company, paid ads agency, custom web solutions, social media marketing experts, digital growth services, best SEO company India, Unico Studios digital marketing",
+    "Unico Studios, about Unico Studios, brand identity studio Bangalore, product design studio, website design agency India, founder Sreehari",
   openGraph: {
-    title: "About Us | Unico Studios - Your Digital Marketing Experts",
+    title: "About Us — Unico Studios",
     description:
-      "Learn more about Unico Studios, a results-driven digital marketing agency. Discover our mission, vision, and expertise in SEO, paid ads, social media, and web development.",
+      "One team, one continuous system — identity, website and product screens, from first sketch to live build.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
@@ -28,32 +26,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <>
-      <About />
-      <Script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: "https://unicostudios.in",
-              },
-              {
-                "@type": "ListItem",
-                position: 2,
-                name: "About",
-                item: "https://unicostudios.in/about",
-              },
-            ],
-          }),
-        }}
-      />
-    </>
-  );
+  return <About />;
 }
