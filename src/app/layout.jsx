@@ -2,7 +2,6 @@ import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
 import Script from "next/script";
 import ToasterProvider from "./components/ToasterProvider";
-import ChatWidget from "./components/ChatWidget";
 
 export const metadata = {
   title: "India's First AI-Powered Growth Agency | Unico Studios",
@@ -32,6 +31,13 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/fonts/Montserrat-Italic.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/Montserrat-Bold.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/Montserrat-Light.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        {/* 2026 redesign fonts (home, about, services, work, contact, case studies) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Space+Grotesk:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Archivo:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Urbanist:wght@300;400;500&family=Cormorant+Garamond:wght@400;500;600&family=Alex+Brush&family=Blinker:wght@400;600;700&display=swap"
+        />
         <meta name="robots" content="index, follow" />
         <meta name="google-site-verification" content="klgJNEiY0E2KdVnr2IGvXCdlgM6hBDsnWtSEDfT54rM" />
         <Script
@@ -85,7 +91,6 @@ export default function RootLayout({ children }) {
           {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0LQYLWVY10');`}
         </Script>
         <Script src="https://cdn-in.pagesense.io/js/60046150395/195c43b01fc345ecb55929c67d234793.js" strategy="afterInteractive" />
-        <ChatWidget />
         {children}
       </body>
     </html>

@@ -3,21 +3,21 @@ import Home from "./Home";
 import Script from "next/script";
 
 export const metadata = {
-  title: "India's First AI-Powered Growth Agency | Unico Studios",
+  title: "Unico Studios — Brand Identity, Websites & SaaS Design",
   description:
-    "Unico Studios — AI-powered digital marketing agency in Bangalore. Free AI tools for founders: content engine, AI sales demo, website audit and more. Book a free strategy call.",
+    "Unico Studios is a design studio in Bangalore building brand identity, websites and SaaS product design for founders in Bangalore, Mumbai, Dubai and Singapore.",
   keywords:
-    "AI marketing agency India, AI sales assistant India, free AI tools for startups, Niquo AI sales, website revenue audit, digital marketing Bangalore, Unico Studios",
+    "brand identity studio India, website design agency Bangalore, SaaS product design, design studio India, Unico Studios",
   openGraph: {
-    title: "India's First AI-Powered Growth Agency | Unico Studios",
+    title: "Unico Studios — Brand Identity, Websites & SaaS Design",
     description:
-      "Free AI tools that grow your business — content engine, AI sales demo, website audit. Built by Unico Studios, Bangalore.",
+      "Brand identity, websites and SaaS platforms — one team from the first sketch to the live build. Based in Bangalore, India.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
         width: 800,
         height: 600,
-        alt: "Unico Studios AI",
+        alt: "Unico Studios",
       },
     ],
     type: "website",
@@ -39,7 +39,7 @@ export default function Page() {
             "@type": "Organization",
             name: "Unico Studios",
             url: "https://unicostudios.in",
-            description: "India's first AI-powered growth agency. Free AI tools for founders and brands.",
+            description: "Brand identity, websites and SaaS platforms — one team from the first sketch to the live build.",
             foundingLocation: "Bangalore, India",
             sameAs: [
               "https://www.instagram.com/unico.studioss",

@@ -3,15 +3,15 @@ import Work from "./Work";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Our Work | Unico Studios - Your Digital Marketing Experts",
+  title: "Our Work — Selected Case Studies | Unico Studios",
   description:
-    "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+    "Twenty-three projects across four countries. Nine case studies showing how identity, web and product hold together when the same team makes all three.",
   keywords:
-    "digital marketing agency India, SEO services India, paid ads management, social media marketing India, website development services",
+    "design studio portfolio, brand identity case studies, website design portfolio India, SaaS product design case studies, Unico Studios work",
   openGraph: {
-    title: "Best Digital Marketing Agency in India | Unico Studios",
+    title: "Our Work — Selected Case Studies | Unico Studios",
     description:
-      "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+      "Twenty-three projects across four countries — nine case studies of brand identity, websites and SaaS product design.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

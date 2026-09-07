@@ -1,17 +1,15 @@
-import React from "react";
 import Contact from "./Contact";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Contact Us | Unico Studios - Your Digital Marketing Experts",
+  title: "Contact — Unico Studios",
   description:
-    "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
-  keywords:
-    "digital marketing agency India, SEO services India, paid ads management, social media marketing India, website development services",
+    "Tell us about your brand identity, website or product design project — Unico Studios responds within a day.",
+  keywords: "contact Unico Studios, brand identity studio Bangalore, product design studio, website design agency India",
   openGraph: {
-    title: "Best Digital Marketing Agency in India | Unico Studios",
+    title: "Contact — Unico Studios",
     description:
-      "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+      "Tell us about your brand identity, website or product design project — Unico Studios responds within a day.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
@@ -47,7 +45,7 @@ export default function Page() {
               {
                 "@type": "ListItem",
                 position: 2,
-                name: "Contact Us",
+                name: "Contact",
                 item: "https://unicostudios.in/contact",
               },
             ],
