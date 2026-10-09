@@ -22,6 +22,7 @@ export const Footer = ({ theme }) => {
                 { title: "About Us", href: "/#about" },
                 { title: "Services", href: "/#services" },
                 { title: "AI Tools", href: "/tools" },
+                { title: "Bangalore Startups", href: "/bengaluru-digital-marketing" },
                 { title: "Book a Call", href: "https://calendly.com/unicostudioss/30min" },
               ]}
             />
