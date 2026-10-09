@@ -16,8 +16,8 @@ export default function SiteFooter() {
           padding: "clamp(40px, 6vh, 68px) clamp(18px, 4vw, 54px) clamp(24px, 3vh, 34px)",
           display: "grid",
           gridTemplateColumns:
-            "minmax(min(240px, 100%), 1.4fr) repeat(3, minmax(min(150px, 100%), 1fr))",
-          gap: "clamp(28px, 4vw, 48px)",
+            "minmax(min(240px, 100%), 1.4fr) repeat(4, minmax(min(130px, 100%), 1fr))",
+          gap: "clamp(24px, 3vw, 40px)",
         }}
       >
         <div style={{ minWidth: 0, maxWidth: 380 }}>
@@ -60,6 +60,14 @@ export default function SiteFooter() {
           <Link href="/about">About us</Link>
           <Link href="/services">Services</Link>
           <Link href="/work">Our work</Link>
+        </FooterCol>
+
+        <FooterCol title="Solutions">
+          <Link href="/bengaluru-digital-marketing">Bangalore Startups</Link>
+          <Link href="/bengaluru-web-app-development">Web & App Dev</Link>
+          <Link href="/d2c-crm-development">D2C CRM Systems</Link>
+          <Link href="/custom-ai-agents-bengaluru">Custom AI Agents</Link>
+          <Link href="/creative-design-reels-bengaluru">Reels & Design</Link>
         </FooterCol>
 
         <FooterCol title="Selected work">
