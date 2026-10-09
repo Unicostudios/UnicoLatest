@@ -2,15 +2,15 @@ import React from "react";
 import Blog from "./Blog";
 
 export const metadata = {
-  title: "Blog | Unico Studios - Your Digital Marketing Experts",
+  title: "Blog — Web Design & Digital Marketing Insights in Bengaluru | Unico Studios",
   description:
-    "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+    "Read the latest insights on SEO, digital marketing, and web design from Unico Studios, Bengaluru's leading growth and design agency.",
   keywords:
-    "digital marketing agency India, SEO services India, paid ads management, social media marketing India, website development services",
+    "digital marketing agency Bengaluru, SEO services Bangalore, web design blog Bengaluru, top agency blog, Unico Studios",
   openGraph: {
-    title: "Best Digital Marketing Agency in India | Unico Studios",
+    title: "Blog — Web Design & Digital Marketing Insights in Bengaluru | Unico Studios",
     description:
-      "Unico Studios - Your trusted partner for SEO, Paid Ads, Social Media Management, and Website Development. Elevate your online presence today.",
+      "Read the latest insights on SEO, digital marketing, and web design from Unico Studios, Bengaluru's leading growth and design agency.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

@@ -3,15 +3,15 @@ import Work from "./Work";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Our Work — Selected Case Studies | Unico Studios",
+  title: "Our Work — Web Design & Branding Portfolio in Bengaluru | Unico Studios",
   description:
-    "Twenty-three projects across four countries. Nine case studies showing how identity, web and product hold together when the same team makes all three.",
+    "Explore our web design and brand identity portfolio in Bengaluru. View case studies on how our Bangalore-based team creates cohesive brand and product experiences.",
   keywords:
-    "design studio portfolio, brand identity case studies, website design portfolio India, SaaS product design case studies, Unico Studios work",
+    "web design portfolio Bengaluru, brand identity case studies Bangalore, SaaS product design portfolio, top design agency work Bengaluru, Unico Studios",
   openGraph: {
-    title: "Our Work — Selected Case Studies | Unico Studios",
+    title: "Our Work — Web Design & Branding Portfolio in Bengaluru | Unico Studios",
     description:
-      "Twenty-three projects across four countries — nine case studies of brand identity, websites and SaaS product design.",
+      "Explore our web design and brand identity portfolio in Bengaluru. View case studies on how our Bangalore-based team creates cohesive brand and product experiences.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

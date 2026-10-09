@@ -4,9 +4,9 @@ import Script from "next/script";
 import ToasterProvider from "./components/ToasterProvider";
 
 export const metadata = {
-  title: "India's First AI-Powered Growth Agency | Unico Studios",
+  title: "Best AI-Powered Growth Agency in Bengaluru | Unico Studios",
   description:
-    "Unico Studios is India's first AI-powered growth agency. Free AI tools for founders — content engine, AI sales demo, website revenue audit and more. Based in Bangalore.",
+    "Unico Studios is the top AI-powered growth agency in Bengaluru. We provide free AI tools for founders, content engines, AI sales demos, and website revenue audits for startups in Bangalore.",
 };
 
 export default function RootLayout({ children }) {

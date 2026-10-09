@@ -3,15 +3,15 @@ import Home from "./Home";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Unico Studios — Brand Identity, Websites & SaaS Design",
+  title: "Top Web Design & Brand Identity Agency in Bengaluru | Unico Studios",
   description:
-    "Unico Studios is a design studio in Bangalore building brand identity, websites and SaaS product design for founders in Bangalore, Mumbai, Dubai and Singapore.",
+    "Unico Studios is the leading design agency in Bengaluru, specializing in brand identity, websites, and SaaS product design for top founders and startups in Bangalore.",
   keywords:
-    "brand identity studio India, website design agency Bangalore, SaaS product design, design studio India, Unico Studios",
+    "web design agency Bengaluru, brand identity studio Bangalore, SaaS product design Bengaluru, top design agency in Bangalore, Unico Studios",
   openGraph: {
-    title: "Unico Studios — Brand Identity, Websites & SaaS Design",
+    title: "Top Web Design & Brand Identity Agency in Bengaluru | Unico Studios",
     description:
-      "Brand identity, websites and SaaS platforms — one team from the first sketch to the live build. Based in Bangalore, India.",
+      "Unico Studios is the leading design agency in Bengaluru, specializing in brand identity, websites, and SaaS product design for top founders and startups in Bangalore.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

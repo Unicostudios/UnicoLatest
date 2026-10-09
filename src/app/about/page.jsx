@@ -1,15 +1,15 @@
 import About from "./About";
 
 export const metadata = {
-  title: "About Us — Unico Studios",
+  title: "About Unico Studios — Leading Design Agency in Bengaluru",
   description:
-    "Unico Studios is a Bangalore-based brand and product design studio. One team ships identity, websites and product interfaces for founders across Bangalore, Mumbai, Dubai and Singapore.",
+    "Unico Studios is a top-rated brand and product design agency based in Bengaluru. Our Bangalore team ships world-class websites and identity designs for founders.",
   keywords:
-    "Unico Studios, about Unico Studios, brand identity studio Bangalore, product design studio, website design agency India, founder Sreehari",
+    "about Unico Studios, top design agency Bengaluru, branding studio Bangalore, website design agency Bengaluru",
   openGraph: {
-    title: "About Us — Unico Studios",
+    title: "About Unico Studios — Leading Design Agency in Bengaluru",
     description:
-      "One team, one continuous system — identity, website and product screens, from first sketch to live build.",
+      "Unico Studios is a top-rated brand and product design agency based in Bengaluru. Our Bangalore team ships world-class websites and identity designs for founders.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",

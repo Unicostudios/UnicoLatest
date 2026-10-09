@@ -2,14 +2,14 @@ import Contact from "./Contact";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Contact — Unico Studios",
+  title: "Contact Bengaluru's Top Web Design Agency | Unico Studios",
   description:
-    "Tell us about your brand identity, website or product design project — Unico Studios responds within a day.",
-  keywords: "contact Unico Studios, brand identity studio Bangalore, product design studio, website design agency India",
+    "Get in touch with Unico Studios, the premier web design and brand identity agency in Bengaluru. We respond to your project inquiries within a day.",
+  keywords: "contact web design agency Bengaluru, hire branding agency Bangalore, product design studio Bengaluru, contact Unico Studios",
   openGraph: {
-    title: "Contact — Unico Studios",
+    title: "Contact Bengaluru's Top Web Design Agency | Unico Studios",
     description:
-      "Tell us about your brand identity, website or product design project — Unico Studios responds within a day.",
+      "Get in touch with Unico Studios, the premier web design and brand identity agency in Bengaluru. We respond to your project inquiries within a day.",
     images: [
       {
         url: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
