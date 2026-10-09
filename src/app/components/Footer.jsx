@@ -22,12 +22,17 @@ export const Footer = ({ theme }) => {
                 { title: "About Us", href: "/#about" },
                 { title: "Services", href: "/#services" },
                 { title: "AI Tools", href: "/tools" },
+                { title: "Book a Call", href: "https://calendly.com/unicostudioss/30min" },
+              ]}
+            />
+            <GenericColumn
+              title="Solutions"
+              links={[
                 { title: "Bangalore Startups", href: "/bengaluru-digital-marketing" },
-                { title: "Bangalore Web & App Dev", href: "/bengaluru-web-app-development" },
+                { title: "Web & App Dev", href: "/bengaluru-web-app-development" },
                 { title: "Custom CRM for D2C", href: "/d2c-crm-development" },
                 { title: "Custom AI Agents", href: "/custom-ai-agents-bengaluru" },
                 { title: "Reels & Design", href: "/creative-design-reels-bengaluru" },
-                { title: "Book a Call", href: "https://calendly.com/unicostudioss/30min" },
               ]}
             />
             <GenericColumn
