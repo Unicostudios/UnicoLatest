@@ -56,7 +56,13 @@ Short sentences. No hype words ("revolutionary", "cutting-edge",
 
 1. Kill-switch check (section 0).
 2. Read `seo/log.md` (last 10 entries), `seo/topics.md`, `seo/keywords.md`.
-3. **Technical check** of the live site:
+3. **Technical check.** The cloud environment may not reach
+   unicostudios.in, so check your own production build instead: after the
+   build in step 7 (run it early for this check), start it with
+   `npx next start -p 3123 &`, wait until `curl -s localhost:3123/robots.txt`
+   answers, and check `http://localhost:3123` (the sitemap lists
+   `https://unicostudios.in/...` URLs: swap the host). Stop the server when
+   done (`pkill -f "next start"`).
    - Fetch `/robots.txt`, `/sitemap.xml`, `/llms.txt`; confirm 200.
    - Fetch every URL in the sitemap; list any non-200.
    - For each page: one `<title>` (≤ 60 chars ideal), meta description

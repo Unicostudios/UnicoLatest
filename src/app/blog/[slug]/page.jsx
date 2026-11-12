@@ -8,6 +8,9 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import { getMarkdownPost, getAllMarkdownPosts } from "@/lib/posts";
 import MarkdownPost from "./MarkdownPost";
 
+// Every post is known at build time; anything else is a real 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   const legacy = allBlogs.map((b) => ({ slug: b.slug.replace("/blog/", "") }));
   const md = getAllMarkdownPosts().map((p) => ({ slug: p.slug }));
