@@ -35,6 +35,12 @@ const nextConfig = {
         destination: "/",
         permanent: true,
       },
+      // Old case-study URLs that were in the previous static sitemap.
+      { source: "/work/hazeuae", destination: "/work/haze-uae", permanent: true },
+      { source: "/work/haze", destination: "/work/haze-uae", permanent: true },
+      { source: "/work/dupree", destination: "/work/dupree-armon", permanent: true },
+      { source: "/work/aashirkhare", destination: "/work/aashir-kare", permanent: true },
+      { source: "/work/immersifiedgcc", destination: "/work/immersified", permanent: true },
     ];
   },
 

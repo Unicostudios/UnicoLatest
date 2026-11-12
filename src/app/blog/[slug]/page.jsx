@@ -5,9 +5,39 @@ import { DarkGridHero } from "@/app/components/DarkGridHero";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { IoIosArrowRoundForward } from "react-icons/io";
+import { getMarkdownPost, getAllMarkdownPosts } from "@/lib/posts";
+import MarkdownPost from "./MarkdownPost";
+
+export function generateStaticParams() {
+  const legacy = allBlogs.map((b) => ({ slug: b.slug.replace("/blog/", "") }));
+  const md = getAllMarkdownPosts().map((p) => ({ slug: p.slug }));
+  const seen = new Set();
+  return [...md, ...legacy].filter((p) =>
+    seen.has(p.slug) ? false : seen.add(p.slug)
+  );
+}
 
 export async function generateMetadata({ params }) {
   const slug = (await params).slug;
+  const md = getMarkdownPost(slug);
+  if (md) {
+    const url = `https://unicostudios.in/blog/${slug}`;
+    return {
+      title: md.title,
+      description: md.description,
+      keywords: md.keywords,
+      alternates: { canonical: url },
+      openGraph: {
+        title: md.title,
+        description: md.description,
+        url,
+        type: "article",
+        publishedTime: md.date,
+        modifiedTime: md.updated || md.date,
+        images: md.image ? [{ url: md.image, alt: md.imageAlt || md.title }] : undefined,
+      },
+    };
+  }
   try {
     const { blog } = await import(`@/app/data/blogs/${slug}.jsx`);
     return {
@@ -46,6 +76,8 @@ const truncateText = (text, maxLength) => {
 
 export default async function Page({ params }) {
   const slug = (await params).slug;
+  const md = getMarkdownPost(slug);
+  if (md) return <MarkdownPost post={md} />;
   try {
     const { blog } = await import(`@/app/data/blogs/${slug}.jsx`);
     const id = blog.id;

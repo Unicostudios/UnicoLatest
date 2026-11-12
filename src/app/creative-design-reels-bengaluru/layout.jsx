@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "https://unicostudios.in/creative-design-reels-bengaluru" },
   title: "Creative Design, Reels & Influencer Marketing in Bengaluru | Unico Studios",
   description:
     "Unico Studios is Bengaluru's premier creative agency for cafes, restaurants, and brands. We offer professional reel shoots, graphic design, and influencer marketing campaigns.",

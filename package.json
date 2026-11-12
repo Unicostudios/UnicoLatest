@@ -10,20 +10,22 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
-    "twilio": "^5.0.0",
-    "openai": "^4.28.0",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.6.2",
+    "gray-matter": "^4.0.3",
     "lenis": "^1.2.3",
     "lottie-react": "^2.4.1",
+    "marked": "^12.0.2",
     "next": "15.5.9",
+    "openai": "^4.28.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
-    "tailwind-merge": "^3.1.0"
+    "tailwind-merge": "^3.1.0",
+    "twilio": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

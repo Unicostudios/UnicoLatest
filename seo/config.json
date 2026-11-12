@@ -1,0 +1,5 @@
+{
+  "paused": false,
+  "postsPerRun": 1,
+  "notes": "Set paused to true to stop the weekly SEO/GEO agent. postsPerRun max is 2."
+}

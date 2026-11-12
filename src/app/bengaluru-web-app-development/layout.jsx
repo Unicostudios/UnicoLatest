@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "https://unicostudios.in/bengaluru-web-app-development" },
   title: "Top Web & App Development Company in Bengaluru | Unico Studios",
   description:
     "Looking for the best web and mobile app developers in Bangalore? Unico Studios builds high-performance SaaS platforms, custom web apps, and stunning mobile applications for startups.",

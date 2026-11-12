@@ -135,3 +135,20 @@ html {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ── Markdown blog posts (content/blog/*.md) ── */
+.md-summary { border-left: 3px solid #5A4FE0; background: #F6F6F4; padding: 1rem 1.25rem; border-radius: 0.75rem; margin-bottom: 2rem; line-height: 1.7; }
+.md-post { font-size: 1.0625rem; line-height: 1.8; color: #141414; }
+.md-post h2 { font-weight: 700; font-size: 1.75rem; line-height: 1.25; margin: 2.5rem 0 1rem; }
+.md-post h3 { font-weight: 600; font-size: 1.3rem; margin: 1.75rem 0 0.6rem; }
+.md-post p { margin: 0 0 1.1rem; }
+.md-post ul { list-style: disc; margin: 0 0 1.25rem 1.25rem; }
+.md-post ol { list-style: decimal; margin: 0 0 1.25rem 1.25rem; }
+.md-post li { margin-bottom: 0.4rem; }
+.md-post a { color: #5A4FE0; text-decoration: underline; }
+.md-post strong { font-weight: 600; }
+.md-post blockquote { border-left: 3px solid #d4d4d4; padding-left: 1rem; color: #525252; margin: 0 0 1.25rem; }
+.md-post table { width: 100%; border-collapse: collapse; margin: 0 0 1.5rem; font-size: 0.95rem; display: block; overflow-x: auto; }
+.md-post th, .md-post td { border: 1px solid #e5e5e5; padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; }
+.md-post th { background: #F6F6F4; font-weight: 600; }
+.md-post code { background: #f4f4f5; padding: 0.1rem 0.35rem; border-radius: 0.25rem; font-size: 0.9em; }

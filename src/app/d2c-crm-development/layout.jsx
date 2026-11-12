@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "https://unicostudios.in/d2c-crm-development" },
   title: "Custom CRM for D2C Brands | Inventory, Ads & WhatsApp Integration",
   description:
     "Unico Studios builds custom CRM software for D2C brands. Manage inventory, automate WhatsApp & email SKU reminders, and calculate ad revenue in one sleek dashboard.",

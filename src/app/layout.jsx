@@ -4,9 +4,15 @@ import Script from "next/script";
 import ToasterProvider from "./components/ToasterProvider";
 
 export const metadata = {
-  title: "Best AI-Powered Growth Agency in Bengaluru | Unico Studios",
+  metadataBase: new URL("https://unicostudios.in"),
+  title: "Unico Studios | Brand, Web, Product Design & AI Growth Studio, Bengaluru",
   description:
-    "Unico Studios is the top AI-powered growth agency in Bengaluru. We provide free AI tools for founders, content engines, AI sales demos, and website revenue audits for startups in Bangalore.",
+    "Unico Studios is a Bengaluru design and AI growth studio for founders: brand identity, websites, SaaS product design, custom AI agents and growth systems, built by one senior team. Serving Bengaluru, Mumbai, Dubai and Singapore.",
+  openGraph: {
+    siteName: "Unico Studios",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -69,11 +75,38 @@ export default function RootLayout({ children }) {
         <Script id="organization-schema" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
+            "@type": ["Organization", "ProfessionalService"],
+            "@id": "https://unicostudios.in/#organization",
             name: "Unico Studios",
             url: "https://unicostudios.in/",
             logo: "https://unicostudios.in/assets/unicologo-white.png",
-            description: "India's first AI-powered growth agency. Free AI tools for founders and brands — content engine, AI sales demo, website revenue audit.",
+            image: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+            description: "Bengaluru design and AI growth studio for founders. Brand identity, websites, SaaS product design, custom AI agents and growth systems, built by one senior team.",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Bengaluru",
+              addressRegion: "Karnataka",
+              addressCountry: "IN",
+            },
+            areaServed: [
+              { "@type": "City", name: "Bengaluru" },
+              { "@type": "City", name: "Mumbai" },
+              { "@type": "City", name: "Dubai" },
+              { "@type": "City", name: "Singapore" },
+            ],
+            knowsAbout: [
+              "Brand identity design",
+              "Website design and development",
+              "SaaS product design",
+              "UI/UX design",
+              "Custom AI agents",
+              "WhatsApp AI automation",
+              "D2C CRM development",
+              "Digital marketing",
+              "Search engine optimisation",
+            ],
+            telephone: "+91-8147057109",
+            email: "contact@unicostudios.in",
             contactPoint: {
               "@type": "ContactPoint",
               telephone: "+91-8147057109",

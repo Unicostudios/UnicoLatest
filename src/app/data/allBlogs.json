@@ -61,5 +61,14 @@
     "title": "Best Software Development Company in Bangalore: Unico Studios",
     "description": "In today’s fast-paced digital world, businesses are constantly seeking innovative solutions to stay ahead of the curve. Whether you’re a startup with a disruptive idea or an established enterprise aiming for digital transformation, the right technology partner can make all the difference. If you’re searching for a top-tier software development company in Bangalore, look no further than Unico Studios.",
     "slug": "/blog/best-software-development-company-in-bangalore"
+  },
+  {
+    "id": 8,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 12, 2026",
+    "title": "Why your logo, website and app look like three different companies (and how to fix it)",
+    "description": "Your logo, website and app look like three different companies because three different groups designed them, at three different times, with no shared system between them. Here is why it happens and how to fix it without starting from zero.",
+    "slug": "/blog/brand-website-app-consistency"
   }
 ]

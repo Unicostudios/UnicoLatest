@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "https://unicostudios.in/bengaluru-digital-marketing" },
   title: "Digital Marketing for Bengaluru Startups, Clinics & Restaurants",
   description:
     "Grow your local business in Bengaluru with Unico Studios. We offer specialized digital marketing, SEO, and lead generation for restaurants, clinics, and startups in Bangalore.",

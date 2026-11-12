@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "https://unicostudios.in/custom-ai-agents-bengaluru" },
   title: "Best Custom AI Agents in Bengaluru | Automate Business with Unico Studios",
   description:
     "Unico Studios is Bengaluru's top AI agency. We build custom AI agents for WhatsApp, sales, ads, and CRM integrations (Salesforce, HubSpot) to automate your business.",
