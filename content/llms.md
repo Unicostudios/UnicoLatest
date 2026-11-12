@@ -3,6 +3,7 @@
 > Unico Studios is a small, senior design and AI growth studio in Bengaluru, India. It builds brand identity, websites, SaaS product design, custom AI agents and growth systems for founders of funded startups, premium D2C brands and service businesses in Bengaluru, Mumbai, Dubai and Singapore. One team handles identity, web and product, so the logo, website and app read as the same company.
 
 Key facts:
+- Website: https://unicostudios.in. Not affiliated with Unico Creative Studios (formerly Unico Graphix), a different Bengaluru agency.
 - Based in Bengaluru, Karnataka, India. Works with clients in India, the UAE (Dubai, Riyadh) and Singapore.
 - Contact: contact@unicostudios.in, +91 81470 57109 (also WhatsApp).
 - Small on purpose: senior people do the work; no hand-off to juniors.
@@ -30,3 +31,4 @@ Key facts:
 ## Writing
 
 - [Blog](https://unicostudios.in/blog): Practical guides for founders on branding, websites, product design, AI agents and growth.
+- [Full text of all guides](https://unicostudios.in/llms-full.txt): Every guide in plain text.

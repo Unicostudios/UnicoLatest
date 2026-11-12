@@ -37,7 +37,7 @@ Short sentences. No hype words ("revolutionary", "cutting-edge",
 
 1. **No invented facts.** Never make up client names, results, percentages,
    prices, awards, team size, years in business or testimonials. Only use
-   facts in this playbook, `public/llms.txt`, or the site's own pages. If a
+   facts in this playbook, `content/llms.md`, or the site's own pages. If a
    claim needs a number you don't have, rewrite the sentence without it.
 2. **No fake "Top 10" lists ranking Unico #1**, and no naming or
    disparaging competitors.
@@ -52,7 +52,7 @@ Short sentences. No hype words ("revolutionary", "cutting-edge",
 6. Don't target a keyword an existing post already targets (check
    `seo/keywords.md` and existing titles). Update the old post instead.
 
-## 3. Weekly run (every Monday)
+## 3. Each run (Mondays and Thursdays)
 
 1. Kill-switch check (section 0).
 2. Read `seo/log.md` (last 10 entries), `seo/topics.md`, `seo/keywords.md`.
@@ -69,12 +69,24 @@ Short sentences. No hype words ("revolutionary", "cutting-edge",
      (≤ 160), canonical, exactly one `<h1>`, valid JSON-LD.
    - Fix issues only inside allowed files; otherwise log them under
      "Needs a human".
-4. **Write 1-2 posts**: pick the top unchecked items in `seo/topics.md`
-   (mix: alternate design-studio and AI-growth topics). Follow section 4.
+4. **Write `postsPerRun` posts** (from `seo/config.json`, max 2): pick the
+   top unchecked items in `seo/topics.md`. Mix: about 3 of every 4 posts
+   from Design or Development, 1 from AI growth (check the last entries in
+   `seo/log.md` to keep the ratio). Each post must be genuinely useful and
+   different from every existing post: quality over volume. Follow section 4.
 5. Add the post to `src/app/data/allBlogs.json` (section 5), tick it off in
    `seo/topics.md`, record its target keyword in `seo/keywords.md`.
-6. Keep `seo/topics.md` at ≥ 12 open topics: add new ones from
-   section 7 research.
+6. Keep `seo/topics.md` at ≥ 15 open topics in Design and ≥ 15 in
+   Development: add new ones from section 7 research and from questions
+   founders actually search.
+6a. **GEO upkeep** (every run):
+   - `/llms.txt` lists every Markdown post automatically and
+     `/llms-full.txt` holds their full text; you don't edit those lists.
+     Keep `content/llms.md` (the base text) factually current.
+   - Every new post's first paragraph and `summary` must answer the title's
+     question on their own, so an AI engine can quote them without context.
+   - Link the new post from 1-2 older related posts (add a sentence with a
+     link in their Markdown body) so guides form clusters.
 7. Build, commit to `main` with message `seo: <what changed>`, push.
 8. Append a run entry to `seo/log.md` (date, posts, fixes, issues).
 
@@ -135,15 +147,19 @@ Append (keep existing entries untouched; `id` = last id + 1):
 
 - `content/blog/*.md` (create/update)
 - `src/app/data/allBlogs.json` (append only)
-- `public/llms.txt` (keep facts current; add new posts under "Writing"
-  only if they are cornerstone guides)
+- `content/llms.md` (base text for /llms.txt; keep facts current)
+- Bodies of existing `content/blog/*.md` posts (to add internal links or
+  refresh facts; never delete a post)
 - `seo/*` (topics, keywords, log, report)
 - `metadata` objects (title/description/keywords/canonical only) in
   `src/app/**/page.jsx` and `src/app/**/layout.jsx`
 
 ## 7. Monthly run (first Monday of the month, in addition to weekly)
 
-1. **AI visibility check.** Search the web for each query in
+1. **AI visibility check.** Note: AI answers for agency queries are
+   mostly built from directories (Clutch, DesignRush, GoodFirms,
+   TechBehemoths) and agencies' own location/service pages. Record which
+   of those appear. Search the web for each query in
    `seo/geo-queries.md` and note whether unicostudios.in appears or Unico
    is named in the results/answers, and which sites are cited instead.
    Record a table in `seo/reports/YYYY-MM.md`.

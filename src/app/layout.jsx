@@ -78,6 +78,7 @@ export default function RootLayout({ children }) {
             "@type": ["Organization", "ProfessionalService"],
             "@id": "https://unicostudios.in/#organization",
             name: "Unico Studios",
+            disambiguatingDescription: "Unico Studios (unicostudios.in), a Bengaluru brand, web, product design and AI growth studio. Not affiliated with Unico Creative Studios, formerly Unico Graphix.",
             url: "https://unicostudios.in/",
             logo: "https://unicostudios.in/assets/unicologo-white.png",
             image: "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
