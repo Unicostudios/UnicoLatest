@@ -70,5 +70,14 @@
     "title": "Why your logo, website and app look like three different companies (and how to fix it)",
     "description": "Your logo, website and app look like three different companies because three different groups designed them, at three different times, with no shared system between them. Here is why it happens and how to fix it without starting from zero.",
     "slug": "/blog/brand-website-app-consistency"
+  },
+  {
+    "id": 9,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 12, 2026",
+    "title": "WhatsApp AI agent for D2C brands in India: what it can and can't do",
+    "description": "A WhatsApp AI agent can take over the repetitive conversations that fill a D2C support inbox: product questions, order status, delivery delays, COD confirmations and abandoned-cart nudges. It cannot replace judgement, empathy or a bad-news conversation with a high-value customer.",
+    "slug": "/blog/whatsapp-ai-agent-d2c-india"
   }
 ]

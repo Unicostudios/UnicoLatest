@@ -16,7 +16,7 @@ Tick `[x]` when published. Keep at least 12 open.
 - [ ] How long should a brand identity project take? A week-by-week breakdown
 
 ## AI growth
-- [ ] WhatsApp AI agent for D2C brands in India: what it can and can't do
+- [x] WhatsApp AI agent for D2C brands in India: what it can and can't do
 - [ ] Custom AI agent vs off-the-shelf chatbot: cost and trade-offs
 - [ ] How to connect an AI sales agent to HubSpot or Salesforce
 - [ ] Custom CRM for D2C brands: build vs Shopify apps vs Zoho

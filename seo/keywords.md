@@ -20,3 +20,4 @@ competing for the same search.
 | digital marketing agency in jodhpur | /blog/digital-marketing-agency-in-jodhpur |
 | digital marketing agency in pondicherry | /blog/digital-marketing-agency-in-pondicherry |
 | brand consistency startup (logo, website, app) | /blog/brand-website-app-consistency |
+| whatsapp ai agent for d2c | /blog/whatsapp-ai-agent-d2c-india |
