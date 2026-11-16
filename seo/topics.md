@@ -8,7 +8,7 @@ Keep at least 15 open in Design and 15 in Development.
 - [ ] How much does brand identity design cost in Bangalore? (what's included at each level)
 - [ ] Brand identity vs logo: what founders actually need before a fundraise
 - [ ] How to brief a design agency in India (template inside)
-- [ ] Website redesign checklist for startups in Bengaluru
+- [x] Website redesign checklist for startups in Bengaluru
 - [ ] SaaS product design agency vs in-house designer: when to hire which
 - [ ] What a design system is and when a startup needs one
 - [x] Why your logo, website and app look like three different companies (and how to fix it)
@@ -32,11 +32,14 @@ Keep at least 15 open in Design and 15 in Development.
 - [ ] Landing page design that converts paid traffic from Meta ads
 - [ ] SaaS website design: what a homepage, pricing page and docs need
 
+- [ ] Branding + website + app from one studio: how to evaluate an end-to-end design partner in India
+- [ ] Brand identity packages explained: basic vs full system (what each includes, with typical market ranges)
+
 ## Development
 - [ ] Next.js for marketing websites: why startups are moving off WordPress
 - [ ] Headless CMS options for a Next.js site (Sanity, Contentful, Payload, Markdown)
 - [ ] Core Web Vitals for startup websites: fixing LCP, CLS and INP
-- [ ] Technical SEO checklist for a Next.js website
+- [x] Technical SEO checklist for a Next.js website
 - [ ] How much does a startup website cost to build in India in 2026?
 - [ ] Website vs web app: what you actually need for your MVP
 - [ ] Building an MVP web app in 6-8 weeks: scope, stack and trade-offs

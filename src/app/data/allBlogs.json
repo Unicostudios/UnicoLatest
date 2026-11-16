@@ -79,5 +79,23 @@
     "title": "WhatsApp AI agent for D2C brands in India: what it can and can't do",
     "description": "A WhatsApp AI agent can take over the repetitive conversations that fill a D2C support inbox: product questions, order status, delivery delays, COD confirmations and abandoned-cart nudges. It cannot replace judgement, empathy or a bad-news conversation with a high-value customer.",
     "slug": "/blog/whatsapp-ai-agent-d2c-india"
+  },
+  {
+    "id": 10,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 16, 2026",
+    "title": "Website redesign checklist for startups in Bengaluru: 25 steps before you launch",
+    "description": "A website redesign works when you do the steps in order: audit what exists, set one goal, fix the content and structure, design, build, protect your SEO with redirects, then test and launch. Most failed redesigns skip the audit or the redirect plan. The checklist below is the order we use with founders in Bengaluru, Mumbai, Dubai and Singapore.",
+    "slug": "/blog/website-redesign-checklist-startups"
+  },
+  {
+    "id": 11,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 16, 2026",
+    "title": "Technical SEO checklist for a Next.js website (startup edition)",
+    "description": "A Next.js website ranks well when its pages deliver real HTML from the server, every page has unique metadata and a canonical URL, a sitemap and robots.txt exist, structured data is valid, and the site is fast on mobile. This checklist covers each area in the order we check it on projects for startups in Bengaluru, Mumbai, Dubai and Singapore.",
+    "slug": "/blog/technical-seo-checklist-nextjs"
   }
 ]

@@ -90,3 +90,5 @@ If you work with several vendors, you can still make it work. Give every vendor 
 Lay your logo, homepage, three product screens and your last pitch deck side by side. Circle every font, every shade of your main colour, and every button style. If the count is more than two fonts, one accent colour and one button style, you have a system problem, not a design problem.
 
 If you'd like a second opinion on what you find, [talk to us](/contact). You can also see how we've handled this for other teams in [our work](/work).
+
+Planning a redesign to fix this? Use our [website redesign checklist for startups](/blog/website-redesign-checklist-startups).

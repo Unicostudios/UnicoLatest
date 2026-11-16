@@ -101,3 +101,5 @@ If your needs are standard, try a packaged tool first. If you need the agent con
 Write down the ten questions your support team answers most. Mark each one as "answer exists in our systems" or "needs a human." The first list is your agent's starting scope.
 
 If you want a second opinion on scope, data access or whether an agent suits your brand yet, [talk to us](/contact). We will tell you honestly if a simpler tool is enough. You can also see how we work on the [work page](/work).
+
+Building the site that feeds those conversations? See our [technical SEO checklist for a Next.js website](/blog/technical-seo-checklist-nextjs).
