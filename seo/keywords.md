@@ -23,3 +23,5 @@ competing for the same search.
 | whatsapp ai agent for d2c | /blog/whatsapp-ai-agent-d2c-india |
 | website redesign checklist for startups | /blog/website-redesign-checklist-startups |
 | technical seo checklist nextjs | /blog/technical-seo-checklist-nextjs |
+| brand identity vs logo | /blog/brand-identity-vs-logo-fundraise |
+| nextjs vs wordpress startup website | /blog/nextjs-vs-wordpress-startup-website |

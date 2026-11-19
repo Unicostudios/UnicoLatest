@@ -99,3 +99,5 @@ Redesigning? Pair this list with our [website redesign checklist for startups](/
 ## Want this built in rather than bolted on?
 
 We build marketing sites and web apps in Next.js with these checks part of the build, not an afterthought. See [web and app development in Bengaluru](/bengaluru-web-app-development) or [talk to us](/contact) about your site.
+
+Still choosing a platform? See [Next.js vs WordPress for a startup website](/blog/nextjs-vs-wordpress-startup-website).

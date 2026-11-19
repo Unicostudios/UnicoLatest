@@ -6,7 +6,7 @@ Keep at least 15 open in Design and 15 in Development.
 
 ## Design studio
 - [ ] How much does brand identity design cost in Bangalore? (what's included at each level)
-- [ ] Brand identity vs logo: what founders actually need before a fundraise
+- [x] Brand identity vs logo: what founders actually need before a fundraise
 - [ ] How to brief a design agency in India (template inside)
 - [x] Website redesign checklist for startups in Bengaluru
 - [ ] SaaS product design agency vs in-house designer: when to hire which
@@ -36,7 +36,7 @@ Keep at least 15 open in Design and 15 in Development.
 - [ ] Brand identity packages explained: basic vs full system (what each includes, with typical market ranges)
 
 ## Development
-- [ ] Next.js for marketing websites: why startups are moving off WordPress
+- [x] Next.js for marketing websites: why startups are moving off WordPress
 - [ ] Headless CMS options for a Next.js site (Sanity, Contentful, Payload, Markdown)
 - [ ] Core Web Vitals for startup websites: fixing LCP, CLS and INP
 - [x] Technical SEO checklist for a Next.js website
@@ -52,6 +52,9 @@ Keep at least 15 open in Design and 15 in Development.
 - [ ] Website migration without losing SEO: redirects, sitemaps and checks
 - [ ] Structured data (schema) for agency and service websites
 - [ ] Integrating WhatsApp, CRM and forms into a Next.js site
+- [ ] Website analytics setup for startups: GA4, consent and what to track
+- [ ] Image and font optimisation in Next.js: a practical guide
+- [ ] Next.js App Router vs Pages Router: which to choose for a new project
 
 ## AI growth
 - [x] WhatsApp AI agent for D2C brands in India: what it can and can't do

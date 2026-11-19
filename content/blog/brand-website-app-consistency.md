@@ -92,3 +92,5 @@ Lay your logo, homepage, three product screens and your last pitch deck side by 
 If you'd like a second opinion on what you find, [talk to us](/contact). You can also see how we've handled this for other teams in [our work](/work).
 
 Planning a redesign to fix this? Use our [website redesign checklist for startups](/blog/website-redesign-checklist-startups).
+
+Related: if a fundraise is coming, read [brand identity vs logo: what founders actually need before a fundraise](/blog/brand-identity-vs-logo-fundraise).

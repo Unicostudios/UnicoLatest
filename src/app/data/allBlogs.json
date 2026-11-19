@@ -97,5 +97,23 @@
     "title": "Technical SEO checklist for a Next.js website (startup edition)",
     "description": "A Next.js website ranks well when its pages deliver real HTML from the server, every page has unique metadata and a canonical URL, a sitemap and robots.txt exist, structured data is valid, and the site is fast on mobile. This checklist covers each area in the order we check it on projects for startups in Bengaluru, Mumbai, Dubai and Singapore.",
     "slug": "/blog/technical-seo-checklist-nextjs"
+  },
+  {
+    "id": 12,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 19, 2026",
+    "title": "Brand identity vs logo: what founders actually need before a fundraise",
+    "description": "A logo is one mark. A brand identity is the whole system around it: logo, colours, typefaces, imagery, voice and templates. Before a fundraise, most founders don't need a large brand programme. They need a small identity system applied consistently to the pitch deck, website and product, so the company looks like one deliberate team.",
+    "slug": "/blog/brand-identity-vs-logo-fundraise"
+  },
+  {
+    "id": 13,
+    "img": "https://res.cloudinary.com/dmfisp8ue/image/upload/v1745333408/Unico_Studios_ksivf7.png",
+    "imgPos": "center",
+    "date": "November 19, 2026",
+    "title": "Next.js for marketing websites: why startups are moving off WordPress",
+    "description": "Startups move marketing sites from WordPress to Next.js when they want faster pages, full control of design and a codebase that sits next to their product. WordPress remains a good choice when non-technical people publish often and ready-made plugins cover what the site needs.",
+    "slug": "/blog/nextjs-vs-wordpress-startup-website"
   }
 ]
